@@ -1,39 +1,50 @@
 import * as THREE from 'three';
 import Player from './player';
 
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
-camera.position.set(0, 0, 25);
-camera.lookAt(0, 0, 0);
+const scene = new THREE.Scene();
 
-const player = new Player(camera);
-
-var renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer();
+const canvas = renderer.domElement;
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+document.body.appendChild(canvas);
 
-var geometry = new THREE.BoxGeometry(10, 10, 10);
-var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+const player = new Player(canvas);
 
-var geometry = new THREE.Geometry();
-geometry.vertices.push(new THREE.Vector3(-10, 0, 0));
-geometry.vertices.push(new THREE.Vector3(0, 10, 0));
-geometry.vertices.push(new THREE.Vector3(10, 0, 0));
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.lookAt(0, -1, 1);
+scene.add(directionalLight);
 
-var line = new THREE.Line(geometry, material);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // soft white light
+scene.add(ambientLight);
 
-scene.add(line);
+const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
+const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x626D70, side: THREE.DoubleSide });
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+plane.rotation.x = THREE.Math.degToRad(90);
+plane.position.y = 0;
+scene.add(plane);
+
+
+const geometry = new THREE.BoxGeometry(10, 10, 10);
+const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+const cube1 = new THREE.Mesh(geometry, material);
+cube1.position.y = 5;
+scene.add(cube1);
+
+const cube2 = new THREE.Mesh(geometry, material);
+cube2.position.x = 15;
+cube2.position.y = 5;
+scene.add(cube2);
+
 
 function animate() {
   requestAnimationFrame(animate);
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  cube1.rotation.x += 0.01;
+  cube1.rotation.y += 0.01;
 
   player.update();
 
-  renderer.render(scene, camera);
+  renderer.render(scene, player.camera);
 }
 animate();
