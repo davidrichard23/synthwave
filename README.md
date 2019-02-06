@@ -1,4 +1,4 @@
-# Title
+# Neon city
 
 ## Overview
 
@@ -8,7 +8,7 @@ The game is a simple 3D FPS shooter type game where the near-term goal is a time
 
 A longer term goal is to spawn enemies in waves that rush towards you and increase in difficulty over time. The objective is to not get touched by the enemies.
 
-For the aesthetics, I'm going for something minimal, dark backround, and primitive shapes with neon outlines so that I don't have to worry about creating/finding 3d models and materials.
+For the aesthetics, I'm going for something minimal, dark backround, a city setting, and primitive shapes with neon outlines so that I don't have to worry about creating/finding 3d models and materials. 
 
 ## Functionality
 
@@ -33,15 +33,16 @@ For the aesthetics, I'm going for something minimal, dark backround, and primiti
 
 - Setup the filestructure and webpack
 - Create the player controller and get it moving with keyboard and mouse
+- Implement gun shooting functionality
 
 ### Day 2:
 
-- Implement gun shooting functionality
 - Create the target objects
 - Implement a target spawner
+- Implement the game logic including the target timer and gameover
 
 ### Day 3: 
 
-- Implement the game logic including the target timer and gameover
+- Create a city backdrop
 - Implement the HUD to start/restart, mute, highscore, etc.
 - Add personal links
