@@ -8,7 +8,7 @@ const canvas = renderer.domElement;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(canvas);
 
-const player = new Player(canvas);
+const player = new Player(scene, canvas);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.lookAt(0, -1, 1);

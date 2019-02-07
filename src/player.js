@@ -1,13 +1,27 @@
 import * as THREE from 'three';
+import Gun from './gun';
 
 export default class Player {
 
-  constructor(canvas) {
+  constructor(scene, canvas) {
 
     this.canvas = canvas;
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
-    this.camera.position.set(0, 15, 25);
+    this.scene = scene;
+
+    this.playerGroup = new THREE.Group();
+    this.playerGroup.position.set(0, 15, 25);
+    scene.add(this.playerGroup);
+    
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.lookAt(0, 0, 0);
+    this.reticle();
+    
+    this.gun = new Gun(scene, this.playerGroup, this.camera);
+    
+    
+    this.playerGroup.add(this.camera);
+    
+    // scene.add(this.gun.mesh);
 
     this.rotation = { x: 0, y: 0 };
     this.keyPresses = {
@@ -30,12 +44,29 @@ export default class Player {
   }
 
   update() {
-    if (this.keyPresses.down === 1) this.camera.translateZ(1);
-    if (this.keyPresses.up === 1) this.camera.translateZ(-1);
-    if (this.keyPresses.left === 1) this.camera.translateX(-1);
-    if (this.keyPresses.right === 1) this.camera.translateX(1);
+    if (this.keyPresses.down === 1) this.playerGroup.translateZ(1);
+    if (this.keyPresses.up === 1) this.playerGroup.translateZ(-1);
+    if (this.keyPresses.left === 1) this.playerGroup.translateX(-1);
+    if (this.keyPresses.right === 1) this.playerGroup.translateX(1);
 
-    this.camera.position.y = 15;
+    this.playerGroup.position.y = 15;
+  }
+
+  reticle() {
+    const x = 0.01, y = 0.01;
+
+    const geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3(0, y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(x, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+
+    const material = new THREE.LineBasicMaterial({ color: 0xffffff });
+    const reticle = new THREE.Line(geometry, material);
+    reticle.position.z = -1;
+
+    this.playerGroup.add(reticle);
   }
   
   handleMouseMove(event) {
@@ -45,7 +76,7 @@ export default class Player {
     const euler = new THREE.Euler(0, 0, 0, 'YXZ');
     euler.x = this.rotation.x;
     euler.y = this.rotation.y;
-    this.camera.quaternion.setFromEuler(euler);
+    this.playerGroup.quaternion.setFromEuler(euler);
   }
 
   handleKeyDown(event) {
