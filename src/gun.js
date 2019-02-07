@@ -19,17 +19,29 @@ export default class Gun {
   }
 
   shoot() {
-    const cameraPos = this.camera.getWorldPosition();
-    const cameraDir = this.camera.getWorldDirection();
+    const cameraPos = new THREE.Vector3();
+    const cameraDir = new THREE.Vector3();
+
+    this.camera.getWorldPosition(cameraPos);
+    this.camera.getWorldDirection(cameraDir);
+
     const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
+    const intersects = raycaster.intersectObjects(this.scene.children);
+
+    intersects.forEach(obj => console.log(obj));
 
     this.drawBullet();
   }
 
   drawBullet() {
-    const cameraPos = this.camera.getWorldPosition();
-    const cameraDir = this.camera.getWorldDirection();
-    const gunMeshPos = this.gunMesh.getWorldPosition();
+    const cameraPos = new THREE.Vector3();
+    const cameraDir = new THREE.Vector3();
+    const gunMeshPos = new THREE.Vector3();
+
+    this.camera.getWorldPosition(cameraPos);
+    this.camera.getWorldDirection(cameraDir);
+    this.gunMesh.getWorldPosition(gunMeshPos);
+    
     const centerVector = new THREE.Vector3();
     const dir = new THREE.Vector3();
 
