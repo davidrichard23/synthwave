@@ -14,6 +14,10 @@ export default class Player {
     
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
     this.camera.lookAt(0, 0, 0);
+
+    var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
+    light.position.set(0, 0, 0);
+    this.playerGroup.add(light);
     
     this.reticle();
     

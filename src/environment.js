@@ -10,16 +10,34 @@ import Building from './building';
 //   0xFFEB00, // yellow
 //   0x29FF00, // green
 // ];
+// const COLORS = [
+//   // 0x00EFFF,
+//   // 0x00CAFF,
+//   // 0x008EFF,
+//   // 0x0051FF,
+//   // 0x161AFF,
+//   0x3D00FF,
+//   // 0x7D00FF,
+// ];
+// 0xBE00FF,
 const COLORS = [
-  0x00EFFF,
-  0x00CAFF,
-  0x008EFF,
-  0x0051FF,
-  0x0004FF,
-  0x3D00FF,
-  0x7D00FF,
-  0xBE00FF,
+  0x460CFE,
+  0xBF0CFE,
+  0x0C4BFE,
+  0x0CC4FE,
 ];
+
+// const COLORS = [
+//   0x00FFF7,
+//   0x00AEFF,
+//   0x8100FF,
+//   0xC600FF,
+//   0x00FF92,
+//   0xFF8A00,
+//   // 0xFF008A,
+//   // 0x,
+//   // 0x,
+// ];
 
 export default class Environment {
 
@@ -89,7 +107,7 @@ export default class Environment {
     const spacing = 15;
     const startX = -width/2;
     const startY = -length/2;
-    const lineMaterial = new THREE.MeshLambertMaterial({ color: 0x170045 });
+    const lineMaterial = new THREE.MeshLambertMaterial({ color: 0x2E0088 });
 
     for (let i = 0; i < width/spacing; i++) {
       const geometry = new THREE.Geometry();

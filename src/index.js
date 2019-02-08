@@ -54,22 +54,34 @@ scene.add(cube2);
 
 var params = {
   exposure: 1,
-  bloomStrength: 1.5,
+  bloomStrength: 1.8,
   bloomThreshold: 0,
-  bloomRadius: 0.5
+  bloomRadius: 1
 };
+// var params2 = {
+//   exposure: 1,
+//   bloomStrength: 1,
+//   bloomThreshold: 0,
+//   bloomRadius: 0
+// };
 
 const renderScene = new THREE.RenderPass(scene, player.camera);
 const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+// const bloomPass2 = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
 bloomPass.renderToScreen = true;
 bloomPass.threshold = params.bloomThreshold;
 bloomPass.strength = params.bloomStrength;
 bloomPass.radius = params.bloomRadius;
+// bloomPass2.renderToScreen = true;
+// bloomPass2.threshold = params2.bloomThreshold;
+// bloomPass2.strength = params2.bloomStrength;
+// bloomPass2.radius = params2.bloomRadius;
 
 const composer = new THREE.EffectComposer(renderer);
 composer.setSize(window.innerWidth, window.innerHeight);
 composer.addPass(renderScene);
 composer.addPass(bloomPass);
+// composer.addPass(bloomPass2);
 
 
 
