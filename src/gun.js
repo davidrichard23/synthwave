@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import OutlinedGeometry from './outlined_geometry';
 
 export default class Gun {
 
@@ -8,8 +9,9 @@ export default class Gun {
     this.camera = camera;
 
     const gunGeometry = new THREE.BoxGeometry(0.5, 0.5, 3);
-    const gunMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    this.gunMesh = new THREE.Mesh(gunGeometry, gunMaterial);
+    this.gunMesh = new OutlinedGeometry(gunGeometry, 0xFF0000);
+    // const gunMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    // this.gunMesh = new THREE.Mesh(gunGeometry, gunMaterial);
     this.gunMesh.position.set(1, -1, -3);
     this.playerGroup.add(this.gunMesh);
 
@@ -26,7 +28,7 @@ export default class Gun {
     this.camera.getWorldDirection(cameraDir);
 
     const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
-    const intersects = raycaster.intersectObjects(this.scene.children);
+    const intersects = raycaster.intersectObjects(this.scene.children, true);
 
     intersects.forEach(obj => console.log(obj));
 
@@ -48,7 +50,7 @@ export default class Gun {
     centerVector.addVectors(cameraPos, cameraDir.multiplyScalar(1000));
     dir.subVectors(centerVector, gunMeshPos).normalize();
 
-    const endPoint = new THREE.Vector3;
+    const endPoint = new THREE.Vector3();
     endPoint.addVectors(gunMeshPos, dir.multiplyScalar(1000));
 
     const geometry = new THREE.Geometry();

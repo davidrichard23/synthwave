@@ -9,11 +9,12 @@ export default class Player {
     this.scene = scene;
 
     this.playerGroup = new THREE.Group();
-    this.playerGroup.position.set(0, 15, 25);
+    this.playerGroup.position.set(-200, 15, 300);
     scene.add(this.playerGroup);
     
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
     this.camera.lookAt(0, 0, 0);
+    
     this.reticle();
     
     this.gun = new Gun(scene, this.playerGroup, this.camera);
@@ -44,10 +45,10 @@ export default class Player {
   }
 
   update() {
-    if (this.keyPresses.down === 1) this.playerGroup.translateZ(1);
-    if (this.keyPresses.up === 1) this.playerGroup.translateZ(-1);
-    if (this.keyPresses.left === 1) this.playerGroup.translateX(-1);
-    if (this.keyPresses.right === 1) this.playerGroup.translateX(1);
+    if (this.keyPresses.down === 1) this.playerGroup.translateZ(5);
+    if (this.keyPresses.up === 1) this.playerGroup.translateZ(-5);
+    if (this.keyPresses.left === 1) this.playerGroup.translateX(-5);
+    if (this.keyPresses.right === 1) this.playerGroup.translateX(5);
 
     this.playerGroup.position.y = 15;
   }
