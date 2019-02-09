@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import OutlinedGeometry from "./outlinedGeometry";
+import BulletHit from './particles/bulletHit';
 
 var squareOutlineThick = new THREE.TextureLoader().load("src/textures/square-outline-thick.png");
 squareOutlineThick.wrapS = THREE.RepeatWrapping;
@@ -11,6 +12,7 @@ export default class Bullet {
     this.scene = scene;
     this.position = position;
     this.direction = direction;
+    this.color = color;
     this.target = target;
     this.speed = 20;
     this.group = new THREE.Group();
@@ -53,10 +55,15 @@ export default class Bullet {
 
     intersects = intersects.filter(obj => obj.object.tags && obj.object.tags.includes(this.target));
     if (intersects.length > 0) {
-      console.log('Hit!');
-      this.destroy();
+      this.hit(intersects[0].point);
+      console.log(intersects[0])
     }
-    // console.log(intersects[0])
+  }
+
+  hit(point) {
+    console.log('Hit!');
+    const bulletHit = new BulletHit(this.scene, point, this.color);
+    this.destroy();
   }
 
   destroy() {

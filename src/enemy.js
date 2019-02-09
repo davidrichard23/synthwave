@@ -6,7 +6,7 @@ export default class Enemy {
 
     this.scene = scene;
     this.enemyGroup = new THREE.Group();
-    this.enemyGroup.position.set(0, 15, 100);
+    this.enemyGroup.position.set(0, 15, 0);
     this.playerMesh = this.scene.getObjectByName("player");
     
     const body = this.createMesh();
@@ -22,7 +22,7 @@ export default class Enemy {
   }
 
   shootTimer() {
-    // setInterval(this.shoot, 200);
+    setInterval(this.shoot, 2000);
   }
 
   createMesh() {
