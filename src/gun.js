@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import OutlinedGeometry from './outlinedGeometry';
+import Bullet from './bullet';
 
 export default class Gun {
 
@@ -9,7 +10,7 @@ export default class Gun {
     this.camera = camera;
 
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 3);
-    this.gunMesh = new OutlinedGeometry({geometry, name: 'gun'});
+    this.gunMesh = new OutlinedGeometry({ geometry, name: 'gun', color: 0x00ff00});
     // const gunMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
     // this.gunMesh = new THREE.Mesh(gunGeometry, gunMaterial);
     this.gunMesh.position.set(1, -1, -3);
@@ -27,11 +28,11 @@ export default class Gun {
     this.camera.getWorldPosition(cameraPos);
     this.camera.getWorldDirection(cameraDir);
 
-    const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
-    let intersects = raycaster.intersectObjects(this.scene.children, true);
+    // const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
+    // let intersects = raycaster.intersectObjects(this.scene.children, true);
 
-    intersects = intersects.filter(obj => obj.object.name !== 'reticle');
-    console.log(intersects[0]);
+    // intersects = intersects.filter(obj => obj.object.name !== 'reticle');
+    // console.log(intersects[0]);
 
     this.drawBullet();
   }
@@ -51,16 +52,18 @@ export default class Gun {
     centerVector.addVectors(cameraPos, cameraDir.multiplyScalar(1000));
     dir.subVectors(centerVector, gunMeshPos).normalize();
 
-    const endPoint = new THREE.Vector3();
-    endPoint.addVectors(gunMeshPos, dir.multiplyScalar(1000));
+    new Bullet({scene: this.scene, position: gunMeshPos, direction: dir, color: 0x00ff00, target: 'enemy'});
 
-    const geometry = new THREE.Geometry();
-    geometry.vertices.push(gunMeshPos);
-    geometry.vertices.push(endPoint);
-    const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-    const line = new THREE.Line(geometry, material);
-    this.scene.add(line);
+    // const endPoint = new THREE.Vector3();
+    // endPoint.addVectors(gunMeshPos, dir.multiplyScalar(1000));
 
-    setTimeout(() => this.scene.remove(line), 100);
+    // const geometry = new THREE.Geometry();
+    // geometry.vertices.push(gunMeshPos);
+    // geometry.vertices.push(endPoint);
+    // const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    // const line = new THREE.Line(geometry, material);
+    // this.scene.add(line);
+
+    // setTimeout(() => this.scene.remove(line), 100);
   }
 }

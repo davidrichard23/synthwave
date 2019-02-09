@@ -7,9 +7,8 @@ export default class Enemy {
     this.scene = scene;
     this.enemyGroup = new THREE.Group();
     this.enemyGroup.position.set(0, 15, 100);
-    this.enemyGroup.name = 'enemy';
     this.playerMesh = this.scene.getObjectByName("player");
-
+    
     const body = this.createMesh();
 
     scene.add(this.enemyGroup);
@@ -23,7 +22,7 @@ export default class Enemy {
   }
 
   shootTimer() {
-    setInterval(this.shoot, 200);
+    // setInterval(this.shoot, 200);
   }
 
   createMesh() {
@@ -34,7 +33,7 @@ export default class Enemy {
   shoot() {
     const dir = new THREE.Vector3();
     dir.subVectors(this.playerMesh.position, this.enemyGroup.position).normalize();
-    new Bullet(this.scene, this.enemyGroup.position, dir, this.destroy);
+    new Bullet({ scene: this.scene, position: this.enemyGroup.position, direction: dir, color: 0xFE0C0C, target: 'player' });
   }
 
   update() {

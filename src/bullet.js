@@ -7,16 +7,17 @@ squareOutlineThick.wrapT = THREE.RepeatWrapping;
 squareOutlineThick.repeat.set(1, 1);
 
 export default class Bullet {
-  constructor(scene, position, direction) {
+  constructor({scene, position, direction, color, target}) {
     this.scene = scene;
     this.position = position;
     this.direction = direction;
+    this.target = target;
     this.speed = 20;
     this.group = new THREE.Group();
     this.width = 8;
 
     const geometry = new THREE.BoxGeometry(this.width, this.width, this.width);
-    this.bullet = new OutlinedGeometry({ geometry, texture: squareOutlineThick, lineColor: 0xFE0C0C, meshColor: 0xffffff, tags: ['enemy-bullet']});
+    this.bullet = new OutlinedGeometry({ geometry, texture: squareOutlineThick, lineColor: color, meshColor: 0xffffff, tags: ['enemy-bullet']});
     this.group.position.set(position.x, position.y, position.z);
     
     this.group.add(this.bullet);
@@ -50,7 +51,7 @@ export default class Bullet {
     let intersects = raycasterLeft.intersectObjects(this.scene.children, true);
     intersects = [...intersects, ...raycasterRight.intersectObjects(this.scene.children, true)];
 
-    intersects = intersects.filter(obj => obj.object.name === 'player');
+    intersects = intersects.filter(obj => obj.object.tags && obj.object.tags.includes(this.target));
     if (intersects.length > 0) {
       console.log('Hit!');
       this.destroy();

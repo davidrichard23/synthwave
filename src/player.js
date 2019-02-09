@@ -7,16 +7,18 @@ export default class Player {
 
     this.canvas = canvas;
     this.scene = scene;
+    this.speed = 2;
 
     this.playerGroup = new THREE.Group();
     this.playerGroup.position.set(0, 15, 300);
     this.playerGroup.name = 'player';
+    this.playerGroup.tags = ['player'];
 
     const geometry = new THREE.BoxGeometry(10, 30, 10);
     const meshMaterial = new THREE.MeshBasicMaterial();
     const mesh = new THREE.Mesh(geometry, meshMaterial);
     mesh.position.set(0, 0, 0);
-    mesh.name = 'player';
+    mesh.tags = ['player'];
 
     scene.add(this.playerGroup);
     
@@ -58,10 +60,10 @@ export default class Player {
   }
 
   update() {
-    if (this.keyPresses.down === 1) this.playerGroup.translateZ(5);
-    if (this.keyPresses.up === 1) this.playerGroup.translateZ(-5);
-    if (this.keyPresses.left === 1) this.playerGroup.translateX(-5);
-    if (this.keyPresses.right === 1) this.playerGroup.translateX(5);
+    if (this.keyPresses.down === 1) this.playerGroup.translateZ(this.speed);
+    if (this.keyPresses.up === 1) this.playerGroup.translateZ(-this.speed);
+    if (this.keyPresses.left === 1) this.playerGroup.translateX(-this.speed);
+    if (this.keyPresses.right === 1) this.playerGroup.translateX(this.speed);
 
     if (this.playerGroup.position.x < -180) this.playerGroup.position.x = -180;
     if (this.playerGroup.position.x > 180) this.playerGroup.position.x = 180;

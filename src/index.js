@@ -59,17 +59,6 @@ const environment = new Environment(scene);
 // scene.add(building);
 
 
-const geometry = new THREE.BoxGeometry(10, 10, 10);
-const cube1 = new OutlinedGeometry({geometry, lineColor: 0x00ff00});
-cube1.position.y = 5;
-scene.add(cube1);
-
-const cube2 = new OutlinedGeometry({geometry, lineColor: 0x00ff00});
-cube2.position.x = 15;
-cube2.position.y = 5;
-scene.add(cube2);
-
-
 var params = {
   exposure: 1,
   bloomStrength: 1.3,
@@ -112,9 +101,6 @@ function animate() {
   requestAnimationFrame(animate);
 
   stats.begin();
-
-  cube1.rotation.x += 0.01;
-  cube1.rotation.y += 0.01;
 
   player.update();
 
