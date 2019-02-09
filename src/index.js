@@ -7,10 +7,19 @@ require("three/examples/js/postprocessing/ShaderPass");
 require("three/examples/js/shaders/LuminosityHighPassShader");
 require("three/examples/js/shaders/CopyShader");
 
+import Stats from './stats/stats.min.js';
+
 import Player from './player';
 import OutlinedGeometry from './outlinedGeometry';
 import Environment from './environment';
 import Enemy from './enemy';
+
+var stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+// stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
+// stats.showPanel(2); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom);
+
 
 const scene = new THREE.Scene();
 
@@ -43,6 +52,13 @@ const environment = new Environment(scene);
 // scene.add(plane);
 
 
+
+
+// const bGeometry = new THREE.BoxGeometry(200, 1000, 200);
+// const building = new OutlinedGeometry({ geometry: bGeometry, color: 0x00ff00 });
+// scene.add(building);
+
+
 const geometry = new THREE.BoxGeometry(10, 10, 10);
 const cube1 = new OutlinedGeometry({geometry, lineColor: 0x00ff00});
 cube1.position.y = 5;
@@ -56,7 +72,7 @@ scene.add(cube2);
 
 var params = {
   exposure: 1,
-  bloomStrength: 1.8,
+  bloomStrength: 1.3,
   bloomThreshold: 0,
   bloomRadius: 1
 };
@@ -95,11 +111,15 @@ const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
 
+  stats.begin();
+
   cube1.rotation.x += 0.01;
   cube1.rotation.y += 0.01;
 
   player.update();
 
   composer.render(clock.getDelta());
+
+  stats.end();
 }
 animate();

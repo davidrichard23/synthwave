@@ -5,7 +5,6 @@ export default class Enemy {
   constructor(scene) {
 
     this.scene = scene;
-    this.bullets = {};
     this.enemyGroup = new THREE.Group();
     this.enemyGroup.position.set(0, 15, 100);
     this.enemyGroup.name = 'enemy';
@@ -24,7 +23,7 @@ export default class Enemy {
   }
 
   shootTimer() {
-    // setInterval(this.shoot, 200);
+    setInterval(this.shoot, 200);
   }
 
   createMesh() {
@@ -36,18 +35,11 @@ export default class Enemy {
     const dir = new THREE.Vector3();
     dir.subVectors(this.playerMesh.position, this.enemyGroup.position).normalize();
     new Bullet(this.scene, this.enemyGroup.position, dir, this.destroy);
-    // this.bullets[bullet.uuid] = bullet;
-  }
-
-  destroy(uuid) {
-    delete this.bullets[uuid];
   }
 
   update() {
     
-    requestAnimationFrame(this.update);
-    // if (this.bullets.length > 0) {
-    //   // Object.values(this.bullets.forEach(bullet => bullet.update()));
-    // }
+    // requestAnimationFrame(this.update);
+
   }
 }
