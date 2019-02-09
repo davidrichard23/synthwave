@@ -61,15 +61,31 @@ export default class Environment {
     // building2.position.z = 250;
     // this.scene.add(building2);
 
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 15; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 1400) + 400;
       const building = new Building(COLORS[colorIndex], height);
       building.position.x = -300;
       building.position.y = height/2;
-      building.position.z = -2500 + 225 * i;
+      building.position.z = -1500 + 225 * i;
       this.scene.add(building);
     }
+
+    const colorIndex1 = Math.floor(Math.random() * COLORS.length);
+    const height1 = Math.floor(Math.random() * 1400) + 1000;
+    const building1 = new Building(COLORS[colorIndex1], height1);
+    building1.position.x = -112;
+    building1.position.y = height1 / 2;
+    building1.position.z = -1500 - 225;
+    this.scene.add(building1);
+
+    const colorIndex2 = Math.floor(Math.random() * COLORS.length);
+    const height2 = Math.floor(Math.random() * 1400) + 1000;
+    const building2 = new Building(COLORS[colorIndex2], height2);
+    building2.position.x = 112;
+    building2.position.y = height2 / 2;
+    building2.position.z = -1500 - 225;
+    this.scene.add(building2);
     // for (let i = 0; i < 22; i++) {
     //   const colorIndex = Math.floor(Math.random() * COLORS.length);
     //   const height = Math.floor(Math.random() * 1700) + 100;
@@ -80,15 +96,31 @@ export default class Environment {
     //   this.scene.add(building);
     // }
 
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 15; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 1400) + 400;
       const building = new Building(COLORS[colorIndex], height);
       building.position.x = 300;
       building.position.y = height/2;
-      building.position.z = -2500 + 225 * i;
+      building.position.z = -1500 + 225 * i;
       this.scene.add(building);
     }
+
+    const colorIndex3 = Math.floor(Math.random() * COLORS.length);
+    const height3 = Math.floor(Math.random() * 1400) + 1000;
+    const building3 = new Building(COLORS[colorIndex3], height3);
+    building3.position.x = -112;
+    building3.position.y = height3 / 2;
+    building3.position.z = 1400 + 225;
+    this.scene.add(building3);
+
+    const colorIndex4 = Math.floor(Math.random() * COLORS.length);
+    const height4 = Math.floor(Math.random() * 1400) + 1000;
+    const building4 = new Building(COLORS[colorIndex4], height4);
+    building4.position.x = 112;
+    building4.position.y = height4 / 2;
+    building4.position.z = 1400 + 225;
+    this.scene.add(building4);
 
     // for (let i = 0; i < 22; i++) {
     //   const colorIndex = Math.floor(Math.random() * COLORS.length);
@@ -102,8 +134,8 @@ export default class Environment {
   }
 
   Ground() {
-    const width = 5000;
-    const length = 5000;
+    const width = 100;
+    const length = 3500;
     const spacing = 15;
     const startX = -width/2;
     const startY = -length/2;

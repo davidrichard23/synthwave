@@ -8,8 +8,9 @@ require("three/examples/js/shaders/LuminosityHighPassShader");
 require("three/examples/js/shaders/CopyShader");
 
 import Player from './player';
-import OutlinedGeometry from './outlined_geometry';
+import OutlinedGeometry from './outlinedGeometry';
 import Environment from './environment';
+import Enemy from './enemy';
 
 const scene = new THREE.Scene();
 
@@ -26,6 +27,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const player = new Player(scene, canvas);
+const enemy = new Enemy(scene, canvas);
 const environment = new Environment(scene);
 
 
@@ -42,11 +44,11 @@ const environment = new Environment(scene);
 
 
 const geometry = new THREE.BoxGeometry(10, 10, 10);
-const cube1 = new OutlinedGeometry(geometry, 0x00ff00);
+const cube1 = new OutlinedGeometry({geometry, lineColor: 0x00ff00});
 cube1.position.y = 5;
 scene.add(cube1);
 
-const cube2 = new OutlinedGeometry(geometry, 0x00ff00);
+const cube2 = new OutlinedGeometry({geometry, lineColor: 0x00ff00});
 cube2.position.x = 15;
 cube2.position.y = 5;
 scene.add(cube2);

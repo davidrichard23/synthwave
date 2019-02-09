@@ -9,15 +9,23 @@ export default class Player {
     this.scene = scene;
 
     this.playerGroup = new THREE.Group();
-    this.playerGroup.position.set(-200, 15, 300);
+    this.playerGroup.position.set(0, 15, 300);
+    this.playerGroup.name = 'player';
+
+    const geometry = new THREE.BoxGeometry(10, 30, 10);
+    const meshMaterial = new THREE.MeshBasicMaterial();
+    const mesh = new THREE.Mesh(geometry, meshMaterial);
+    mesh.position.set(0, 0, 0);
+    mesh.name = 'player';
+
     scene.add(this.playerGroup);
     
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
     this.camera.lookAt(0, 0, 0);
 
-    var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
-    light.position.set(0, 0, 0);
-    this.playerGroup.add(light);
+    // var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
+    // light.position.set(0, 0, 0);
+    // this.playerGroup.add(light);
     
     this.reticle();
     
@@ -25,8 +33,9 @@ export default class Player {
     
     
     this.playerGroup.add(this.camera);
+    this.playerGroup.add(mesh);
     
-    // scene.add(this.gun.mesh);
+    // scene.add(mesh);
 
     this.rotation = { x: 0, y: 0 };
     this.keyPresses = {
@@ -54,6 +63,9 @@ export default class Player {
     if (this.keyPresses.left === 1) this.playerGroup.translateX(-5);
     if (this.keyPresses.right === 1) this.playerGroup.translateX(5);
 
+    if (this.playerGroup.position.x < -180) this.playerGroup.position.x = -180;
+    if (this.playerGroup.position.x > 180) this.playerGroup.position.x = 180;
+
     this.playerGroup.position.y = 15;
   }
 
@@ -70,6 +82,7 @@ export default class Player {
     const material = new THREE.LineBasicMaterial({ color: 0xffffff });
     const reticle = new THREE.Line(geometry, material);
     reticle.position.z = -1;
+    reticle.name = 'reticle';
 
     this.playerGroup.add(reticle);
   }

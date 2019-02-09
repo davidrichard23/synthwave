@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import OutlinedGeometry from './outlined_geometry';
+import OutlinedGeometry from './outlinedGeometry';
 
 export default class Gun {
 
@@ -8,8 +8,8 @@ export default class Gun {
     this.playerGroup = playerGroup;
     this.camera = camera;
 
-    const gunGeometry = new THREE.BoxGeometry(0.5, 0.5, 3);
-    this.gunMesh = new OutlinedGeometry(gunGeometry, 0xFF0000);
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 3);
+    this.gunMesh = new OutlinedGeometry({geometry, name: 'gun'});
     // const gunMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
     // this.gunMesh = new THREE.Mesh(gunGeometry, gunMaterial);
     this.gunMesh.position.set(1, -1, -3);
@@ -28,9 +28,10 @@ export default class Gun {
     this.camera.getWorldDirection(cameraDir);
 
     const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
-    const intersects = raycaster.intersectObjects(this.scene.children, true);
+    let intersects = raycaster.intersectObjects(this.scene.children, true);
 
-    intersects.forEach(obj => console.log(obj));
+    intersects = intersects.filter(obj => obj.object.name !== 'reticle');
+    console.log(intersects[0]);
 
     this.drawBullet();
   }

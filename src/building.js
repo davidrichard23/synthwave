@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import OutlinedGeometry from './outlined_geometry';
+import OutlinedGeometry from './outlinedGeometry';
 
 export default class Building {
-  constructor(color = 0x00FFAE, height = 700, width = 200) {
+  constructor(lineColor = 0x00FFAE, height = 700, width = 200) {
 
     this.windowWidth = 50;
     this.windowPadding = 15;
@@ -12,9 +12,9 @@ export default class Building {
     this.windowCountY = Math.floor(height / (this.windowWidth + this.windowPadding));
 
     this.group = new THREE.Group();
-    this.lineMaterial = new THREE.LineBasicMaterial({ color });
-    const buildingGeometry = new THREE.BoxGeometry(width, height, width);
-    const building = new OutlinedGeometry(buildingGeometry, color);
+    this.lineMaterial = new THREE.LineBasicMaterial({ color: lineColor });
+    const geometry = new THREE.BoxGeometry(width, height, width);
+    const building = new OutlinedGeometry({geometry, lineColor});
     this.group.add(building);
     this.windows();
     
