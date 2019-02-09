@@ -7,10 +7,11 @@ squareOutline.repeat.set(1, 1);
 
 export default class BulletHit {
 
-  constructor(scene, point, color) {
+  constructor(scene, point, color, size='large') {
     this.scene = scene;
-    this.particleCount = 80;
-    this.speed = 2;
+    this.particleCount = size === 'large' ? 180 : 80;
+    this.speed = size === 'large' ? 2 : 1;
+    console.log(size)
     this.destroyed = false;
 
     const geometry = new THREE.BufferGeometry();
@@ -26,7 +27,7 @@ export default class BulletHit {
     geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     geometry.addAttribute('direction', new THREE.Float32BufferAttribute(directions, 3));
 
-    const material = new THREE.PointsMaterial({ size: 5, sizeAttenuation: true, color: color });
+    const material = new THREE.PointsMaterial({ size: size === 'large' ? 4 : 3, sizeAttenuation: false, color: color });
     this.particles = new THREE.Points(geometry, material);
     scene.add(this.particles);
 
@@ -34,7 +35,7 @@ export default class BulletHit {
     this.destroy = this.destroy.bind(this);
     
     this.update();
-    setTimeout(this.destroy, 400);
+    setTimeout(this.destroy, size === 'large' ? 400 : 200);
   }
 
   update() {

@@ -35,7 +35,7 @@ scene.add(directionalLight);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-const player = new Player(scene, canvas);
+window.player = new Player(scene, canvas);
 const enemy = new Enemy(scene, canvas);
 const environment = new Environment(scene);
 

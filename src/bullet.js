@@ -53,17 +53,23 @@ export default class Bullet {
     let intersects = raycasterLeft.intersectObjects(this.scene.children, true);
     intersects = [...intersects, ...raycasterRight.intersectObjects(this.scene.children, true)];
 
-    intersects = intersects.filter(obj => obj.object.tags && obj.object.tags.includes(this.target));
+    // intersects = intersects.filter(obj => obj.object.tags && obj.object.tags.includes(this.target));
+    intersects = intersects.filter(intersection => intersection.object.name !== 'reticle');
     if (intersects.length > 0) {
-      this.hit(intersects[0].point);
-      console.log(intersects[0])
+      this.onHit(intersects[0]);
     }
   }
 
-  hit(point) {
+  onHit(intersection) {
     console.log('Hit!');
-    const bulletHit = new BulletHit(this.scene, point, this.color);
     this.destroy();
+
+    if (this.target === 'player' && intersection.object.tags && intersection.object.tags.includes(this.target)) {
+      window.player.takeDamage();
+      return;
+    }
+    const size = intersection.object.tags && intersection.object.tags.includes(this.target) ? 'large' : 'small';
+    const bulletHit = new BulletHit(this.scene, intersection.point, this.color, size);
   }
 
   destroy() {

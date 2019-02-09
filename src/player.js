@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Gun from './gun';
+import BulletHit from './particles/bulletHit';
 
 export default class Player {
 
@@ -69,6 +70,10 @@ export default class Player {
     if (this.playerGroup.position.x > 180) this.playerGroup.position.x = 180;
 
     this.playerGroup.position.y = 15;
+  }
+
+  takeDamage() {
+    const bulletHit = new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -20), 0xFE0C0C);
   }
 
   reticle() {
