@@ -49551,6 +49551,85 @@ function () {
 
 /***/ }),
 
+/***/ "./src/game.js":
+/*!*********************!*\
+  !*** ./src/game.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony import */ var _environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environment */ "./src/environment.js");
+/* harmony import */ var _enemy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+var Game =
+/*#__PURE__*/
+function () {
+  function Game() {
+    _classCallCheck(this, Game);
+
+    this.clock = new THREE.Clock();
+    var scene = new THREE.Scene();
+    var renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+    var canvas = renderer.domElement;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(canvas);
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.lookAt(0, -1, 1);
+    scene.add(directionalLight);
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.lookAt(0, 0, 0);
+    scene.add(camera);
+    var renderScene = new THREE.RenderPass(scene, camera);
+    var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    bloomPass.renderToScreen = true;
+    bloomPass.threshold = 0;
+    bloomPass.strength = 1.3;
+    bloomPass.radius = 1;
+    this.composer = new THREE.EffectComposer(renderer);
+    this.composer.setSize(window.innerWidth, window.innerHeight);
+    this.composer.addPass(renderScene);
+    this.composer.addPass(bloomPass);
+    window.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](scene, canvas, camera);
+    var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_2__["default"](scene, canvas);
+    var environment = new _environment__WEBPACK_IMPORTED_MODULE_1__["default"](scene);
+    this.update = this.update.bind(this);
+    this.update();
+  }
+
+  _createClass(Game, [{
+    key: "update",
+    value: function update() {
+      requestAnimationFrame(this.update);
+      stats.begin();
+      this.composer.render(this.clock.getDelta());
+      stats.end();
+    }
+  }]);
+
+  return Game;
+}();
+
+
+
+/***/ }),
+
 /***/ "./src/gun.js":
 /*!********************!*\
   !*** ./src/gun.js ***!
@@ -49660,10 +49739,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _stats_stats_min_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stats/stats.min.js */ "./src/stats/stats.min.js");
 /* harmony import */ var _stats_stats_min_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_stats_stats_min_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./player */ "./src/player.js");
-/* harmony import */ var _outlinedGeometry__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./outlinedGeometry */ "./src/outlinedGeometry.js");
-/* harmony import */ var _environment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./environment */ "./src/environment.js");
-/* harmony import */ var _enemy__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
+/* harmony import */ var _game_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./game.js */ "./src/game.js");
 
 window.THREE = three__WEBPACK_IMPORTED_MODULE_0__;
 
@@ -49681,78 +49757,15 @@ __webpack_require__(/*! three/examples/js/shaders/CopyShader */ "./node_modules/
 
 
 
-
-
-
-var stats = new _stats_stats_min_js__WEBPACK_IMPORTED_MODULE_1___default.a();
-stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-// stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
-// stats.showPanel(2); // 0: fps, 1: ms, 2: mb, 3+: custom
-
+window.stats = new _stats_stats_min_js__WEBPACK_IMPORTED_MODULE_1___default.a();
+stats.showPanel(0);
 document.body.appendChild(stats.dom);
-var scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
-var renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]({
-  antialias: true
-});
-var canvas = renderer.domElement;
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(canvas);
-var directionalLight = new three__WEBPACK_IMPORTED_MODULE_0__["DirectionalLight"](0xffffff, 0.5);
-directionalLight.lookAt(0, -1, 1);
-scene.add(directionalLight);
-var ambientLight = new three__WEBPACK_IMPORTED_MODULE_0__["AmbientLight"](0xffffff, 0.5);
-scene.add(ambientLight);
-window.player = new _player__WEBPACK_IMPORTED_MODULE_2__["default"](scene, canvas);
-var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_5__["default"](scene, canvas);
-var environment = new _environment__WEBPACK_IMPORTED_MODULE_4__["default"](scene); // const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
+new _game_js__WEBPACK_IMPORTED_MODULE_2__["default"](); // const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
 // const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x080A0A, side: THREE.DoubleSide });
 // const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 // plane.rotation.x = THREE.Math.degToRad(90);
 // plane.position.y = 0;
 // scene.add(plane);
-// const bGeometry = new THREE.BoxGeometry(200, 1000, 200);
-// const building = new OutlinedGeometry({ geometry: bGeometry, color: 0x00ff00 });
-// scene.add(building);
-
-var params = {
-  exposure: 1,
-  bloomStrength: 1.3,
-  bloomThreshold: 0,
-  bloomRadius: 1
-}; // var params2 = {
-//   exposure: 1,
-//   bloomStrength: 1,
-//   bloomThreshold: 0,
-//   bloomRadius: 0
-// };
-
-var renderScene = new three__WEBPACK_IMPORTED_MODULE_0__["RenderPass"](scene, player.camera);
-var bloomPass = new three__WEBPACK_IMPORTED_MODULE_0__["UnrealBloomPass"](new three__WEBPACK_IMPORTED_MODULE_0__["Vector2"](window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85); // const bloomPass2 = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-
-bloomPass.renderToScreen = true;
-bloomPass.threshold = params.bloomThreshold;
-bloomPass.strength = params.bloomStrength;
-bloomPass.radius = params.bloomRadius; // bloomPass2.renderToScreen = true;
-// bloomPass2.threshold = params2.bloomThreshold;
-// bloomPass2.strength = params2.bloomStrength;
-// bloomPass2.radius = params2.bloomRadius;
-
-var composer = new three__WEBPACK_IMPORTED_MODULE_0__["EffectComposer"](renderer);
-composer.setSize(window.innerWidth, window.innerHeight);
-composer.addPass(renderScene);
-composer.addPass(bloomPass); // composer.addPass(bloomPass2);
-
-var clock = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
-
-function animate() {
-  requestAnimationFrame(animate);
-  stats.begin();
-  player.update();
-  composer.render(clock.getDelta());
-  stats.end();
-}
-
-animate();
 
 /***/ }),
 
@@ -49949,11 +49962,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Player =
 /*#__PURE__*/
 function () {
-  function Player(scene, canvas) {
+  function Player(scene, canvas, camera) {
     _classCallCheck(this, Player);
 
     this.canvas = canvas;
     this.scene = scene;
+    this.camera = camera;
     this.speed = 2;
     this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
     this.playerGroup.position.set(0, 15, 300);
@@ -49964,15 +49978,16 @@ function () {
     var mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, meshMaterial);
     mesh.position.set(0, 0, 0);
     mesh.tags = ['player'];
-    scene.add(this.playerGroup);
-    this.camera = new three__WEBPACK_IMPORTED_MODULE_0__["PerspectiveCamera"](45, window.innerWidth / window.innerHeight, 0.1, 10000);
-    this.camera.lookAt(0, 0, 0); // var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
+    scene.add(this.playerGroup); // this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    // this.camera.lookAt(0, 0, 0);
+    // var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
     // light.position.set(0, 0, 0);
     // this.playerGroup.add(light);
 
     this.reticle();
-    this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"](scene, this.playerGroup, this.camera);
-    this.playerGroup.add(this.camera);
+    this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"](scene, this.playerGroup, this.camera); // this.scene.remove(camera);
+
+    this.playerGroup.add(camera);
     this.playerGroup.add(mesh); // scene.add(mesh);
 
     this.rotation = {
@@ -49993,11 +50008,14 @@ function () {
     window.addEventListener("mousemove", this.handleMouseMove);
     canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
     canvas.requestPointerLock();
+    this.update = this.update.bind(this);
+    this.update();
   }
 
   _createClass(Player, [{
     key: "update",
     value: function update() {
+      requestAnimationFrame(this.update);
       if (this.keyPresses.down === 1) this.playerGroup.translateZ(this.speed);
       if (this.keyPresses.up === 1) this.playerGroup.translateZ(-this.speed);
       if (this.keyPresses.left === 1) this.playerGroup.translateX(-this.speed);
@@ -50033,8 +50051,8 @@ function () {
   }, {
     key: "handleMouseMove",
     value: function handleMouseMove(event) {
-      this.rotation.x -= event.movementY * Math.PI / 180 * 0.2;
-      this.rotation.y -= event.movementX * Math.PI / 180 * 0.2;
+      this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
+      this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
       var euler = new three__WEBPACK_IMPORTED_MODULE_0__["Euler"](0, 0, 0, 'YXZ');
       euler.x = this.rotation.x;
       euler.y = this.rotation.y;

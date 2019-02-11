@@ -4,10 +4,11 @@ import BulletHit from './particles/bulletHit';
 
 export default class Player {
 
-  constructor(scene, canvas) {
+  constructor(scene, canvas, camera) {
 
     this.canvas = canvas;
     this.scene = scene;
+    this.camera = camera;
     this.speed = 2;
 
     this.playerGroup = new THREE.Group();
@@ -23,8 +24,8 @@ export default class Player {
 
     scene.add(this.playerGroup);
     
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-    this.camera.lookAt(0, 0, 0);
+    // this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    // this.camera.lookAt(0, 0, 0);
 
     // var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
     // light.position.set(0, 0, 0);
@@ -35,7 +36,8 @@ export default class Player {
     this.gun = new Gun(scene, this.playerGroup, this.camera);
     
     
-    this.playerGroup.add(this.camera);
+    // this.scene.remove(camera);
+    this.playerGroup.add(camera);
     this.playerGroup.add(mesh);
     
     // scene.add(mesh);
@@ -58,9 +60,14 @@ export default class Player {
 
     canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
     canvas.requestPointerLock();
+
+    this.update = this.update.bind(this);
+    this.update();
   }
 
   update() {
+    requestAnimationFrame(this.update);
+
     if (this.keyPresses.down === 1) this.playerGroup.translateZ(this.speed);
     if (this.keyPresses.up === 1) this.playerGroup.translateZ(-this.speed);
     if (this.keyPresses.left === 1) this.playerGroup.translateX(-this.speed);
@@ -95,8 +102,8 @@ export default class Player {
   }
   
   handleMouseMove(event) {
-    this.rotation.x -= event.movementY * Math.PI / 180 * 0.2;
-    this.rotation.y -= event.movementX * Math.PI / 180 * 0.2;
+    this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
+    this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
     
     const euler = new THREE.Euler(0, 0, 0, 'YXZ');
     euler.x = this.rotation.x;
