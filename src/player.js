@@ -73,7 +73,7 @@ export default class Player {
   }
 
   takeDamage() {
-    const bulletHit = new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -20), 0xFE0C0C);
+    const bulletHit = new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 2);
   }
 
   reticle() {

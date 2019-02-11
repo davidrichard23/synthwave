@@ -198,6 +198,7 @@ export default class Environment {
       geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, length/2));
 
       const line = new THREE.Line(geometry, lineMaterial);
+      line.tags = ['environment'];
       this.scene.add(line);
     }
 
@@ -207,6 +208,7 @@ export default class Environment {
       geometry.vertices.push(new THREE.Vector3(length/2, 0, startY + spacing * i));
 
       const line = new THREE.Line(geometry, lineMaterial);
+      line.tags = ['environment'];
       this.scene.add(line);
     }
   }
