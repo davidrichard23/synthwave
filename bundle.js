@@ -49206,7 +49206,7 @@ function () {
       this.destroy();
 
       if (intersection.object.tags.includes('player')) {
-        window.player.takeDamage(100);
+        window.player.takeDamage(10);
       } else if (intersection.object.tags.includes('enemy')) {
         var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
       } else {
@@ -49252,19 +49252,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Enemy =
 /*#__PURE__*/
 function () {
-  function Enemy(scene) {
+  function Enemy(game) {
     _classCallCheck(this, Enemy);
 
-    this.scene = scene;
+    this.game = game;
+    this.enabled = false; // this.enemyGroup.position.set(0, 15, -300);
+
+    this.playerMesh = this.game.scene.getObjectByName("player");
+    this.health = 100;
     this.enemyGroup = new THREE.Group();
-    this.enemyGroup.position.set(0, 15, -300);
-    this.playerMesh = this.scene.getObjectByName("player");
     var body = this.createMesh();
-    scene.add(this.enemyGroup);
     this.enemyGroup.add(body);
     this.shoot = this.shoot.bind(this);
     this.update = this.update.bind(this);
-    this.update();
     this.shootTimer();
   }
 
@@ -49286,15 +49286,44 @@ function () {
   }, {
     key: "shoot",
     value: function shoot() {
+      if (!this.enabled) return;
       var dir = new THREE.Vector3();
       dir.subVectors(this.playerMesh.position, this.enemyGroup.position).normalize();
       new _bullet__WEBPACK_IMPORTED_MODULE_1__["default"]({
-        scene: this.scene,
+        scene: this.game.scene,
         position: this.enemyGroup.position,
         direction: dir,
         color: 0xFE0C0C,
         target: 'player'
       });
+    }
+  }, {
+    key: "takeDamage",
+    value: function takeDamage(amount) {
+      this.health -= amount; // this.healthBar.style.width = this.health + '%';
+
+      if (this.health <= 0) {
+        this.game.scene.remove(this.enemyGroup);
+      }
+    }
+  }, {
+    key: "enable",
+    value: function enable() {
+      this.game.scene.add(this.enemyGroup);
+      this.health = 100;
+      this.enabled = true;
+      this.update();
+    }
+  }, {
+    key: "disable",
+    value: function disable() {
+      this.game.scene.remove(this.enemyGroup);
+      this.enabled = false;
+    }
+  }, {
+    key: "setPosition",
+    value: function setPosition(pos) {
+      this.enemyGroup.position.set(pos.x, pos.y, pos.z);
     }
   }, {
     key: "update",
@@ -49303,6 +49332,55 @@ function () {
   }]);
 
   return Enemy;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/enemyMangaer.js":
+/*!*****************************!*\
+  !*** ./src/enemyMangaer.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EnemyManager; });
+/* harmony import */ var _enemy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var EnemyManager =
+/*#__PURE__*/
+function () {
+  function EnemyManager(game) {
+    _classCallCheck(this, EnemyManager);
+
+    this.game = game;
+    this.enemyPool = [];
+    this.spawnedEnemies = [];
+  }
+
+  _createClass(EnemyManager, [{
+    key: "spawn",
+    value: function spawn(pos) {
+      if (this.enemyPool.length === 0) {
+        var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.game);
+        enemy.enable();
+        enemy.setPosition(pos);
+        this.spawnedEnemies.push(enemy);
+      }
+    }
+  }]);
+
+  return EnemyManager;
 }();
 
 
@@ -49565,11 +49643,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environment */ "./src/environment.js");
 /* harmony import */ var _enemy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
 /* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ui */ "./src/ui.js");
+/* harmony import */ var _enemyMangaer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./enemyMangaer */ "./src/enemyMangaer.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -49584,6 +49664,7 @@ function () {
 
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
+    this.enemyManager = new _enemyMangaer__WEBPACK_IMPORTED_MODULE_4__["default"](this);
     this.titleScreenTransitionSpeed = 1;
     this.isTransitioningToTitleScreen = false;
     this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);
@@ -49663,7 +49744,8 @@ function () {
       this.isTransitioningToTitleScreen = false;
       player.playerGroup.position.y = 15;
       player.enable();
-      var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene);
+      this.enemyManager.spawn(new THREE.Vector3(0, 15, -100)); // const enemy = new Enemy(this.scene);
+
       this.ui.showHud();
     }
   }, {

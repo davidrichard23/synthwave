@@ -2,6 +2,7 @@ import Player from './player';
 import Environment from './environment';
 import Enemy from './enemy';
 import UI from './ui';
+import EnemyManager from './enemyMangaer';
 
 
 export default class Game {
@@ -9,6 +10,7 @@ export default class Game {
   constructor() {
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
+    this.enemyManager = new EnemyManager(this);
 
     this.titleScreenTransitionSpeed = 1;
     this.isTransitioningToTitleScreen = false;
@@ -99,7 +101,8 @@ export default class Game {
     this.isTransitioningToTitleScreen = false;
     player.playerGroup.position.y = 15;
     player.enable();
-    const enemy = new Enemy(this.scene);
+    this.enemyManager.spawn(new THREE.Vector3(0,15,-100));
+    // const enemy = new Enemy(this.scene);
     
     this.ui.showHud();
   }
