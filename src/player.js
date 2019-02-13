@@ -8,8 +8,8 @@ export default class Player {
   constructor(game) {
 
     this.game = game;
-    this.disabled = true;
-    this.health = 100;
+    this.enabled = false;
+    this.health = 0;
     this.healthBar = document.getElementById('current-health');
 
     this.playerGroup = new THREE.Group();
@@ -33,7 +33,7 @@ export default class Player {
 
 
   enable() {
-    this.disabled = false;
+    this.enabled = true;
     this.playerController.update();
     this.gun.show();
     this.playerGroup.add(this.reticle);
@@ -42,7 +42,7 @@ export default class Player {
   }
   
   disable() {
-    this.disabled = true;
+    this.enabled = false;
     this.gun.hide();
     this.playerGroup.remove(this.reticle);
   }

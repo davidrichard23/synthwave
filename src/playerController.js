@@ -25,7 +25,7 @@ export default class PlayerController {
   }
 
   update() {
-    if (this.player.disabled) return;
+    if (!this.player.enabled) return;
 
     requestAnimationFrame(this.update);
 
@@ -42,7 +42,7 @@ export default class PlayerController {
 
   
   handleMouseMove(event) {
-    if (this.player.disabled) return;
+    if (!this.player.enabled) return;
 
     this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
     this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;

@@ -27,7 +27,7 @@ export default class Gun {
   }
 
   shoot(e) {
-    if (this.player.disabled) return;
+    if (!this.player.enabled) return;
 
     const cameraPos = new THREE.Vector3();
     const cameraDir = new THREE.Vector3();

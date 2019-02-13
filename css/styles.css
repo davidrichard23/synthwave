@@ -47,20 +47,26 @@ canvas {
                 3px 3px 0px #6500FF,
                 4px 4px 0px #6500FF,
                 5px 5px 0px #6500FF,
-                6px 6px 0px #6500FF;
+                5px 5px 0px #6500FF,
+                6px 6px 0px #6500FF,
+                7px 7px 0px #6500FF,
+                8px 8px 0px #6500FF,
+                9px 9px 0px #6500FF,
+                10px 10px 0px #6500FF;
 }
-@keyframes flicker {
+
+@keyframes glow-blue {
   0% {
-    text-shadow:  0 0 0px rgba(255,255,255,1);
+    text-shadow:  0 0 0px rgba(0,247,255,1);
     transform: scale(1);
   }
   50% {
-    text-shadow:  0 0 20px rgba(255,255,255,1),
-                  0 0 10px rgba(255,255,255,1);
+    text-shadow:  0 0 20px rgba(0,247,255,1),
+                  0 0 10px rgba(0,247,255,1);
                   transform: scaleX(1.05);
   }
   100% {
-    text-shadow:  0 0 0px rgba(255,255,255,1);
+    text-shadow:  0 0 0px rgba(0,247,255,1);
     transform: scale(1);
   }
 }
@@ -71,7 +77,7 @@ canvas {
   color: white;
   font-size: 100px;
   font-family: 'Neon Absolute Sans', Arial, sans-serif;
-  animation: flicker 2000ms ease-in-out infinite;
+  animation: glow-blue 2000ms ease-in-out infinite;
   /* text-shadow:  0 0 10px rgba(255,255,255,1),
                 0 0 20px rgba(255,255,255,1); */
   transition: color 300ms ease-in-out;

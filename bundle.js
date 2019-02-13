@@ -49206,7 +49206,7 @@ function () {
       this.destroy();
 
       if (intersection.object.tags.includes('player')) {
-        window.player.takeDamage(10);
+        window.player.takeDamage(100);
       } else if (intersection.object.tags.includes('enemy')) {
         var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
       } else {
@@ -49371,12 +49371,28 @@ function () {
   _createClass(EnemyManager, [{
     key: "spawn",
     value: function spawn(pos) {
+      var enemy;
+
       if (this.enemyPool.length === 0) {
-        var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.game);
-        enemy.enable();
-        enemy.setPosition(pos);
-        this.spawnedEnemies.push(enemy);
+        enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.game);
+      } else {
+        enemy = this.enemyPool.pop();
       }
+
+      enemy.enable();
+      enemy.setPosition(pos);
+      this.spawnedEnemies.push(enemy);
+    }
+  }, {
+    key: "despawnAll",
+    value: function despawnAll() {
+      var _this = this;
+
+      this.spawnedEnemies.forEach(function (enemy) {
+        enemy.disable();
+
+        _this.enemyPool.push(_this.spawnedEnemies.shift());
+      });
     }
   }]);
 
@@ -49752,6 +49768,7 @@ function () {
     key: "gameOver",
     value: function gameOver() {
       this.endGameTransition();
+      this.enemyManager.despawnAll();
     }
   }, {
     key: "endGameTransition",
@@ -49835,7 +49852,7 @@ function () {
   }, {
     key: "shoot",
     value: function shoot(e) {
-      if (this.player.disabled) return;
+      if (!this.player.enabled) return;
       var cameraPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var cameraDir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       this.camera.getWorldPosition(cameraPos);
@@ -50126,8 +50143,8 @@ function () {
     _classCallCheck(this, Player);
 
     this.game = game;
-    this.disabled = true;
-    this.health = 100;
+    this.enabled = false;
+    this.health = 0;
     this.healthBar = document.getElementById('current-health');
     this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
     this.playerGroup.name = 'player';
@@ -50147,7 +50164,7 @@ function () {
   _createClass(Player, [{
     key: "enable",
     value: function enable() {
-      this.disabled = false;
+      this.enabled = true;
       this.playerController.update();
       this.gun.show();
       this.playerGroup.add(this.reticle);
@@ -50157,7 +50174,7 @@ function () {
   }, {
     key: "disable",
     value: function disable() {
-      this.disabled = true;
+      this.enabled = false;
       this.gun.hide();
       this.playerGroup.remove(this.reticle);
     }
@@ -50246,7 +50263,7 @@ function () {
   _createClass(PlayerController, [{
     key: "update",
     value: function update() {
-      if (this.player.disabled) return;
+      if (!this.player.enabled) return;
       requestAnimationFrame(this.update);
       if (this.keyPresses.down === 1) this.player.playerGroup.translateZ(this.speed);
       if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
@@ -50259,7 +50276,7 @@ function () {
   }, {
     key: "handleMouseMove",
     value: function handleMouseMove(event) {
-      if (this.player.disabled) return;
+      if (!this.player.enabled) return;
       this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
       this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
       var euler = new THREE.Euler(0, 0, 0, 'YXZ');

@@ -110,6 +110,7 @@ export default class Game {
   
   gameOver() {
     this.endGameTransition();
+    this.enemyManager.despawnAll();
   }
   
   endGameTransition() {

@@ -9,11 +9,24 @@ export default class EnemyManager {
   }
 
   spawn(pos) {
+    let enemy;
+
     if (this.enemyPool.length === 0) {
-      const enemy = new Enemy(this.game);
-      enemy.enable();
-      enemy.setPosition(pos);
-      this.spawnedEnemies.push(enemy);
+      enemy = new Enemy(this.game);
     }
+    else {
+      enemy = this.enemyPool.pop();
+    }
+
+    enemy.enable();
+    enemy.setPosition(pos);
+    this.spawnedEnemies.push(enemy);
+  }
+
+  despawnAll() {
+    this.spawnedEnemies.forEach(enemy => {
+      enemy.disable();
+      this.enemyPool.push(this.spawnedEnemies.shift());
+    });
   }
 }
