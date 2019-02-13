@@ -10,9 +10,9 @@ export default class Game {
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
 
-    this.cameraTransitionSpeed = 1;
-    this.isCameraTransitioning = false;
-    this.camerarTransitionDirection = new THREE.Vector3(0,-1,0);
+    this.titleScreenTransitionSpeed = 1;
+    this.isTransitioningToTitleScreen = false;
+    this.titleScreenTransitionDirection = new THREE.Vector3(0,-1,0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     this.canvas = renderer.domElement;
@@ -54,7 +54,7 @@ export default class Game {
     player.playerGroup.position.set(0, 1000, 0);
     
 
-    this.startCameraTransition = this.startCameraTransition.bind(this);
+    this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
     this.update = this.update.bind(this);
     this.update();
@@ -66,40 +66,39 @@ export default class Game {
     
     stats.begin();
     
-    this.updateCameraTransition();
+    this.updateTitleScreenTransition();
     this.composer.render(this.clock.getDelta());
     
     stats.end();
   }
 
-  updateCameraTransition() {
-    if (!this.isCameraTransitioning) return;
+  updateTitleScreenTransition() {
+    if (!this.isTransitioningToTitleScreen) return;
 
-    player.playerGroup.position.addScaledVector(this.camerarTransitionDirection, this.cameraTransitionSpeed);
-    this.cameraTransitionSpeed += 0.1;
+    player.playerGroup.position.addScaledVector(this.titleScreenTransitionDirection, this.titleScreenTransitionSpeed);
+    this.titleScreenTransitionSpeed += 0.1;
 
-    if (this.camerarTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
+    if (this.titleScreenTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
       this.startGame();
     }
-    if (this.camerarTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
+    if (this.titleScreenTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
       this.endGame();
     }
   }
   
 
-  startCameraTransition() {
-    this.cameraTransitionSpeed = 1;
-    this.isCameraTransitioning = true;
-    this.camerarTransitionDirection = new THREE.Vector3(0, -1, 0);
+  startGameTransition() {
+    this.titleScreenTransitionSpeed = 1;
+    this.isTransitioningToTitleScreen = true;
+    this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);
     
     this.canvas.requestPointerLock();
   }
   
   startGame() {
-    this.isCameraTransitioning = false;
+    this.isTransitioningToTitleScreen = false;
     player.playerGroup.position.y = 15;
     player.enable();
-    // this.camera.lookAt(0, 15, -10);
     const enemy = new Enemy(this.scene);
     
     this.ui.showHud();
@@ -107,24 +106,20 @@ export default class Game {
   
   
   gameOver() {
-    this.endCameraTransition();
+    this.endGameTransition();
   }
   
-  endCameraTransition() {
-    this.cameraTransitionSpeed = 1;
-    this.isCameraTransitioning = true;
-    this.camerarTransitionDirection = new THREE.Vector3(0, 1, 0);
+  endGameTransition() {
+    this.titleScreenTransitionSpeed = 1;
+    this.isTransitioningToTitleScreen = true;
+    this.titleScreenTransitionDirection = new THREE.Vector3(0, 1, 0);
     player.disable();
-
-    // player.destroy();
-    // player = null;
     this.ui.hideHud();
   }
   
   endGame() {
     player.playerGroup.position.y = 1000;
-    this.isCameraTransitioning = false;
-    // player.playerGroup.position.set(0, 1000, 0);
+    this.isTransitioningToTitleScreen = false;
     this.ui.showTitle();
     document.exitPointerLock();
   }

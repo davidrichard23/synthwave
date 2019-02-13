@@ -49584,9 +49584,9 @@ function () {
 
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
-    this.cameraTransitionSpeed = 1;
-    this.isCameraTransitioning = false;
-    this.camerarTransitionDirection = new THREE.Vector3(0, -1, 0);
+    this.titleScreenTransitionSpeed = 1;
+    this.isTransitioningToTitleScreen = false;
+    this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);
     var renderer = new THREE.WebGLRenderer({
       antialias: true
     });
@@ -49619,7 +49619,7 @@ function () {
     window.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](this);
     player.playerGroup.add(this.camera);
     player.playerGroup.position.set(0, 1000, 0);
-    this.startCameraTransition = this.startCameraTransition.bind(this);
+    this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
     this.update = this.update.bind(this);
     this.update();
@@ -49630,65 +49630,61 @@ function () {
     value: function update() {
       requestAnimationFrame(this.update);
       stats.begin();
-      this.updateCameraTransition();
+      this.updateTitleScreenTransition();
       this.composer.render(this.clock.getDelta());
       stats.end();
     }
   }, {
-    key: "updateCameraTransition",
-    value: function updateCameraTransition() {
-      if (!this.isCameraTransitioning) return;
-      player.playerGroup.position.addScaledVector(this.camerarTransitionDirection, this.cameraTransitionSpeed);
-      this.cameraTransitionSpeed += 0.1;
+    key: "updateTitleScreenTransition",
+    value: function updateTitleScreenTransition() {
+      if (!this.isTransitioningToTitleScreen) return;
+      player.playerGroup.position.addScaledVector(this.titleScreenTransitionDirection, this.titleScreenTransitionSpeed);
+      this.titleScreenTransitionSpeed += 0.1;
 
-      if (this.camerarTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
+      if (this.titleScreenTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
         this.startGame();
       }
 
-      if (this.camerarTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
+      if (this.titleScreenTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
         this.endGame();
       }
     }
   }, {
-    key: "startCameraTransition",
-    value: function startCameraTransition() {
-      this.cameraTransitionSpeed = 1;
-      this.isCameraTransitioning = true;
-      this.camerarTransitionDirection = new THREE.Vector3(0, -1, 0);
+    key: "startGameTransition",
+    value: function startGameTransition() {
+      this.titleScreenTransitionSpeed = 1;
+      this.isTransitioningToTitleScreen = true;
+      this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);
       this.canvas.requestPointerLock();
     }
   }, {
     key: "startGame",
     value: function startGame() {
-      this.isCameraTransitioning = false;
+      this.isTransitioningToTitleScreen = false;
       player.playerGroup.position.y = 15;
-      player.enable(); // this.camera.lookAt(0, 15, -10);
-
+      player.enable();
       var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene);
       this.ui.showHud();
     }
   }, {
     key: "gameOver",
     value: function gameOver() {
-      this.endCameraTransition();
+      this.endGameTransition();
     }
   }, {
-    key: "endCameraTransition",
-    value: function endCameraTransition() {
-      this.cameraTransitionSpeed = 1;
-      this.isCameraTransitioning = true;
-      this.camerarTransitionDirection = new THREE.Vector3(0, 1, 0);
-      player.disable(); // player.destroy();
-      // player = null;
-
+    key: "endGameTransition",
+    value: function endGameTransition() {
+      this.titleScreenTransitionSpeed = 1;
+      this.isTransitioningToTitleScreen = true;
+      this.titleScreenTransitionDirection = new THREE.Vector3(0, 1, 0);
+      player.disable();
       this.ui.hideHud();
     }
   }, {
     key: "endGame",
     value: function endGame() {
       player.playerGroup.position.y = 1000;
-      this.isCameraTransitioning = false; // player.playerGroup.position.set(0, 1000, 0);
-
+      this.isTransitioningToTitleScreen = false;
       this.ui.showTitle();
       document.exitPointerLock();
     }
@@ -49748,6 +49744,11 @@ function () {
     key: "show",
     value: function show() {
       this.player.playerGroup.add(this.gunMesh);
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.player.playerGroup.remove(this.gunMesh);
     }
   }, {
     key: "shoot",
@@ -50046,8 +50047,7 @@ function () {
     this.disabled = true;
     this.health = 100;
     this.healthBar = document.getElementById('current-health');
-    this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"](); // this.playerGroup.position.set(0, 15, 300);
-
+    this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
     this.playerGroup.name = 'player';
     this.playerGroup.tags = ['player'];
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](10, 30, 10);
@@ -50055,11 +50055,11 @@ function () {
     var mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, meshMaterial);
     mesh.position.set(0, 0, 0);
     mesh.tags = ['player'];
-    this.game.scene.add(this.playerGroup);
-    this.reticle();
     this.playerController = new _playerController__WEBPACK_IMPORTED_MODULE_3__["default"](this);
     this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"](this.game.scene, this, this.game.camera);
     this.playerGroup.add(mesh);
+    this.game.scene.add(this.playerGroup);
+    this.reticle();
   }
 
   _createClass(Player, [{
@@ -50067,11 +50067,17 @@ function () {
     value: function enable() {
       this.disabled = false;
       this.playerController.update();
+      this.gun.show();
+      this.playerGroup.add(this.reticle);
+      this.health = 100;
+      this.healthBar.style.width = this.health + '%';
     }
   }, {
     key: "disable",
     value: function disable() {
       this.disabled = true;
+      this.gun.hide();
+      this.playerGroup.remove(this.reticle);
     }
   }, {
     key: "takeDamage",
@@ -50098,18 +50104,9 @@ function () {
       var material = new three__WEBPACK_IMPORTED_MODULE_0__["LineBasicMaterial"]({
         color: 0xffffff
       });
-      var reticle = new three__WEBPACK_IMPORTED_MODULE_0__["Line"](geometry, material);
-      reticle.position.z = -1;
-      reticle.name = 'reticle';
-      this.playerGroup.add(reticle);
-    }
-  }, {
-    key: "destroy",
-    value: function destroy() {
-      // this.playerGroup.remove(gun)
-      this.gun = null;
-      this.playerGroup.remove(this.game.camera);
-      this.game.scene.remove(this.playerGroup);
+      this.reticle = new three__WEBPACK_IMPORTED_MODULE_0__["Line"](geometry, material);
+      this.reticle.position.z = -1;
+      this.reticle.name = 'reticle';
     }
   }]);
 
@@ -50463,7 +50460,7 @@ function () {
     value: function startGame(e) {
       e.preventDefault();
       this.playButton.disabled = true;
-      this.game.startCameraTransition();
+      this.game.startGameTransition();
       this.titleUI.classList.add("transparent");
       console.log('start game');
     }

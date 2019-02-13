@@ -22,6 +22,10 @@ export default class Gun {
     this.player.playerGroup.add(this.gunMesh);
   }
 
+  hide() {
+    this.player.playerGroup.remove(this.gunMesh);
+  }
+
   shoot(e) {
     if (this.player.disabled) return;
 

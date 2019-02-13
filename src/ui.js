@@ -75,7 +75,7 @@ export default class UI {
   startGame(e) {
     e.preventDefault();
     this.playButton.disabled = true;
-    this.game.startCameraTransition();
+    this.game.startGameTransition();
     this.titleUI.classList.add("transparent");
     console.log('start game')
   }
