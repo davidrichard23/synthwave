@@ -49338,9 +49338,9 @@ function () {
 
 /***/ }),
 
-/***/ "./src/enemyMangaer.js":
+/***/ "./src/enemyManager.js":
 /*!*****************************!*\
-  !*** ./src/enemyMangaer.js ***!
+  !*** ./src/enemyManager.js ***!
   \*****************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -49659,7 +49659,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environment */ "./src/environment.js");
 /* harmony import */ var _enemy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
 /* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ui */ "./src/ui.js");
-/* harmony import */ var _enemyMangaer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./enemyMangaer */ "./src/enemyMangaer.js");
+/* harmony import */ var _enemyManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./enemyManager */ "./src/enemyManager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -49680,7 +49680,7 @@ function () {
 
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
-    this.enemyManager = new _enemyMangaer__WEBPACK_IMPORTED_MODULE_4__["default"](this);
+    this.enemyManager = new _enemyManager__WEBPACK_IMPORTED_MODULE_4__["default"](this);
     this.titleScreenTransitionSpeed = 1;
     this.isTransitioningToTitleScreen = false;
     this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);

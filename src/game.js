@@ -2,7 +2,7 @@ import Player from './player';
 import Environment from './environment';
 import Enemy from './enemy';
 import UI from './ui';
-import EnemyManager from './enemyMangaer';
+import EnemyManager from './enemyManager';
 
 
 export default class Game {
