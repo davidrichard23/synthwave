@@ -5,7 +5,8 @@ export default class EnemyManager {
   constructor(game) {
     this.game = game;
     this.enemyPool = [];
-    this.spawnedEnemies = [];
+    this.spawnedEnemies = {};
+    this.nextEnemyId = 0;
   }
 
   spawn(pos) {
@@ -13,6 +14,8 @@ export default class EnemyManager {
 
     if (this.enemyPool.length === 0) {
       enemy = new Enemy(this.game);
+      enemy.id = this.nextEnemyId;
+      this.nextEnemyId += 1;
     }
     else {
       enemy = this.enemyPool.pop();
@@ -20,13 +23,19 @@ export default class EnemyManager {
 
     enemy.enable();
     enemy.setPosition(pos);
-    this.spawnedEnemies.push(enemy);
+    this.spawnedEnemies[enemy.id] = enemy;
+  }
+
+  despawn(id) {
+    const enemy = this.spawnedEnemies[id];
+    enemy.disable();
+    this.enemyPool.push(enemy);
+    delete this.spawnedEnemies[id];
   }
 
   despawnAll() {
-    this.spawnedEnemies.forEach(enemy => {
-      enemy.disable();
-      this.enemyPool.push(this.spawnedEnemies.shift());
+    Object.keys(this.spawnedEnemies).forEach(id => {
+      this.despawn(id);
     });
   }
 }

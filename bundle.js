@@ -49365,7 +49365,8 @@ function () {
 
     this.game = game;
     this.enemyPool = [];
-    this.spawnedEnemies = [];
+    this.spawnedEnemies = {};
+    this.nextEnemyId = 0;
   }
 
   _createClass(EnemyManager, [{
@@ -49375,23 +49376,31 @@ function () {
 
       if (this.enemyPool.length === 0) {
         enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.game);
+        enemy.id = this.nextEnemyId;
+        this.nextEnemyId += 1;
       } else {
         enemy = this.enemyPool.pop();
       }
 
       enemy.enable();
       enemy.setPosition(pos);
-      this.spawnedEnemies.push(enemy);
+      this.spawnedEnemies[enemy.id] = enemy;
+    }
+  }, {
+    key: "despawn",
+    value: function despawn(id) {
+      var enemy = this.spawnedEnemies[id];
+      enemy.disable();
+      this.enemyPool.push(enemy);
+      delete this.spawnedEnemies[id];
     }
   }, {
     key: "despawnAll",
     value: function despawnAll() {
       var _this = this;
 
-      this.spawnedEnemies.forEach(function (enemy) {
-        enemy.disable();
-
-        _this.enemyPool.push(_this.spawnedEnemies.shift());
+      Object.keys(this.spawnedEnemies).forEach(function (id) {
+        _this.despawn(id);
       });
     }
   }]);
