@@ -49206,7 +49206,7 @@ function () {
       this.destroy();
 
       if (intersection.object.tags.includes('player')) {
-        window.player.takeDamage();
+        window.player.takeDamage(100);
       } else if (intersection.object.tags.includes('enemy')) {
         var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
       } else {
@@ -49257,7 +49257,7 @@ function () {
 
     this.scene = scene;
     this.enemyGroup = new THREE.Group();
-    this.enemyGroup.position.set(0, 15, 0);
+    this.enemyGroup.position.set(0, 15, -300);
     this.playerMesh = this.scene.getObjectByName("player");
     var body = this.createMesh();
     scene.add(this.enemyGroup);
@@ -49393,7 +49393,7 @@ function () {
         var building = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[colorIndex], height);
         building.position.x = -300;
         building.position.y = height / 2;
-        building.position.z = -1500 + 225 * i;
+        building.position.z = 1500 - 225 * i;
         this.scene.add(building);
       }
 
@@ -49406,7 +49406,7 @@ function () {
 
         _building.position.x = -800;
         _building.position.y = _height / 2;
-        _building.position.z = -1550 + 225 * _i - 100;
+        _building.position.z = 1550 - 225 * _i - 100;
         this.scene.add(_building);
       }
 
@@ -49419,7 +49419,7 @@ function () {
 
         _building2.position.x = -1300;
         _building2.position.y = _height2 / 2;
-        _building2.position.z = -1500 + 225 * _i2;
+        _building2.position.z = 1500 - 225 * _i2;
         this.scene.add(_building2);
       } // const colorIndex1 = Math.floor(Math.random() * COLORS.length);
       // const height1 = Math.floor(Math.random() * 1400) + 1000;
@@ -49455,7 +49455,7 @@ function () {
 
         _building3.position.x = 300;
         _building3.position.y = _height3 / 2;
-        _building3.position.z = -1500 + 225 * _i3;
+        _building3.position.z = 1500 - 225 * _i3;
         this.scene.add(_building3);
       }
 
@@ -49468,7 +49468,7 @@ function () {
 
         _building4.position.x = 800;
         _building4.position.y = _height4 / 2;
-        _building4.position.z = -1550 + 225 * _i4;
+        _building4.position.z = 1550 - 225 * _i4;
         this.scene.add(_building4);
       }
 
@@ -49481,7 +49481,7 @@ function () {
 
         _building5.position.x = 1300;
         _building5.position.y = _height5 / 2;
-        _building5.position.z = -1500 + 225 * _i5;
+        _building5.position.z = 1500 - 225 * _i5;
         this.scene.add(_building5);
       } // const colorIndex3 = Math.floor(Math.random() * COLORS.length);
       // const height3 = Math.floor(Math.random() * 1400) + 1000;
@@ -49564,11 +49564,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
 /* harmony import */ var _environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environment */ "./src/environment.js");
 /* harmony import */ var _enemy__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./enemy */ "./src/enemy.js");
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ui */ "./src/ui.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -49581,34 +49583,44 @@ function () {
     _classCallCheck(this, Game);
 
     this.clock = new THREE.Clock();
-    var scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
+    this.cameraTransitionSpeed = 1;
+    this.isCameraTransitioning = false;
+    this.camerarTransitionDirection = new THREE.Vector3(0, -1, 0);
     var renderer = new THREE.WebGLRenderer({
       antialias: true
     });
-    var canvas = renderer.domElement;
+    this.canvas = renderer.domElement;
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(canvas);
+    document.body.appendChild(this.canvas);
+    this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
+    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.lookAt(0, -1, 1);
-    scene.add(directionalLight);
+    this.scene.add(directionalLight);
     var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.lookAt(0, 0, 0);
-    scene.add(camera);
-    var renderScene = new THREE.RenderPass(scene, camera);
+    this.scene.add(ambientLight);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000); // this.camera.position.set(0, 1000, 0);
+    // this.camera.lookAt(0, 900, -1000);
+
+    this.scene.add(this.camera);
+    var renderScene = new THREE.RenderPass(this.scene, this.camera);
     var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     bloomPass.renderToScreen = true;
     bloomPass.threshold = 0;
-    bloomPass.strength = 1.3;
+    bloomPass.strength = 1.2;
     bloomPass.radius = 1;
     this.composer = new THREE.EffectComposer(renderer);
     this.composer.setSize(window.innerWidth, window.innerHeight);
     this.composer.addPass(renderScene);
     this.composer.addPass(bloomPass);
-    window.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](scene, canvas, camera);
-    var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_2__["default"](scene, canvas);
-    var environment = new _environment__WEBPACK_IMPORTED_MODULE_1__["default"](scene);
+    this.ui = new _ui__WEBPACK_IMPORTED_MODULE_3__["default"](this);
+    var environment = new _environment__WEBPACK_IMPORTED_MODULE_1__["default"](this.scene);
+    window.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](this);
+    player.playerGroup.add(this.camera);
+    player.playerGroup.position.set(0, 1000, 0);
+    this.startCameraTransition = this.startCameraTransition.bind(this);
+    this.startGame = this.startGame.bind(this);
     this.update = this.update.bind(this);
     this.update();
   }
@@ -49618,8 +49630,67 @@ function () {
     value: function update() {
       requestAnimationFrame(this.update);
       stats.begin();
+      this.updateCameraTransition();
       this.composer.render(this.clock.getDelta());
       stats.end();
+    }
+  }, {
+    key: "updateCameraTransition",
+    value: function updateCameraTransition() {
+      if (!this.isCameraTransitioning) return;
+      player.playerGroup.position.addScaledVector(this.camerarTransitionDirection, this.cameraTransitionSpeed);
+      this.cameraTransitionSpeed += 0.1;
+
+      if (this.camerarTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
+        this.startGame();
+      }
+
+      if (this.camerarTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
+        this.endGame();
+      }
+    }
+  }, {
+    key: "startCameraTransition",
+    value: function startCameraTransition() {
+      this.cameraTransitionSpeed = 1;
+      this.isCameraTransitioning = true;
+      this.camerarTransitionDirection = new THREE.Vector3(0, -1, 0);
+      this.canvas.requestPointerLock();
+    }
+  }, {
+    key: "startGame",
+    value: function startGame() {
+      this.isCameraTransitioning = false;
+      player.playerGroup.position.y = 15;
+      player.enable(); // this.camera.lookAt(0, 15, -10);
+
+      var enemy = new _enemy__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene);
+      this.ui.showHud();
+    }
+  }, {
+    key: "gameOver",
+    value: function gameOver() {
+      this.endCameraTransition();
+    }
+  }, {
+    key: "endCameraTransition",
+    value: function endCameraTransition() {
+      this.cameraTransitionSpeed = 1;
+      this.isCameraTransitioning = true;
+      this.camerarTransitionDirection = new THREE.Vector3(0, 1, 0);
+      player.disable(); // player.destroy();
+      // player = null;
+
+      this.ui.hideHud();
+    }
+  }, {
+    key: "endGame",
+    value: function endGame() {
+      player.playerGroup.position.y = 1000;
+      this.isCameraTransitioning = false; // player.playerGroup.position.set(0, 1000, 0);
+
+      this.ui.showTitle();
+      document.exitPointerLock();
     }
   }]);
 
@@ -49656,29 +49727,32 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Gun =
 /*#__PURE__*/
 function () {
-  function Gun(scene, playerGroup, camera) {
+  function Gun(scene, player, camera) {
     _classCallCheck(this, Gun);
 
     this.scene = scene;
-    this.playerGroup = playerGroup;
+    this.player = player;
     this.camera = camera;
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.5, 0.5, 3);
     this.gunMesh = new _outlinedGeometry__WEBPACK_IMPORTED_MODULE_1__["default"]({
       geometry: geometry,
       name: 'gun',
       color: 0x00ff00
-    }); // const gunMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    // this.gunMesh = new THREE.Mesh(gunGeometry, gunMaterial);
-
+    });
     this.gunMesh.position.set(1, -1, -3);
-    this.playerGroup.add(this.gunMesh);
     this.shoot = this.shoot.bind(this);
     window.addEventListener("mousedown", this.shoot);
   }
 
   _createClass(Gun, [{
+    key: "show",
+    value: function show() {
+      this.player.playerGroup.add(this.gunMesh);
+    }
+  }, {
     key: "shoot",
-    value: function shoot() {
+    value: function shoot(e) {
+      if (this.player.disabled) return;
       var cameraPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var cameraDir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       this.camera.getWorldPosition(cameraPos);
@@ -49688,6 +49762,7 @@ function () {
       // console.log(intersects[0]);
 
       this.drawBullet();
+      e.preventDefault();
     }
   }, {
     key: "drawBullet",
@@ -49949,6 +50024,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _gun__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./gun */ "./src/gun.js");
 /* harmony import */ var _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./particles/bulletHit */ "./src/particles/bulletHit.js");
+/* harmony import */ var _playerController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./playerController */ "./src/playerController.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -49959,18 +50035,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+
 var Player =
 /*#__PURE__*/
 function () {
-  function Player(scene, canvas, camera) {
+  function Player(game) {
     _classCallCheck(this, Player);
 
-    this.canvas = canvas;
-    this.scene = scene;
-    this.camera = camera;
-    this.speed = 2;
-    this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
-    this.playerGroup.position.set(0, 15, 300);
+    this.game = game;
+    this.disabled = true;
+    this.health = 100;
+    this.healthBar = document.getElementById('current-health');
+    this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"](); // this.playerGroup.position.set(0, 15, 300);
+
     this.playerGroup.name = 'player';
     this.playerGroup.tags = ['player'];
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](10, 30, 10);
@@ -49978,56 +50055,34 @@ function () {
     var mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, meshMaterial);
     mesh.position.set(0, 0, 0);
     mesh.tags = ['player'];
-    scene.add(this.playerGroup); // this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-    // this.camera.lookAt(0, 0, 0);
-    // var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
-    // light.position.set(0, 0, 0);
-    // this.playerGroup.add(light);
-
+    this.game.scene.add(this.playerGroup);
     this.reticle();
-    this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"](scene, this.playerGroup, this.camera); // this.scene.remove(camera);
-
-    this.playerGroup.add(camera);
-    this.playerGroup.add(mesh); // scene.add(mesh);
-
-    this.rotation = {
-      x: 0,
-      y: 0
-    };
-    this.keyPresses = {
-      up: -1,
-      down: -1,
-      left: -1,
-      right: -1
-    };
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    window.addEventListener("keydown", this.handleKeyDown);
-    window.addEventListener("keyup", this.handleKeyUp);
-    window.addEventListener("mousemove", this.handleMouseMove);
-    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-    canvas.requestPointerLock();
-    this.update = this.update.bind(this);
-    this.update();
+    this.playerController = new _playerController__WEBPACK_IMPORTED_MODULE_3__["default"](this);
+    this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"](this.game.scene, this, this.game.camera);
+    this.playerGroup.add(mesh);
   }
 
   _createClass(Player, [{
-    key: "update",
-    value: function update() {
-      requestAnimationFrame(this.update);
-      if (this.keyPresses.down === 1) this.playerGroup.translateZ(this.speed);
-      if (this.keyPresses.up === 1) this.playerGroup.translateZ(-this.speed);
-      if (this.keyPresses.left === 1) this.playerGroup.translateX(-this.speed);
-      if (this.keyPresses.right === 1) this.playerGroup.translateX(this.speed);
-      if (this.playerGroup.position.x < -180) this.playerGroup.position.x = -180;
-      if (this.playerGroup.position.x > 180) this.playerGroup.position.x = 180;
-      this.playerGroup.position.y = 15;
+    key: "enable",
+    value: function enable() {
+      this.disabled = false;
+      this.playerController.update();
+    }
+  }, {
+    key: "disable",
+    value: function disable() {
+      this.disabled = true;
     }
   }, {
     key: "takeDamage",
-    value: function takeDamage() {
-      var bulletHit = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.playerGroup, new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, -40), 0x00ff00, 2);
+    value: function takeDamage(amount) {
+      new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.playerGroup, new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, -40), 0x00ff00, 2);
+      this.health -= amount;
+      this.healthBar.style.width = this.health + '%';
+
+      if (this.health <= 0) {
+        this.game.gameOver();
+      }
     }
   }, {
     key: "reticle",
@@ -50049,35 +50104,110 @@ function () {
       this.playerGroup.add(reticle);
     }
   }, {
+    key: "destroy",
+    value: function destroy() {
+      // this.playerGroup.remove(gun)
+      this.gun = null;
+      this.playerGroup.remove(this.game.camera);
+      this.game.scene.remove(this.playerGroup);
+    }
+  }]);
+
+  return Player;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/playerController.js":
+/*!*********************************!*\
+  !*** ./src/playerController.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PlayerController; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var PlayerController =
+/*#__PURE__*/
+function () {
+  function PlayerController(player) {
+    _classCallCheck(this, PlayerController);
+
+    this.player = player;
+    this.speed = 2;
+    this.rotation = {
+      x: 0,
+      y: 0
+    };
+    this.keyPresses = {
+      up: -1,
+      down: -1,
+      left: -1,
+      right: -1
+    };
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
+    window.addEventListener("mousemove", this.handleMouseMove);
+    this.update = this.update.bind(this);
+    this.update();
+  }
+
+  _createClass(PlayerController, [{
+    key: "update",
+    value: function update() {
+      if (this.player.disabled) return;
+      requestAnimationFrame(this.update);
+      if (this.keyPresses.down === 1) this.player.playerGroup.translateZ(this.speed);
+      if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
+      if (this.keyPresses.left === 1) this.player.playerGroup.translateX(-this.speed);
+      if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
+      if (this.player.playerGroup.position.x < -180) this.player.playerGroup.position.x = -180;
+      if (this.player.playerGroup.position.x > 180) this.player.playerGroup.position.x = 180;
+      this.player.playerGroup.position.y = 15;
+    }
+  }, {
     key: "handleMouseMove",
     value: function handleMouseMove(event) {
+      if (this.player.disabled) return;
       this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
       this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
-      var euler = new three__WEBPACK_IMPORTED_MODULE_0__["Euler"](0, 0, 0, 'YXZ');
+      var euler = new THREE.Euler(0, 0, 0, 'YXZ');
       euler.x = this.rotation.x;
       euler.y = this.rotation.y;
-      this.playerGroup.quaternion.setFromEuler(euler);
+      this.player.playerGroup.quaternion.setFromEuler(euler);
     }
   }, {
     key: "handleKeyDown",
     value: function handleKeyDown(event) {
-      switch (event.key) {
-        case "s":
+      switch (event.keyCode) {
+        case 83:
           this.keyPresses.down = 1;
           if (this.keyPresses.up === 1) this.keyPresses.up = 0;
           break;
 
-        case "w":
+        case 87:
           this.keyPresses.up = 1;
           if (this.keyPresses.down === 1) this.keyPresses.down = 0;
           break;
 
-        case "a":
+        case 65:
           this.keyPresses.left = 1;
           if (this.keyPresses.right === 1) this.keyPresses.right = 0;
           break;
 
-        case "d":
+        case 68:
           this.keyPresses.right = 1;
           if (this.keyPresses.left === 1) this.keyPresses.left = 0;
           break;
@@ -50091,23 +50221,23 @@ function () {
   }, {
     key: "handleKeyUp",
     value: function handleKeyUp(event) {
-      switch (event.key) {
-        case "s":
+      switch (event.keyCode) {
+        case 83:
           this.keyPresses.down = -1;
           if (this.keyPresses.up === 0) this.keyPresses.up = 1;
           break;
 
-        case "w":
+        case 87:
           this.keyPresses.up = -1;
           if (this.keyPresses.down === 0) this.keyPresses.down = 1;
           break;
 
-        case "a":
+        case 65:
           this.keyPresses.left = -1;
           if (this.keyPresses.right === 0) this.keyPresses.right = 1;
           break;
 
-        case "d":
+        case 68:
           this.keyPresses.right = -1;
           if (this.keyPresses.left === 0) this.keyPresses.left = 1;
           break;
@@ -50120,7 +50250,7 @@ function () {
     }
   }]);
 
-  return Player;
+  return PlayerController;
 }();
 
 
@@ -50249,6 +50379,116 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;function _type
 
   return f;
 });
+
+/***/ }),
+
+/***/ "./src/ui.js":
+/*!*******************!*\
+  !*** ./src/ui.js ***!
+  \*******************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return UI; });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var UI =
+/*#__PURE__*/
+function () {
+  function UI(game) {
+    _classCallCheck(this, UI);
+
+    this.game = game; // this.camera = camera;
+    // this.mousePos = new THREE.Vector2();
+    // this.raycaster = new THREE.Raycaster();
+    // const loader = new THREE.FontLoader();
+    // const group = new THREE.Group();
+    // // group.name
+    // scene.add(group);
+
+    this.startGame = this.startGame.bind(this);
+    this.titleUI = document.getElementById('title-ui');
+    this.hudUI = document.getElementById('hud-ui');
+    this.playButton = document.getElementById('play-button');
+    this.playButton.addEventListener('click', this.startGame); //   loader.load('src/fonts/Neon Absolute Sans_Regular.json', function (font) {
+    //     let geometry = new THREE.TextGeometry('PLAY', {
+    //       font: font,
+    //       size: 80,
+    //       height: 5,
+    //       curveSegments: 12,
+    //     });
+    //     const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    //     geometry = new THREE.BufferGeometry().fromGeometry(geometry);
+    //     geometry.computeBoundingBox();
+    //     const mesh = new THREE.Mesh(geometry, material);
+    //     const centerOffset = - 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+    //     mesh.position.x = centerOffset;
+    //     mesh.position.y = 700;
+    //     mesh.position.z = -1000;
+    //     group.add(mesh);
+    //   });
+    //   this.onMouseMove = this.onMouseMove.bind(this);
+    //   this.onMouseDown = this.onMouseDown.bind(this);
+    //   window.addEventListener('mousemove', this.onMouseMove, false);
+    //   window.addEventListener('mousedown', this.onMouseDown, false);
+    // }
+    //   onMouseMove(event) {
+    //     // calculate mouse position in normalized device coordinates
+    //     // (-1 to +1) for both components
+    //     this.mousePos.x = (event.clientX / window.innerWidth) * 2 - 1;
+    //     this.mousePos.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    // this.onMouseDown();
+    //   }
+    //   onMouseDown() {
+    //     // update the picking ray with the camera and mouse position
+    //     this.raycaster.setFromCamera(this.mousePos, this.camera);
+    //     // calculate objects intersecting the picking ray
+    //     var intersects = this.raycaster.intersectObjects(this.scene.children);
+    //     for (var i = 0; i < intersects.length; i++) {
+    //       intersects[i].object.material.color.set(0xff0000);
+    //     }
+  }
+
+  _createClass(UI, [{
+    key: "startGame",
+    value: function startGame(e) {
+      e.preventDefault();
+      this.playButton.disabled = true;
+      this.game.startCameraTransition();
+      this.titleUI.classList.add("transparent");
+      console.log('start game');
+    }
+  }, {
+    key: "showTitle",
+    value: function showTitle() {
+      this.playButton.disabled = false;
+      this.titleUI.classList.remove("transparent");
+    }
+  }, {
+    key: "showHud",
+    value: function showHud() {
+      this.hudUI.classList.remove("transparent");
+    }
+  }, {
+    key: "hideHud",
+    value: function hideHud() {
+      this.hudUI.classList.add("transparent");
+    }
+  }]);
+
+  return UI;
+}();
+
+
 
 /***/ })
 

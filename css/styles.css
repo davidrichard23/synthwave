@@ -1,0 +1,115 @@
+
+@font-face {
+  font-family: "Neon Absolute Sans Regular";
+  src: url("../src/fonts/NeonAbsoluteSans.ttf") format("ttf");
+  /* src: 
+  url("css/fonts/Harabara.woff") format("woff"),
+  url("css/fonts/Harabara.otf") format("opentype"),
+  url("css/fonts/Harabara.svg#filename") format("svg"); */
+}
+
+
+body {
+  font-family: 'Neon Absolute Sans', Arial, sans-serif;
+  margin: 0;
+  background-color: black;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  cursor: none;
+}
+
+#title-ui {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0, 0.8);
+  transition: opacity 800ms ease-in-out;
+}
+.transparent {
+  opacity: 0;
+}
+
+
+#title-ui h1 {
+  color: #00F7FF;
+  font-size: 150px;
+  font-weight: 400;
+  text-shadow:  1px 1px 0px #6500FF,
+                2px 2px 0px #6500FF,
+                3px 3px 0px #6500FF,
+                4px 4px 0px #6500FF,
+                5px 5px 0px #6500FF,
+                6px 6px 0px #6500FF;
+}
+@keyframes flicker {
+  0% {
+    text-shadow:  0 0 0px rgba(255,255,255,1);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow:  0 0 20px rgba(255,255,255,1),
+                  0 0 10px rgba(255,255,255,1);
+                  transform: scaleX(1.05);
+  }
+  100% {
+    text-shadow:  0 0 0px rgba(255,255,255,1);
+    transform: scale(1);
+  }
+}
+#title-ui button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 100px;
+  font-family: 'Neon Absolute Sans', Arial, sans-serif;
+  animation: flicker 2000ms ease-in-out infinite;
+  /* text-shadow:  0 0 10px rgba(255,255,255,1),
+                0 0 20px rgba(255,255,255,1); */
+  transition: color 300ms ease-in-out;
+  cursor: pointer;
+  margin-bottom: 150px;
+}
+
+#title-ui button:hover {
+  color: #00F7FF;
+  font-family: 'Neon Absolute Sans', Arial, sans-serif;
+  /* text-shadow:  0 0 10px rgba(0,255,134,1),
+                0 0 20px rgba(0,255,134,1); */
+  transform: scale(1.1);
+}
+
+
+
+#hud-ui {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  transition: opacity 800ms ease-in-out;
+}
+
+
+.health-bar-container {
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  height: 30px; 
+  width: 75vw;
+  left: 12.5vw;
+  bottom: 70px;
+  border-radius: 15px;
+  overflow: hidden;
+  border: solid white 2px;
+}
+#current-health {
+  background-color: #0EC65D;
+  height: 100%;
+  width: 100%;
+  transition: width 400ms ease-in-out;
+}

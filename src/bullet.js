@@ -69,7 +69,7 @@ export default class Bullet {
     this.destroy();
 
     if (intersection.object.tags.includes('player')) {
-      window.player.takeDamage();
+      window.player.takeDamage(100);
     }
     else if (intersection.object.tags.includes('enemy')) {
       const bulletHitColor = new BulletHit(this.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance/4);

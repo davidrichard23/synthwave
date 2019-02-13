@@ -4,24 +4,27 @@ import Bullet from './bullet';
 
 export default class Gun {
 
-  constructor(scene, playerGroup, camera) {
+  constructor(scene, player, camera) {
     this.scene = scene;
-    this.playerGroup = playerGroup;
+    this.player = player;
     this.camera = camera;
 
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 3);
     this.gunMesh = new OutlinedGeometry({ geometry, name: 'gun', color: 0x00ff00});
-    // const gunMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    // this.gunMesh = new THREE.Mesh(gunGeometry, gunMaterial);
     this.gunMesh.position.set(1, -1, -3);
-    this.playerGroup.add(this.gunMesh);
 
     this.shoot = this.shoot.bind(this);
 
     window.addEventListener("mousedown", this.shoot);
   }
 
-  shoot() {
+  show() {
+    this.player.playerGroup.add(this.gunMesh);
+  }
+
+  shoot(e) {
+    if (this.player.disabled) return;
+
     const cameraPos = new THREE.Vector3();
     const cameraDir = new THREE.Vector3();
 
@@ -35,6 +38,7 @@ export default class Gun {
     // console.log(intersects[0]);
 
     this.drawBullet();
+    e.preventDefault();
   }
 
   drawBullet() {

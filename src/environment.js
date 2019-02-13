@@ -72,7 +72,7 @@ export default class Environment {
       const building = new Building(texture, COLORS[colorIndex], height);
       building.position.x = -300;
       building.position.y = height/2;
-      building.position.z = -1500 + 225 * i;
+      building.position.z = 1500 - 225 * i;
       this.scene.add(building);
     }
 
@@ -82,7 +82,7 @@ export default class Environment {
       const building = new Building(texture, COLORS[colorIndex], height);
       building.position.x = -800;
       building.position.y = height/2;
-      building.position.z = -1550 + 225 * i - 100;
+      building.position.z = 1550 - 225 * i - 100;
       this.scene.add(building);
     }
 
@@ -92,7 +92,7 @@ export default class Environment {
       const building = new Building(texture, COLORS[colorIndex], height);
       building.position.x = -1300;
       building.position.y = height/2;
-      building.position.z = -1500 + 225 * i;
+      building.position.z = 1500 - 225 * i;
       this.scene.add(building);
     }
 
@@ -130,7 +130,7 @@ export default class Environment {
       const building = new Building(texture, COLORS[colorIndex], height);
       building.position.x = 300;
       building.position.y = height/2;
-      building.position.z = -1500 + 225 * i;
+      building.position.z = 1500 - 225 * i;
       this.scene.add(building);
     }
 
@@ -140,7 +140,7 @@ export default class Environment {
       const building = new Building(texture, COLORS[colorIndex], height);
       building.position.x = 800;
       building.position.y = height/2;
-      building.position.z = -1550 + 225 * i;
+      building.position.z = 1550 - 225 * i;
       this.scene.add(building);
     }
 
@@ -150,7 +150,7 @@ export default class Environment {
       const building = new Building(texture, COLORS[colorIndex], height);
       building.position.x = 1300;
       building.position.y = height/2;
-      building.position.z = -1500 + 225 * i;
+      building.position.z = 1500 - 225 * i;
       this.scene.add(building);
     }
 

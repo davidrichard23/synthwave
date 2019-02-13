@@ -6,7 +6,7 @@ export default class Enemy {
 
     this.scene = scene;
     this.enemyGroup = new THREE.Group();
-    this.enemyGroup.position.set(0, 15, 0);
+    this.enemyGroup.position.set(0, 15, -300);
     this.playerMesh = this.scene.getObjectByName("player");
     
     const body = this.createMesh();

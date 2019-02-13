@@ -1,18 +1,19 @@
 import * as THREE from 'three';
 import Gun from './gun';
 import BulletHit from './particles/bulletHit';
+import PlayerController from './playerController';
 
 export default class Player {
 
-  constructor(scene, canvas, camera) {
+  constructor(game) {
 
-    this.canvas = canvas;
-    this.scene = scene;
-    this.camera = camera;
-    this.speed = 2;
+    this.game = game;
+    this.disabled = true;
+    this.health = 100;
+    this.healthBar = document.getElementById('current-health');
 
     this.playerGroup = new THREE.Group();
-    this.playerGroup.position.set(0, 15, 300);
+    // this.playerGroup.position.set(0, 15, 300);
     this.playerGroup.name = 'player';
     this.playerGroup.tags = ['player'];
 
@@ -22,65 +23,37 @@ export default class Player {
     mesh.position.set(0, 0, 0);
     mesh.tags = ['player'];
 
-    scene.add(this.playerGroup);
-    
-    // this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-    // this.camera.lookAt(0, 0, 0);
-
-    // var light = new THREE.PointLight(0xffffff, 19, 10000, 4);
-    // light.position.set(0, 0, 0);
-    // this.playerGroup.add(light);
+    this.game.scene.add(this.playerGroup);
     
     this.reticle();
     
-    this.gun = new Gun(scene, this.playerGroup, this.camera);
+    this.playerController = new PlayerController(this);
+    this.gun = new Gun(this.game.scene, this, this.game.camera);
     
     
-    // this.scene.remove(camera);
-    this.playerGroup.add(camera);
     this.playerGroup.add(mesh);
-    
-    // scene.add(mesh);
-
-    this.rotation = { x: 0, y: 0 };
-    this.keyPresses = {
-      up: -1,
-      down: -1,
-      left: -1,
-      right: -1,
-    };
-
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-
-    window.addEventListener("keydown", this.handleKeyDown);
-    window.addEventListener("keyup", this.handleKeyUp);
-    window.addEventListener("mousemove", this.handleMouseMove);
-
-    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-    canvas.requestPointerLock();
-
-    this.update = this.update.bind(this);
-    this.update();
   }
 
-  update() {
-    requestAnimationFrame(this.update);
 
-    if (this.keyPresses.down === 1) this.playerGroup.translateZ(this.speed);
-    if (this.keyPresses.up === 1) this.playerGroup.translateZ(-this.speed);
-    if (this.keyPresses.left === 1) this.playerGroup.translateX(-this.speed);
-    if (this.keyPresses.right === 1) this.playerGroup.translateX(this.speed);
-
-    if (this.playerGroup.position.x < -180) this.playerGroup.position.x = -180;
-    if (this.playerGroup.position.x > 180) this.playerGroup.position.x = 180;
-
-    this.playerGroup.position.y = 15;
+  enable() {
+    this.disabled = false;
+    this.playerController.update();
   }
 
-  takeDamage() {
-    const bulletHit = new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 2);
+  disable() {
+    this.disabled = true;
+  }
+
+  
+
+  takeDamage(amount) {
+    new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 2);
+    this.health -= amount;
+    this.healthBar.style.width = this.health + '%';
+
+    if (this.health <= 0) {
+      this.game.gameOver();
+    }
   }
 
   reticle() {
@@ -99,65 +72,13 @@ export default class Player {
     reticle.name = 'reticle';
 
     this.playerGroup.add(reticle);
-  }
-  
-  handleMouseMove(event) {
-    this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
-    this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
-    
-    const euler = new THREE.Euler(0, 0, 0, 'YXZ');
-    euler.x = this.rotation.x;
-    euler.y = this.rotation.y;
-    this.playerGroup.quaternion.setFromEuler(euler);
+
   }
 
-  handleKeyDown(event) {
-    switch (event.key) {
-      case "s":
-        this.keyPresses.down = 1;
-        if (this.keyPresses.up === 1) this.keyPresses.up = 0;
-        break;
-      case "w":
-        this.keyPresses.up = 1;
-        if (this.keyPresses.down === 1) this.keyPresses.down = 0;
-        break;
-      case "a":
-        this.keyPresses.left = 1;
-        if (this.keyPresses.right === 1) this.keyPresses.right = 0;
-        break;
-      case "d":
-        this.keyPresses.right = 1;
-        if (this.keyPresses.left === 1) this.keyPresses.left = 0;
-        break;
-      default:
-        return;
-    }
-
-    event.preventDefault();
-  }
-
-  handleKeyUp(event) {
-    switch (event.key) {
-      case "s":
-        this.keyPresses.down = -1;
-        if (this.keyPresses.up === 0) this.keyPresses.up = 1;
-        break;
-      case "w":
-        this.keyPresses.up = -1;
-        if (this.keyPresses.down === 0) this.keyPresses.down = 1;
-        break;
-      case "a":
-        this.keyPresses.left = -1;
-        if (this.keyPresses.right === 0) this.keyPresses.right = 1;
-        break;
-      case "d":
-        this.keyPresses.right = -1;
-        if (this.keyPresses.left === 0) this.keyPresses.left = 1;
-        break;
-      default:
-        return;
-    }
-
-    event.preventDefault();
+  destroy() {
+    // this.playerGroup.remove(gun)
+    this.gun = null;
+    this.playerGroup.remove(this.game.camera);
+    this.game.scene.remove(this.playerGroup);
   }
 }
