@@ -41,9 +41,7 @@ const COLORS = [
 
 export default class Environment {
 
-  constructor(scene) {
-    this.scene = scene;
-
+  constructor() {
     this.Buildings();
     this.Ground();
   }
@@ -54,12 +52,12 @@ export default class Environment {
 
     // building.position.x = -1000;
     // building.position.y = 350;
-    // this.scene.add(building);
+    // game.scene.add(building);
 
     // building2.position.x = -1000;
     // building2.position.y = 500;
     // building2.position.z = 250;
-    // this.scene.add(building2);
+    // game.scene.add(building2);
 
     var texture = new THREE.TextureLoader().load("src/textures/grid.png");
     texture.wrapS = THREE.RepeatWrapping;
@@ -73,7 +71,7 @@ export default class Environment {
       building.position.x = -300;
       building.position.y = height/2;
       building.position.z = 1500 - 225 * i;
-      this.scene.add(building);
+      game.scene.add(building);
     }
 
     for (let i = 0; i < 100; i++) {
@@ -83,7 +81,7 @@ export default class Environment {
       building.position.x = -800;
       building.position.y = height/2;
       building.position.z = 1550 - 225 * i - 100;
-      this.scene.add(building);
+      game.scene.add(building);
     }
 
     for (let i = 0; i < 100; i++) {
@@ -93,7 +91,7 @@ export default class Environment {
       building.position.x = -1300;
       building.position.y = height/2;
       building.position.z = 1500 - 225 * i;
-      this.scene.add(building);
+      game.scene.add(building);
     }
 
     // const colorIndex1 = Math.floor(Math.random() * COLORS.length);
@@ -102,7 +100,7 @@ export default class Environment {
     // building1.position.x = -112;
     // building1.position.y = height1 / 2;
     // building1.position.z = -1500 - 225;
-    // this.scene.add(building1);
+    // game.scene.add(building1);
 
     // const colorIndex2 = Math.floor(Math.random() * COLORS.length);
     // const height2 = Math.floor(Math.random() * 1400) + 1000;
@@ -110,7 +108,7 @@ export default class Environment {
     // building2.position.x = 112;
     // building2.position.y = height2 / 2;
     // building2.position.z = -1500 - 225;
-    // this.scene.add(building2);
+    // game.scene.add(building2);
 
 
 
@@ -121,7 +119,7 @@ export default class Environment {
     //   building.position.x = -550;
     //   building.position.y = height/2;
     //   building.position.z = -2500 + 225 * i - 100;
-    //   this.scene.add(building);
+    //   game.scene.add(building);
     // }
 
     for (let i = 0; i < 100; i++) {
@@ -131,7 +129,7 @@ export default class Environment {
       building.position.x = 300;
       building.position.y = height/2;
       building.position.z = 1500 - 225 * i;
-      this.scene.add(building);
+      game.scene.add(building);
     }
 
     for (let i = 0; i < 100; i++) {
@@ -141,7 +139,7 @@ export default class Environment {
       building.position.x = 800;
       building.position.y = height/2;
       building.position.z = 1550 - 225 * i;
-      this.scene.add(building);
+      game.scene.add(building);
     }
 
     for (let i = 0; i < 100; i++) {
@@ -151,7 +149,7 @@ export default class Environment {
       building.position.x = 1300;
       building.position.y = height/2;
       building.position.z = 1500 - 225 * i;
-      this.scene.add(building);
+      game.scene.add(building);
     }
 
     // const colorIndex3 = Math.floor(Math.random() * COLORS.length);
@@ -160,7 +158,7 @@ export default class Environment {
     // building3.position.x = -112;
     // building3.position.y = height3 / 2;
     // building3.position.z = 1400 + 225;
-    // this.scene.add(building3);
+    // game.scene.add(building3);
 
     // const colorIndex4 = Math.floor(Math.random() * COLORS.length);
     // const height4 = Math.floor(Math.random() * 1400) + 1000;
@@ -168,7 +166,7 @@ export default class Environment {
     // building4.position.x = 112;
     // building4.position.y = height4 / 2;
     // building4.position.z = 1400 + 225;
-    // this.scene.add(building4);
+    // game.scene.add(building4);
 
 
 
@@ -180,7 +178,7 @@ export default class Environment {
     //   building.position.x = 550;
     //   building.position.y = height/2;
     //   building.position.z = -2500 + 225 * i - 100;
-    //   this.scene.add(building);
+    //   game.scene.add(building);
     // }
   }
 
@@ -198,8 +196,8 @@ export default class Environment {
       geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, length/2));
 
       const line = new THREE.Line(geometry, lineMaterial);
-      line.tags = ['environment'];
-      this.scene.add(line);
+      line.params = {tags: ['environment']};
+      game.scene.add(line);
     }
 
     for (let i = 0; i < length/spacing; i++) {
@@ -208,8 +206,8 @@ export default class Environment {
       geometry.vertices.push(new THREE.Vector3(length/2, 0, startY + spacing * i));
 
       const line = new THREE.Line(geometry, lineMaterial);
-      line.tags = ['environment'];
-      this.scene.add(line);
+      line.params = {tags: ['environment']};
+      game.scene.add(line);
     }
   }
 }

@@ -8,9 +8,10 @@ import EnemyManager from './enemyManager';
 export default class Game {
 
   constructor() {
+    window.game = this;
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
-    this.enemyManager = new EnemyManager(this);
+    this.enemyManager = new EnemyManager();
 
     this.titleScreenTransitionSpeed = 1;
     this.isTransitioningToTitleScreen = false;
@@ -49,11 +50,13 @@ export default class Game {
     this.composer.addPass(bloomPass);
     
     
-    this.ui = new UI(this);
-    const environment = new Environment(this.scene);
-    window.player = new Player(this);
-    player.playerGroup.add(this.camera);
-    player.playerGroup.position.set(0, 1000, 0);
+    this.ui = new UI();
+    const environment = new Environment();
+    
+    this.player = new Player();
+    // window.player = this.player;
+    this.player.playerGroup.add(this.camera);
+    this.player.playerGroup.position.set(0, 1000, 0);
     
 
     this.startGameTransition = this.startGameTransition.bind(this);
@@ -77,13 +80,13 @@ export default class Game {
   updateTitleScreenTransition() {
     if (!this.isTransitioningToTitleScreen) return;
 
-    player.playerGroup.position.addScaledVector(this.titleScreenTransitionDirection, this.titleScreenTransitionSpeed);
+    game.player.playerGroup.position.addScaledVector(this.titleScreenTransitionDirection, this.titleScreenTransitionSpeed);
     this.titleScreenTransitionSpeed += 0.1;
 
-    if (this.titleScreenTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
+    if (this.titleScreenTransitionDirection.y == -1 && game.player.playerGroup.position.y < 15) {
       this.startGame();
     }
-    if (this.titleScreenTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
+    if (this.titleScreenTransitionDirection.y == 1 && game.player.playerGroup.position.y > 1000) {
       this.endGame();
     }
   }
@@ -99,9 +102,9 @@ export default class Game {
   
   startGame() {
     this.isTransitioningToTitleScreen = false;
-    player.playerGroup.position.y = 15;
-    player.enable();
-    this.enemyManager.spawn(new THREE.Vector3(0,15,-100));
+    game.player.playerGroup.position.y = 15;
+    game.player.enable();
+    this.enemyManager.start();
     // const enemy = new Enemy(this.scene);
     
     this.ui.showHud();
@@ -110,19 +113,19 @@ export default class Game {
   
   gameOver() {
     this.endGameTransition();
-    this.enemyManager.despawnAll();
+    this.enemyManager.stop();
   }
   
   endGameTransition() {
     this.titleScreenTransitionSpeed = 1;
     this.isTransitioningToTitleScreen = true;
     this.titleScreenTransitionDirection = new THREE.Vector3(0, 1, 0);
-    player.disable();
+    game.player.disable();
     this.ui.hideHud();
   }
   
   endGame() {
-    player.playerGroup.position.y = 1000;
+    game.player.playerGroup.position.y = 1000;
     this.isTransitioningToTitleScreen = false;
     this.ui.showTitle();
     document.exitPointerLock();

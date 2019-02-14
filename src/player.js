@@ -5,29 +5,27 @@ import PlayerController from './playerController';
 
 export default class Player {
 
-  constructor(game) {
-
-    this.game = game;
+  constructor() {
     this.enabled = false;
     this.health = 0;
     this.healthBar = document.getElementById('current-health');
 
     this.playerGroup = new THREE.Group();
     this.playerGroup.name = 'player';
-    this.playerGroup.tags = ['player'];
+    // this.playerGroup.tags = ['player'];
 
     const geometry = new THREE.BoxGeometry(10, 30, 10);
     const meshMaterial = new THREE.MeshBasicMaterial();
     const mesh = new THREE.Mesh(geometry, meshMaterial);
     mesh.position.set(0, 0, 0);
-    mesh.tags = ['player'];
+    mesh.params = {tags: ['player']};
 
     
     this.playerController = new PlayerController(this);
-    this.gun = new Gun(this.game.scene, this, this.game.camera);
+    this.gun = new Gun();
     
     this.playerGroup.add(mesh);
-    this.game.scene.add(this.playerGroup);
+    game.scene.add(this.playerGroup);
     this.reticle();
   }
 
@@ -50,12 +48,12 @@ export default class Player {
   
 
   takeDamage(amount) {
-    new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 2);
+    const bulletHit = new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 2);
     this.health -= amount;
     this.healthBar.style.width = this.health + '%';
 
     if (this.health <= 0) {
-      this.game.gameOver();
+      game.gameOver();
     }
   }
 

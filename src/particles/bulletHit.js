@@ -7,8 +7,7 @@ circleFade.repeat.set(1, 1);
 
 export default class BulletHit {
 
-  constructor(scene, point, color, size=1) {
-    this.scene = scene;
+  constructor(parent, point, color, size=1) {
     this.particleCount = 280;
     this.speed = 2;
     this.lifetime = 1000;
@@ -41,7 +40,7 @@ export default class BulletHit {
       alphaTest: 0.3,
     });
     this.particles = new THREE.Points(geometry, material);
-    scene.add(this.particles);
+    parent.add(this.particles);
 
     this.update = this.update.bind(this);
     this.destroy = this.destroy.bind(this);
@@ -86,6 +85,7 @@ export default class BulletHit {
 
   destroy() {
     this.destroyed = true;
-    this.scene.remove(this.particles);
+    game.scene.remove(this.particles);
+    this.particles = null;
   }
 }

@@ -49056,7 +49056,9 @@ var Building = function Building(texture) {
   });
   var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](width, height, width);
   var building = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, meshMaterial);
-  building.tags = ['environment'];
+  building.params = {
+    tags: ['environment']
+  };
   this.group.add(building); // this.windows();
 
   return this.group;
@@ -49137,15 +49139,13 @@ var Bullet =
 /*#__PURE__*/
 function () {
   function Bullet(_ref) {
-    var scene = _ref.scene,
-        position = _ref.position,
+    var position = _ref.position,
         direction = _ref.direction,
         color = _ref.color,
         target = _ref.target;
 
     _classCallCheck(this, Bullet);
 
-    this.scene = scene;
     this.position = position;
     this.direction = direction;
     this.color = color;
@@ -49159,12 +49159,14 @@ function () {
       texture: squareOutlineThick,
       lineColor: color,
       meshColor: 0xffffff,
-      tags: ['bullet', 'enemy-bullet']
+      params: {
+        tags: ['bullet', 'enemy-bullet']
+      }
     });
-    this.group.position.set(position.x, position.y, position.z);
-    this.group.tags = ['bullet, enemy-bullet'];
+    this.group.position.set(position.x, position.y, position.z); // this.group.tags = ['bullet, enemy-bullet'];
+
     this.group.add(this.bullet);
-    this.scene.add(this.group);
+    game.scene.add(this.group);
     this.update = this.update.bind(this);
     this.destroy = this.destroy.bind(this);
     this.update();
@@ -49188,12 +49190,15 @@ function () {
       var right = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](this.group.position.x + this.width / 2, this.group.position.y, this.group.position.z);
       var raycasterLeft = new three__WEBPACK_IMPORTED_MODULE_0__["Raycaster"](left, this.direction, 3, 30);
       var raycasterRight = new three__WEBPACK_IMPORTED_MODULE_0__["Raycaster"](right, this.direction, 3, 30);
-      var intersects = raycasterLeft.intersectObjects(this.scene.children, true);
-      intersects = [].concat(_toConsumableArray(intersects), _toConsumableArray(raycasterRight.intersectObjects(this.scene.children, true))); // intersects = intersects.filter(obj => obj.object.tags && obj.object.tags.includes(this.target));
+      var intersects = raycasterLeft.intersectObjects(game.scene.children, true);
+      intersects = [].concat(_toConsumableArray(intersects), _toConsumableArray(raycasterRight.intersectObjects(game.scene.children, true))); // intersects = intersects.filter(obj => obj.object.tags && obj.object.tags.includes(this.target));
 
       intersects = intersects.filter(function (intersection) {
-        intersection.object.tags = intersection.object.tags || [];
-        return intersection.object.tags.includes('player') || intersection.object.tags.includes('enemy') || intersection.object.tags.includes('environment');
+        var params = intersection.object.params || {
+          tags: []
+        };
+        params.tags = params.tags || [];
+        return params.tags.includes('player') || params.tags.includes('enemy') || params.tags.includes('environment');
       });
 
       if (intersects.length > 0) {
@@ -49204,20 +49209,26 @@ function () {
     key: "onHit",
     value: function onHit(intersection) {
       this.destroy();
+      var params = intersection.object.params || {
+        tags: []
+      };
 
-      if (intersection.object.tags.includes('player')) {
-        window.player.takeDamage(100);
-      } else if (intersection.object.tags.includes('enemy')) {
-        var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
+      if (params.tags.includes('player')) {
+        game.player.takeDamage(10);
+      } else if (params.tags.includes('enemy')) {
+        var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
+        game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
       } else {
-        var bulletHitWhite = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.scene, intersection.point, 0xffffff, 1 + intersection.distance / 4);
+        var bulletHitWhite = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xffffff, 1 + intersection.distance / 4);
       }
+
+      this.destroy();
     }
   }, {
     key: "destroy",
     value: function destroy() {
       this.destroyed = true;
-      this.scene.remove(this.group);
+      game.scene.remove(this.group);
     }
   }]);
 
@@ -49252,36 +49263,73 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Enemy =
 /*#__PURE__*/
 function () {
-  function Enemy(game) {
+  function Enemy(id) {
     _classCallCheck(this, Enemy);
 
-    this.game = game;
     this.enabled = false; // this.enemyGroup.position.set(0, 15, -300);
 
-    this.playerMesh = this.game.scene.getObjectByName("player");
+    this.playerMesh = game.scene.getObjectByName("player");
     this.health = 100;
+    this.script = this;
+    this.id = id;
     this.enemyGroup = new THREE.Group();
-    var body = this.createMesh();
+    var body = this.createMesh(id);
     this.enemyGroup.add(body);
     this.shoot = this.shoot.bind(this);
     this.update = this.update.bind(this);
+    this.healthbar();
     this.shootTimer();
   }
 
   _createClass(Enemy, [{
-    key: "shootTimer",
-    value: function shootTimer() {
-      setInterval(this.shoot, 2000);
-    }
-  }, {
     key: "createMesh",
-    value: function createMesh() {
+    value: function createMesh(id) {
       var geometry = new THREE.BoxGeometry(10, 30, 10);
       return new _outlinedGeometry__WEBPACK_IMPORTED_MODULE_0__["default"]({
         geometry: geometry,
         lineColor: 0xFE0C0C,
-        tags: ['enemy']
+        params: {
+          tags: ['enemy'],
+          id: id
+        }
       });
+    }
+  }, {
+    key: "healthbar",
+    value: function healthbar() {
+      var loader = new THREE.TextureLoader();
+      var backgroundTexture = loader.load('src/textures/enemy-healthbar-background.png');
+      var foregroundTexture = loader.load('src/textures/enemy-healthbar-foreground.png');
+      var backgroundMaterial = new THREE.PointsMaterial({
+        size: 20,
+        sizeAttenuation: true,
+        map: backgroundTexture,
+        alphaTest: 0.1,
+        transparent: true,
+        color: 0xFE0C0C
+      });
+      var foregroundMaterial = new THREE.PointsMaterial({
+        size: 20,
+        sizeAttenuation: true,
+        map: foregroundTexture,
+        alphaTest: 0.1,
+        transparent: true,
+        color: 0xFE0C0C
+      });
+      var backgroundGeometry = new THREE.BufferGeometry();
+      var foregroundGeometry = new THREE.BufferGeometry();
+      var verticies = [0, 20, 0];
+      backgroundGeometry.addAttribute('position', new THREE.Float32BufferAttribute(verticies, 3));
+      foregroundGeometry.addAttribute('position', new THREE.Float32BufferAttribute(verticies, 3));
+      var background = new THREE.Points(backgroundGeometry, backgroundMaterial);
+      this.healthbar = new THREE.Points(foregroundGeometry, foregroundMaterial);
+      this.enemyGroup.add(background);
+      this.enemyGroup.add(this.healthbar);
+    }
+  }, {
+    key: "shootTimer",
+    value: function shootTimer() {
+      setInterval(this.shoot, 2000);
     }
   }, {
     key: "shoot",
@@ -49290,7 +49338,6 @@ function () {
       var dir = new THREE.Vector3();
       dir.subVectors(this.playerMesh.position, this.enemyGroup.position).normalize();
       new _bullet__WEBPACK_IMPORTED_MODULE_1__["default"]({
-        scene: this.game.scene,
         position: this.enemyGroup.position,
         direction: dir,
         color: 0xFE0C0C,
@@ -49300,24 +49347,26 @@ function () {
   }, {
     key: "takeDamage",
     value: function takeDamage(amount) {
-      this.health -= amount; // this.healthBar.style.width = this.health + '%';
+      this.health -= amount;
+      this.healthbar.material.size = 20 / (100 / this.health);
 
       if (this.health <= 0) {
-        this.game.scene.remove(this.enemyGroup);
+        game.enemyManager.despawn(this.id);
       }
     }
   }, {
     key: "enable",
     value: function enable() {
-      this.game.scene.add(this.enemyGroup);
+      game.scene.add(this.enemyGroup);
       this.health = 100;
+      this.healthbar.material.size = 20 / (100 / this.health);
       this.enabled = true;
       this.update();
     }
   }, {
     key: "disable",
     value: function disable() {
-      this.game.scene.remove(this.enemyGroup);
+      game.scene.remove(this.enemyGroup);
       this.enabled = false;
     }
   }, {
@@ -49360,23 +49409,38 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var EnemyManager =
 /*#__PURE__*/
 function () {
-  function EnemyManager(game) {
+  function EnemyManager() {
     _classCallCheck(this, EnemyManager);
 
-    this.game = game;
     this.enemyPool = [];
     this.spawnedEnemies = {};
     this.nextEnemyId = 0;
   }
 
   _createClass(EnemyManager, [{
+    key: "start",
+    value: function start() {
+      var _this = this;
+
+      this.timer = setInterval(function () {
+        var pos = new THREE.Vector3(Math.random() * 300 - 150, 15, -Math.random() * 1000);
+
+        _this.spawn(pos);
+      }, 5000);
+    }
+  }, {
+    key: "stop",
+    value: function stop() {
+      clearInterval(this.timer);
+      this.despawnAll();
+    }
+  }, {
     key: "spawn",
     value: function spawn(pos) {
       var enemy;
 
       if (this.enemyPool.length === 0) {
-        enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.game);
-        enemy.id = this.nextEnemyId;
+        enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.nextEnemyId);
         this.nextEnemyId += 1;
       } else {
         enemy = this.enemyPool.pop();
@@ -49397,10 +49461,10 @@ function () {
   }, {
     key: "despawnAll",
     value: function despawnAll() {
-      var _this = this;
+      var _this2 = this;
 
       Object.keys(this.spawnedEnemies).forEach(function (id) {
-        _this.despawn(id);
+        _this2.despawn(id);
       });
     }
   }]);
@@ -49465,10 +49529,9 @@ var COLORS = [0x460CFE, 0xBF0CFE, 0x0C4BFE, 0x0CC4FE]; // const COLORS = [
 var Environment =
 /*#__PURE__*/
 function () {
-  function Environment(scene) {
+  function Environment() {
     _classCallCheck(this, Environment);
 
-    this.scene = scene;
     this.Buildings();
     this.Ground();
   }
@@ -49480,11 +49543,11 @@ function () {
       // const building2 = new Building(0x5805FF, 1000);
       // building.position.x = -1000;
       // building.position.y = 350;
-      // this.scene.add(building);
+      // game.scene.add(building);
       // building2.position.x = -1000;
       // building2.position.y = 500;
       // building2.position.z = 250;
-      // this.scene.add(building2);
+      // game.scene.add(building2);
       var texture = new THREE.TextureLoader().load("src/textures/grid.png");
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
@@ -49497,7 +49560,7 @@ function () {
         building.position.x = -300;
         building.position.y = height / 2;
         building.position.z = 1500 - 225 * i;
-        this.scene.add(building);
+        game.scene.add(building);
       }
 
       for (var _i = 0; _i < 100; _i++) {
@@ -49510,7 +49573,7 @@ function () {
         _building.position.x = -800;
         _building.position.y = _height / 2;
         _building.position.z = 1550 - 225 * _i - 100;
-        this.scene.add(_building);
+        game.scene.add(_building);
       }
 
       for (var _i2 = 0; _i2 < 100; _i2++) {
@@ -49523,21 +49586,21 @@ function () {
         _building2.position.x = -1300;
         _building2.position.y = _height2 / 2;
         _building2.position.z = 1500 - 225 * _i2;
-        this.scene.add(_building2);
+        game.scene.add(_building2);
       } // const colorIndex1 = Math.floor(Math.random() * COLORS.length);
       // const height1 = Math.floor(Math.random() * 1400) + 1000;
       // const building1 = new Building(COLORS[colorIndex1], height1);
       // building1.position.x = -112;
       // building1.position.y = height1 / 2;
       // building1.position.z = -1500 - 225;
-      // this.scene.add(building1);
+      // game.scene.add(building1);
       // const colorIndex2 = Math.floor(Math.random() * COLORS.length);
       // const height2 = Math.floor(Math.random() * 1400) + 1000;
       // const building2 = new Building(COLORS[colorIndex2], height2);
       // building2.position.x = 112;
       // building2.position.y = height2 / 2;
       // building2.position.z = -1500 - 225;
-      // this.scene.add(building2);
+      // game.scene.add(building2);
       // for (let i = 0; i < 22; i++) {
       //   const colorIndex = Math.floor(Math.random() * COLORS.length);
       //   const height = Math.floor(Math.random() * 1700) + 100;
@@ -49545,7 +49608,7 @@ function () {
       //   building.position.x = -550;
       //   building.position.y = height/2;
       //   building.position.z = -2500 + 225 * i - 100;
-      //   this.scene.add(building);
+      //   game.scene.add(building);
       // }
 
 
@@ -49559,7 +49622,7 @@ function () {
         _building3.position.x = 300;
         _building3.position.y = _height3 / 2;
         _building3.position.z = 1500 - 225 * _i3;
-        this.scene.add(_building3);
+        game.scene.add(_building3);
       }
 
       for (var _i4 = 0; _i4 < 100; _i4++) {
@@ -49572,7 +49635,7 @@ function () {
         _building4.position.x = 800;
         _building4.position.y = _height4 / 2;
         _building4.position.z = 1550 - 225 * _i4;
-        this.scene.add(_building4);
+        game.scene.add(_building4);
       }
 
       for (var _i5 = 0; _i5 < 100; _i5++) {
@@ -49585,21 +49648,21 @@ function () {
         _building5.position.x = 1300;
         _building5.position.y = _height5 / 2;
         _building5.position.z = 1500 - 225 * _i5;
-        this.scene.add(_building5);
+        game.scene.add(_building5);
       } // const colorIndex3 = Math.floor(Math.random() * COLORS.length);
       // const height3 = Math.floor(Math.random() * 1400) + 1000;
       // const building3 = new Building(COLORS[colorIndex3], height3);
       // building3.position.x = -112;
       // building3.position.y = height3 / 2;
       // building3.position.z = 1400 + 225;
-      // this.scene.add(building3);
+      // game.scene.add(building3);
       // const colorIndex4 = Math.floor(Math.random() * COLORS.length);
       // const height4 = Math.floor(Math.random() * 1400) + 1000;
       // const building4 = new Building(COLORS[colorIndex4], height4);
       // building4.position.x = 112;
       // building4.position.y = height4 / 2;
       // building4.position.z = 1400 + 225;
-      // this.scene.add(building4);
+      // game.scene.add(building4);
       // for (let i = 0; i < 22; i++) {
       //   const colorIndex = Math.floor(Math.random() * COLORS.length);
       //   const height = Math.floor(Math.random() * 1700) + 100;
@@ -49607,7 +49670,7 @@ function () {
       //   building.position.x = 550;
       //   building.position.y = height/2;
       //   building.position.z = -2500 + 225 * i - 100;
-      //   this.scene.add(building);
+      //   game.scene.add(building);
       // }
 
     }
@@ -49628,8 +49691,10 @@ function () {
         geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, -length / 2));
         geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, length / 2));
         var line = new THREE.Line(geometry, lineMaterial);
-        line.tags = ['environment'];
-        this.scene.add(line);
+        line.params = {
+          tags: ['environment']
+        };
+        game.scene.add(line);
       }
 
       for (var _i6 = 0; _i6 < length / spacing; _i6++) {
@@ -49641,8 +49706,10 @@ function () {
 
         var _line = new THREE.Line(_geometry, lineMaterial);
 
-        _line.tags = ['environment'];
-        this.scene.add(_line);
+        _line.params = {
+          tags: ['environment']
+        };
+        game.scene.add(_line);
       }
     }
   }]);
@@ -49687,9 +49754,10 @@ function () {
   function Game() {
     _classCallCheck(this, Game);
 
+    window.game = this;
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
-    this.enemyManager = new _enemyManager__WEBPACK_IMPORTED_MODULE_4__["default"](this);
+    this.enemyManager = new _enemyManager__WEBPACK_IMPORTED_MODULE_4__["default"]();
     this.titleScreenTransitionSpeed = 1;
     this.isTransitioningToTitleScreen = false;
     this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);
@@ -49720,11 +49788,12 @@ function () {
     this.composer.setSize(window.innerWidth, window.innerHeight);
     this.composer.addPass(renderScene);
     this.composer.addPass(bloomPass);
-    this.ui = new _ui__WEBPACK_IMPORTED_MODULE_3__["default"](this);
-    var environment = new _environment__WEBPACK_IMPORTED_MODULE_1__["default"](this.scene);
-    window.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](this);
-    player.playerGroup.add(this.camera);
-    player.playerGroup.position.set(0, 1000, 0);
+    this.ui = new _ui__WEBPACK_IMPORTED_MODULE_3__["default"]();
+    var environment = new _environment__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    this.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](); // window.player = this.player;
+
+    this.player.playerGroup.add(this.camera);
+    this.player.playerGroup.position.set(0, 1000, 0);
     this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
     this.update = this.update.bind(this);
@@ -49744,14 +49813,14 @@ function () {
     key: "updateTitleScreenTransition",
     value: function updateTitleScreenTransition() {
       if (!this.isTransitioningToTitleScreen) return;
-      player.playerGroup.position.addScaledVector(this.titleScreenTransitionDirection, this.titleScreenTransitionSpeed);
+      game.player.playerGroup.position.addScaledVector(this.titleScreenTransitionDirection, this.titleScreenTransitionSpeed);
       this.titleScreenTransitionSpeed += 0.1;
 
-      if (this.titleScreenTransitionDirection.y == -1 && player.playerGroup.position.y < 15) {
+      if (this.titleScreenTransitionDirection.y == -1 && game.player.playerGroup.position.y < 15) {
         this.startGame();
       }
 
-      if (this.titleScreenTransitionDirection.y == 1 && player.playerGroup.position.y > 1000) {
+      if (this.titleScreenTransitionDirection.y == 1 && game.player.playerGroup.position.y > 1000) {
         this.endGame();
       }
     }
@@ -49767,9 +49836,9 @@ function () {
     key: "startGame",
     value: function startGame() {
       this.isTransitioningToTitleScreen = false;
-      player.playerGroup.position.y = 15;
-      player.enable();
-      this.enemyManager.spawn(new THREE.Vector3(0, 15, -100)); // const enemy = new Enemy(this.scene);
+      game.player.playerGroup.position.y = 15;
+      game.player.enable();
+      this.enemyManager.start(); // const enemy = new Enemy(this.scene);
 
       this.ui.showHud();
     }
@@ -49777,7 +49846,7 @@ function () {
     key: "gameOver",
     value: function gameOver() {
       this.endGameTransition();
-      this.enemyManager.despawnAll();
+      this.enemyManager.stop();
     }
   }, {
     key: "endGameTransition",
@@ -49785,13 +49854,13 @@ function () {
       this.titleScreenTransitionSpeed = 1;
       this.isTransitioningToTitleScreen = true;
       this.titleScreenTransitionDirection = new THREE.Vector3(0, 1, 0);
-      player.disable();
+      game.player.disable();
       this.ui.hideHud();
     }
   }, {
     key: "endGame",
     value: function endGame() {
-      player.playerGroup.position.y = 1000;
+      game.player.playerGroup.position.y = 1000;
       this.isTransitioningToTitleScreen = false;
       this.ui.showTitle();
       document.exitPointerLock();
@@ -49831,12 +49900,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Gun =
 /*#__PURE__*/
 function () {
-  function Gun(scene, player, camera) {
+  function Gun() {
     _classCallCheck(this, Gun);
 
-    this.scene = scene;
-    this.player = player;
-    this.camera = camera;
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.5, 0.5, 3);
     this.gunMesh = new _outlinedGeometry__WEBPACK_IMPORTED_MODULE_1__["default"]({
       geometry: geometry,
@@ -49844,6 +49910,9 @@ function () {
       color: 0x00ff00
     });
     this.gunMesh.position.set(1, -1, -3);
+    this.gunMesh.params = {
+      tags: ['player']
+    };
     this.shoot = this.shoot.bind(this);
     window.addEventListener("mousedown", this.shoot);
   }
@@ -49851,21 +49920,21 @@ function () {
   _createClass(Gun, [{
     key: "show",
     value: function show() {
-      this.player.playerGroup.add(this.gunMesh);
+      game.player.playerGroup.add(this.gunMesh);
     }
   }, {
     key: "hide",
     value: function hide() {
-      this.player.playerGroup.remove(this.gunMesh);
+      game.player.playerGroup.remove(this.gunMesh);
     }
   }, {
     key: "shoot",
     value: function shoot(e) {
-      if (!this.player.enabled) return;
+      if (!game.player.enabled) return;
       var cameraPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var cameraDir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-      this.camera.getWorldPosition(cameraPos);
-      this.camera.getWorldDirection(cameraDir); // const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
+      game.camera.getWorldPosition(cameraPos);
+      game.camera.getWorldDirection(cameraDir); // const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
       // let intersects = raycaster.intersectObjects(this.scene.children, true);
       // intersects = intersects.filter(obj => obj.object.name !== 'reticle');
       // console.log(intersects[0]);
@@ -49879,15 +49948,14 @@ function () {
       var cameraPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var cameraDir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var gunMeshPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-      this.camera.getWorldPosition(cameraPos);
-      this.camera.getWorldDirection(cameraDir);
+      game.camera.getWorldPosition(cameraPos);
+      game.camera.getWorldDirection(cameraDir);
       this.gunMesh.getWorldPosition(gunMeshPos);
       var centerVector = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var dir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       centerVector.addVectors(cameraPos, cameraDir.multiplyScalar(1000));
       dir.subVectors(centerVector, gunMeshPos).normalize();
       new _bullet__WEBPACK_IMPORTED_MODULE_2__["default"]({
-        scene: this.scene,
         position: gunMeshPos,
         direction: dir,
         color: 0x00ff00,
@@ -49978,8 +50046,8 @@ squareOutline.repeat.set(1, 1);
       meshColor = _ref$meshColor === void 0 ? 0x000000 : _ref$meshColor,
       _ref$lineWidth = _ref.lineWidth,
       lineWidth = _ref$lineWidth === void 0 ? 4 : _ref$lineWidth,
-      _ref$tags = _ref.tags,
-      tags = _ref$tags === void 0 ? '' : _ref$tags,
+      _ref$params = _ref.params,
+      params = _ref$params === void 0 ? {} : _ref$params,
       _ref$createMesh = _ref.createMesh,
       createMesh = _ref$createMesh === void 0 ? true : _ref$createMesh;
   var group = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
@@ -49993,7 +50061,7 @@ squareOutline.repeat.set(1, 1);
 
     });
     var mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, meshMaterial);
-    mesh.tags = tags;
+    mesh.params = params;
     group.add(mesh);
   } // const geo = new THREE.EdgesGeometry(geometry);
   // const mat = new THREE.LineBasicMaterial({ color: lineColor });
@@ -50033,12 +50101,11 @@ circleFade.repeat.set(1, 1);
 var BulletHit =
 /*#__PURE__*/
 function () {
-  function BulletHit(scene, point, color) {
+  function BulletHit(parent, point, color) {
     var size = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
 
     _classCallCheck(this, BulletHit);
 
-    this.scene = scene;
     this.particleCount = 280;
     this.speed = 2;
     this.lifetime = 1000;
@@ -50069,7 +50136,7 @@ function () {
       alphaTest: 0.3
     });
     this.particles = new three__WEBPACK_IMPORTED_MODULE_0__["Points"](geometry, material);
-    scene.add(this.particles);
+    parent.add(this.particles);
     this.update = this.update.bind(this);
     this.destroy = this.destroy.bind(this);
     this.update();
@@ -50109,7 +50176,8 @@ function () {
     key: "destroy",
     value: function destroy() {
       this.destroyed = true;
-      this.scene.remove(this.particles);
+      game.scene.remove(this.particles);
+      this.particles = null;
     }
   }]);
 
@@ -50148,25 +50216,26 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Player =
 /*#__PURE__*/
 function () {
-  function Player(game) {
+  function Player() {
     _classCallCheck(this, Player);
 
-    this.game = game;
     this.enabled = false;
     this.health = 0;
     this.healthBar = document.getElementById('current-health');
     this.playerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
-    this.playerGroup.name = 'player';
-    this.playerGroup.tags = ['player'];
+    this.playerGroup.name = 'player'; // this.playerGroup.tags = ['player'];
+
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](10, 30, 10);
     var meshMaterial = new three__WEBPACK_IMPORTED_MODULE_0__["MeshBasicMaterial"]();
     var mesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](geometry, meshMaterial);
     mesh.position.set(0, 0, 0);
-    mesh.tags = ['player'];
+    mesh.params = {
+      tags: ['player']
+    };
     this.playerController = new _playerController__WEBPACK_IMPORTED_MODULE_3__["default"](this);
-    this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"](this.game.scene, this, this.game.camera);
+    this.gun = new _gun__WEBPACK_IMPORTED_MODULE_1__["default"]();
     this.playerGroup.add(mesh);
-    this.game.scene.add(this.playerGroup);
+    game.scene.add(this.playerGroup);
     this.reticle();
   }
 
@@ -50190,12 +50259,12 @@ function () {
   }, {
     key: "takeDamage",
     value: function takeDamage(amount) {
-      new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.playerGroup, new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, -40), 0x00ff00, 2);
+      var bulletHit = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.playerGroup, new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, -40), 0x00ff00, 2);
       this.health -= amount;
       this.healthBar.style.width = this.health + '%';
 
       if (this.health <= 0) {
-        this.game.gameOver();
+        game.gameOver();
       }
     }
   }, {
@@ -50509,10 +50578,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var UI =
 /*#__PURE__*/
 function () {
-  function UI(game) {
+  function UI() {
     _classCallCheck(this, UI);
 
-    this.game = game;
     this.startGame = this.startGame.bind(this);
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
@@ -50525,7 +50593,7 @@ function () {
     value: function startGame(e) {
       e.preventDefault();
       this.playButton.disabled = true;
-      this.game.startGameTransition();
+      game.startGameTransition();
       this.titleUI.classList.add("transparent");
     }
   }, {

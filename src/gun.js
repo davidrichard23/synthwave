@@ -4,14 +4,11 @@ import Bullet from './bullet';
 
 export default class Gun {
 
-  constructor(scene, player, camera) {
-    this.scene = scene;
-    this.player = player;
-    this.camera = camera;
-
+  constructor() {
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 3);
     this.gunMesh = new OutlinedGeometry({ geometry, name: 'gun', color: 0x00ff00});
     this.gunMesh.position.set(1, -1, -3);
+    this.gunMesh.params = { tags: ['player'] };
 
     this.shoot = this.shoot.bind(this);
 
@@ -19,21 +16,21 @@ export default class Gun {
   }
 
   show() {
-    this.player.playerGroup.add(this.gunMesh);
+    game.player.playerGroup.add(this.gunMesh);
   }
 
   hide() {
-    this.player.playerGroup.remove(this.gunMesh);
+    game.player.playerGroup.remove(this.gunMesh);
   }
 
   shoot(e) {
-    if (!this.player.enabled) return;
+    if (!game.player.enabled) return;
 
     const cameraPos = new THREE.Vector3();
     const cameraDir = new THREE.Vector3();
 
-    this.camera.getWorldPosition(cameraPos);
-    this.camera.getWorldDirection(cameraDir);
+    game.camera.getWorldPosition(cameraPos);
+    game.camera.getWorldDirection(cameraDir);
 
     // const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
     // let intersects = raycaster.intersectObjects(this.scene.children, true);
@@ -50,8 +47,8 @@ export default class Gun {
     const cameraDir = new THREE.Vector3();
     const gunMeshPos = new THREE.Vector3();
 
-    this.camera.getWorldPosition(cameraPos);
-    this.camera.getWorldDirection(cameraDir);
+    game.camera.getWorldPosition(cameraPos);
+    game.camera.getWorldDirection(cameraDir);
     this.gunMesh.getWorldPosition(gunMeshPos);
     
     const centerVector = new THREE.Vector3();
@@ -60,7 +57,7 @@ export default class Gun {
     centerVector.addVectors(cameraPos, cameraDir.multiplyScalar(1000));
     dir.subVectors(centerVector, gunMeshPos).normalize();
 
-    new Bullet({scene: this.scene, position: gunMeshPos, direction: dir, color: 0x00ff00, target: 'enemy'});
+    new Bullet({position: gunMeshPos, direction: dir, color: 0x00ff00, target: 'enemy'});
 
     // const endPoint = new THREE.Vector3();
     // endPoint.addVectors(gunMeshPos, dir.multiplyScalar(1000));

@@ -5,12 +5,10 @@ squareOutline.wrapS = THREE.RepeatWrapping;
 squareOutline.wrapT = THREE.RepeatWrapping;
 squareOutline.repeat.set(1, 1);
 
-export default function ({geometry, texture=squareOutline, lineColor = 0x00ff00, meshColor = 0x000000, lineWidth=4, tags='', createMesh=true}) {
+export default function ({geometry, texture=squareOutline, lineColor = 0x00ff00, meshColor = 0x000000, lineWidth=4, params={}, createMesh=true}) {
 
   const group = new THREE.Group();
 
-  
-  
   if (createMesh) {
     const meshMaterial = new THREE.MeshBasicMaterial({
       color: lineColor,
@@ -21,7 +19,7 @@ export default function ({geometry, texture=squareOutline, lineColor = 0x00ff00,
     });
 
     const mesh = new THREE.Mesh(geometry, meshMaterial);
-    mesh.tags = tags;
+    mesh.params = params;
     group.add(mesh);
   }
   

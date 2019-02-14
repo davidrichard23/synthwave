@@ -2,9 +2,7 @@ import * as THREE from 'three';
 
 export default class UI {
 
-  constructor(game) {
-    
-    this.game = game;
+  constructor() {
 
     this.startGame = this.startGame.bind(this);
     this.titleUI = document.getElementById('title-ui');
@@ -16,7 +14,7 @@ export default class UI {
   startGame(e) {
     e.preventDefault();
     this.playButton.disabled = true;
-    this.game.startGameTransition();
+    game.startGameTransition();
     this.titleUI.classList.add("transparent");
   }
   

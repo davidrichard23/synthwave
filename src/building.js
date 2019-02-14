@@ -20,7 +20,7 @@ export default class Building {
     });
     const geometry = new THREE.BoxGeometry(width, height, width);
     const building = new THREE.Mesh(geometry, meshMaterial);
-    building.tags = ['environment'];
+    building.params = {tags: ['environment']};
     this.group.add(building);
     // this.windows();
     
