@@ -3,6 +3,8 @@ export default class PlayerController {
   constructor(player) {
     this.player = player;
     this.speed = 2;
+    this.gravity = 0.1;
+    this.jumpVelocity = 4;
 
     this.rotation = { x: 0, y: 0 };
     this.keyPresses = {
@@ -10,6 +12,7 @@ export default class PlayerController {
       down: -1,
       left: -1,
       right: -1,
+      space: -1,
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -37,7 +40,20 @@ export default class PlayerController {
     if (this.player.playerGroup.position.x < -180) this.player.playerGroup.position.x = -180;
     if (this.player.playerGroup.position.x > 180) this.player.playerGroup.position.x = 180;
 
-    this.player.playerGroup.position.y = 15;
+    this.jump();
+  }
+
+  jump() {
+    if (this.keyPresses.space === 1) {
+      this.player.playerGroup.translateY(this.jumpVelocity);
+      this.jumpVelocity -= this.gravity;
+
+      if (this.player.playerGroup.position.y < 15) {
+        this.keyPresses.space = -1;
+        this.jumpVelocity = 4;
+      }
+    }
+    else this.player.playerGroup.position.y = 15;
   }
 
   
@@ -70,6 +86,9 @@ export default class PlayerController {
       case 68:
         this.keyPresses.right = 1;
         if (this.keyPresses.left === 1) this.keyPresses.left = 0;
+        break;
+      case 32:
+        if (this.keyPresses.space === -1) this.keyPresses.space = 1;
         break;
       default:
         return;

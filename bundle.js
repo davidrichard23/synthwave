@@ -50404,6 +50404,8 @@ function () {
 
     this.player = player;
     this.speed = 2;
+    this.gravity = 0.1;
+    this.jumpVelocity = 4;
     this.rotation = {
       x: 0,
       y: 0
@@ -50412,7 +50414,8 @@ function () {
       up: -1,
       down: -1,
       left: -1,
-      right: -1
+      right: -1,
+      space: -1
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
@@ -50435,7 +50438,20 @@ function () {
       if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
       if (this.player.playerGroup.position.x < -180) this.player.playerGroup.position.x = -180;
       if (this.player.playerGroup.position.x > 180) this.player.playerGroup.position.x = 180;
-      this.player.playerGroup.position.y = 15;
+      this.jump();
+    }
+  }, {
+    key: "jump",
+    value: function jump() {
+      if (this.keyPresses.space === 1) {
+        this.player.playerGroup.translateY(this.jumpVelocity);
+        this.jumpVelocity -= this.gravity;
+
+        if (this.player.playerGroup.position.y < 15) {
+          this.keyPresses.space = -1;
+          this.jumpVelocity = 4;
+        }
+      } else this.player.playerGroup.position.y = 15;
     }
   }, {
     key: "handleMouseMove",
@@ -50470,6 +50486,10 @@ function () {
         case 68:
           this.keyPresses.right = 1;
           if (this.keyPresses.left === 1) this.keyPresses.left = 0;
+          break;
+
+        case 32:
+          if (this.keyPresses.space === -1) this.keyPresses.space = 1;
           break;
 
         default:
