@@ -49539,19 +49539,12 @@ function () {
   _createClass(Environment, [{
     key: "Buildings",
     value: function Buildings() {
-      // const building = new Building();
-      // const building2 = new Building(0x5805FF, 1000);
-      // building.position.x = -1000;
-      // building.position.y = 350;
-      // game.scene.add(building);
-      // building2.position.x = -1000;
-      // building2.position.y = 500;
-      // building2.position.z = 250;
-      // game.scene.add(building2);
       var texture = new THREE.TextureLoader().load("src/textures/grid.png");
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(3, 12);
+      texture.repeat.set(3, 12); ////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Left buildings ///////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////
 
       for (var i = 0; i < 100; i++) {
         var colorIndex = Math.floor(Math.random() * COLORS.length);
@@ -49587,92 +49580,185 @@ function () {
         _building2.position.y = _height2 / 2;
         _building2.position.z = 1500 - 225 * _i2;
         game.scene.add(_building2);
-      } // const colorIndex1 = Math.floor(Math.random() * COLORS.length);
-      // const height1 = Math.floor(Math.random() * 1400) + 1000;
-      // const building1 = new Building(COLORS[colorIndex1], height1);
-      // building1.position.x = -112;
-      // building1.position.y = height1 / 2;
-      // building1.position.z = -1500 - 225;
-      // game.scene.add(building1);
-      // const colorIndex2 = Math.floor(Math.random() * COLORS.length);
-      // const height2 = Math.floor(Math.random() * 1400) + 1000;
-      // const building2 = new Building(COLORS[colorIndex2], height2);
-      // building2.position.x = 112;
-      // building2.position.y = height2 / 2;
-      // building2.position.z = -1500 - 225;
-      // game.scene.add(building2);
-      // for (let i = 0; i < 22; i++) {
-      //   const colorIndex = Math.floor(Math.random() * COLORS.length);
-      //   const height = Math.floor(Math.random() * 1700) + 100;
-      //   const building = new Building(COLORS[colorIndex], height);
-      //   building.position.x = -550;
-      //   building.position.y = height/2;
-      //   building.position.z = -2500 + 225 * i - 100;
-      //   game.scene.add(building);
-      // }
+      } ////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// front buildings //////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////
 
 
-      for (var _i3 = 0; _i3 < 100; _i3++) {
+      for (var _i3 = 0; _i3 < 8; _i3++) {
         var _colorIndex3 = Math.floor(Math.random() * COLORS.length);
 
-        var _height3 = Math.floor(Math.random() * 600) + 200;
+        var _height3 = Math.floor(Math.random() * 1000) + 600;
 
         var _building3 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex3], _height3);
 
-        _building3.position.x = 300;
+        _building3.position.x = -1300 + 225 * _i3;
         _building3.position.y = _height3 / 2;
-        _building3.position.z = 1500 - 225 * _i3;
+        _building3.position.z = -21000;
         game.scene.add(_building3);
       }
 
-      for (var _i4 = 0; _i4 < 100; _i4++) {
+      for (var _i4 = 0; _i4 < 8; _i4++) {
         var _colorIndex4 = Math.floor(Math.random() * COLORS.length);
 
-        var _height4 = Math.floor(Math.random() * 1100) + 400;
+        var _height4 = Math.floor(Math.random() * 1500) + 1000;
 
         var _building4 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex4], _height4);
 
-        _building4.position.x = 800;
+        _building4.position.x = -1300 + 225 * _i4;
         _building4.position.y = _height4 / 2;
-        _building4.position.z = 1550 - 225 * _i4;
+        _building4.position.z = -21500;
         game.scene.add(_building4);
       }
 
-      for (var _i5 = 0; _i5 < 100; _i5++) {
+      for (var _i5 = 0; _i5 < 8; _i5++) {
         var _colorIndex5 = Math.floor(Math.random() * COLORS.length);
 
-        var _height5 = Math.floor(Math.random() * 2000) + 100;
+        var _height5 = Math.floor(Math.random() * 2000) + 1500;
 
         var _building5 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex5], _height5);
 
-        _building5.position.x = 1300;
+        _building5.position.x = -1300 + 225 * _i5;
         _building5.position.y = _height5 / 2;
-        _building5.position.z = 1500 - 225 * _i5;
+        _building5.position.z = -22000;
         game.scene.add(_building5);
-      } // const colorIndex3 = Math.floor(Math.random() * COLORS.length);
-      // const height3 = Math.floor(Math.random() * 1400) + 1000;
-      // const building3 = new Building(COLORS[colorIndex3], height3);
-      // building3.position.x = -112;
-      // building3.position.y = height3 / 2;
-      // building3.position.z = 1400 + 225;
-      // game.scene.add(building3);
-      // const colorIndex4 = Math.floor(Math.random() * COLORS.length);
-      // const height4 = Math.floor(Math.random() * 1400) + 1000;
-      // const building4 = new Building(COLORS[colorIndex4], height4);
-      // building4.position.x = 112;
-      // building4.position.y = height4 / 2;
-      // building4.position.z = 1400 + 225;
-      // game.scene.add(building4);
-      // for (let i = 0; i < 22; i++) {
-      //   const colorIndex = Math.floor(Math.random() * COLORS.length);
-      //   const height = Math.floor(Math.random() * 1700) + 100;
-      //   const building = new Building(COLORS[colorIndex], height);
-      //   building.position.x = 550;
-      //   building.position.y = height/2;
-      //   building.position.z = -2500 + 225 * i - 100;
-      //   game.scene.add(building);
-      // }
+      }
 
+      for (var _i6 = 0; _i6 < 8; _i6++) {
+        var _colorIndex6 = Math.floor(Math.random() * COLORS.length);
+
+        var _height6 = Math.floor(Math.random() * 2000) + 1500;
+
+        var _building6 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex6], _height6);
+
+        _building6.position.x = -1300 + 225 * _i6;
+        _building6.position.y = _height6 / 2;
+        _building6.position.z = -22500;
+        game.scene.add(_building6);
+      }
+
+      for (var _i7 = 0; _i7 < 8; _i7++) {
+        var _colorIndex7 = Math.floor(Math.random() * COLORS.length);
+
+        var _height7 = Math.floor(Math.random() * 2000) + 1500;
+
+        var _building7 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex7], _height7);
+
+        _building7.position.x = -1300 + 225 * _i7;
+        _building7.position.y = _height7 / 2;
+        _building7.position.z = -23000;
+        game.scene.add(_building7);
+      } ////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Right buildings //////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////
+
+
+      for (var _i8 = 0; _i8 < 100; _i8++) {
+        var _colorIndex8 = Math.floor(Math.random() * COLORS.length);
+
+        var _height8 = Math.floor(Math.random() * 600) + 200;
+
+        var _building8 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex8], _height8);
+
+        _building8.position.x = 300;
+        _building8.position.y = _height8 / 2;
+        _building8.position.z = 1500 - 225 * _i8;
+        game.scene.add(_building8);
+      }
+
+      for (var _i9 = 0; _i9 < 100; _i9++) {
+        var _colorIndex9 = Math.floor(Math.random() * COLORS.length);
+
+        var _height9 = Math.floor(Math.random() * 1100) + 400;
+
+        var _building9 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex9], _height9);
+
+        _building9.position.x = 800;
+        _building9.position.y = _height9 / 2;
+        _building9.position.z = 1550 - 225 * _i9;
+        game.scene.add(_building9);
+      }
+
+      for (var _i10 = 0; _i10 < 100; _i10++) {
+        var _colorIndex10 = Math.floor(Math.random() * COLORS.length);
+
+        var _height10 = Math.floor(Math.random() * 2000) + 900;
+
+        var _building10 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex10], _height10);
+
+        _building10.position.x = 1300;
+        _building10.position.y = _height10 / 2;
+        _building10.position.z = 1500 - 225 * _i10;
+        game.scene.add(_building10);
+      } ////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////// Back buildings ///////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////
+
+
+      for (var _i11 = 0; _i11 < 8; _i11++) {
+        var _colorIndex11 = Math.floor(Math.random() * COLORS.length);
+
+        var _height11 = Math.floor(Math.random() * 1000) + 600;
+
+        var _building11 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex11], _height11);
+
+        _building11.position.x = -1300 + 225 * _i11;
+        _building11.position.y = _height11 / 2;
+        _building11.position.z = 1725;
+        game.scene.add(_building11);
+      }
+
+      for (var _i12 = 0; _i12 < 8; _i12++) {
+        var _colorIndex12 = Math.floor(Math.random() * COLORS.length);
+
+        var _height12 = Math.floor(Math.random() * 1500) + 1000;
+
+        var _building12 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex12], _height12);
+
+        _building12.position.x = -1300 + 225 * _i12;
+        _building12.position.y = _height12 / 2;
+        _building12.position.z = 2225;
+        game.scene.add(_building12);
+      }
+
+      for (var _i13 = 0; _i13 < 8; _i13++) {
+        var _colorIndex13 = Math.floor(Math.random() * COLORS.length);
+
+        var _height13 = Math.floor(Math.random() * 2000) + 1500;
+
+        var _building13 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex13], _height13);
+
+        _building13.position.x = -1300 + 225 * _i13;
+        _building13.position.y = _height13 / 2;
+        _building13.position.z = 2725;
+        game.scene.add(_building13);
+      }
+
+      for (var _i14 = 0; _i14 < 8; _i14++) {
+        var _colorIndex14 = Math.floor(Math.random() * COLORS.length);
+
+        var _height14 = Math.floor(Math.random() * 2000) + 1500;
+
+        var _building14 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex14], _height14);
+
+        _building14.position.x = -1300 + 225 * _i14;
+        _building14.position.y = _height14 / 2;
+        _building14.position.z = -22500;
+        game.scene.add(_building14);
+      }
+
+      for (var _i15 = 0; _i15 < 8; _i15++) {
+        var _colorIndex15 = Math.floor(Math.random() * COLORS.length);
+
+        var _height15 = Math.floor(Math.random() * 2000) + 1500;
+
+        var _building15 = new _building__WEBPACK_IMPORTED_MODULE_0__["default"](texture, COLORS[_colorIndex15], _height15);
+
+        _building15.position.x = -1300 + 225 * _i15;
+        _building15.position.y = _height15 / 2;
+        _building15.position.z = 3225;
+        game.scene.add(_building15);
+      }
     }
   }, {
     key: "Ground",
@@ -49697,12 +49783,12 @@ function () {
         game.scene.add(line);
       }
 
-      for (var _i6 = 0; _i6 < length / spacing; _i6++) {
+      for (var _i16 = 0; _i16 < length / spacing; _i16++) {
         var _geometry = new THREE.Geometry();
 
-        _geometry.vertices.push(new THREE.Vector3(-length / 2, 0, startY + spacing * _i6));
+        _geometry.vertices.push(new THREE.Vector3(-length / 2, 0, startY + spacing * _i16));
 
-        _geometry.vertices.push(new THREE.Vector3(length / 2, 0, startY + spacing * _i6));
+        _geometry.vertices.push(new THREE.Vector3(length / 2, 0, startY + spacing * _i16));
 
         var _line = new THREE.Line(_geometry, lineMaterial);
 
@@ -49774,7 +49860,7 @@ function () {
     this.scene.add(directionalLight);
     var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000); // this.camera.position.set(0, 1000, 0);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 30000); // this.camera.position.set(0, 1000, 0);
     // this.camera.lookAt(0, 900, -1000);
 
     this.scene.add(this.camera);

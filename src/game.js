@@ -31,7 +31,7 @@ export default class Game {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
 
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 30000);
     // this.camera.position.set(0, 1000, 0);
     // this.camera.lookAt(0, 900, -1000);
     this.scene.add(this.camera);
