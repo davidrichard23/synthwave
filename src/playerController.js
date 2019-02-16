@@ -60,8 +60,8 @@ export default class PlayerController {
   handleMouseMove(event) {
     if (!this.player.enabled) return;
 
-    this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
-    this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
+    this.rotation.x -= event.movementY * Math.PI / 180 * 0.05;
+    this.rotation.y -= event.movementX * Math.PI / 180 * 0.05;
     
     const euler = new THREE.Euler(0, 0, 0, 'YXZ');
     euler.x = this.rotation.x;

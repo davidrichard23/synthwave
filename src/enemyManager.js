@@ -9,8 +9,12 @@ export default class EnemyManager {
   }
   
   start() {
+
+    const pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
+    this.spawn(pos);
+    
     this.timer = setInterval(() => {
-      const pos = new THREE.Vector3(Math.random() * 300 - 150, 15, -Math.random() * 1000);
+      const pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
       this.spawn(pos);
     }, 5000);
   }

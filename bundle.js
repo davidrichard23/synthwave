@@ -49217,7 +49217,7 @@ function () {
         game.player.takeDamage(10);
       } else if (params.tags.includes('enemy')) {
         var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
-        game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
+        game.enemyManager.spawnedEnemies[params.id].takeDamage(20);
       } else {
         var bulletHitWhite = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xffffff, 1 + intersection.distance / 4);
       }
@@ -49284,7 +49284,7 @@ function () {
   _createClass(Enemy, [{
     key: "createMesh",
     value: function createMesh(id) {
-      var geometry = new THREE.BoxGeometry(10, 30, 10);
+      var geometry = new THREE.BoxGeometry(20, 50, 20);
       return new _outlinedGeometry__WEBPACK_IMPORTED_MODULE_0__["default"]({
         geometry: geometry,
         lineColor: 0xFE0C0C,
@@ -49301,7 +49301,7 @@ function () {
       var backgroundTexture = loader.load('src/textures/enemy-healthbar-background.png');
       var foregroundTexture = loader.load('src/textures/enemy-healthbar-foreground.png');
       var backgroundMaterial = new THREE.PointsMaterial({
-        size: 20,
+        size: 40,
         sizeAttenuation: true,
         map: backgroundTexture,
         alphaTest: 0.1,
@@ -49309,7 +49309,7 @@ function () {
         color: 0xFE0C0C
       });
       var foregroundMaterial = new THREE.PointsMaterial({
-        size: 20,
+        size: 40,
         sizeAttenuation: true,
         map: foregroundTexture,
         alphaTest: 0.1,
@@ -49318,7 +49318,7 @@ function () {
       });
       var backgroundGeometry = new THREE.BufferGeometry();
       var foregroundGeometry = new THREE.BufferGeometry();
-      var verticies = [0, 20, 0];
+      var verticies = [0, 35, 0];
       backgroundGeometry.addAttribute('position', new THREE.Float32BufferAttribute(verticies, 3));
       foregroundGeometry.addAttribute('position', new THREE.Float32BufferAttribute(verticies, 3));
       var background = new THREE.Points(backgroundGeometry, backgroundMaterial);
@@ -49348,7 +49348,7 @@ function () {
     key: "takeDamage",
     value: function takeDamage(amount) {
       this.health -= amount;
-      this.healthbar.material.size = 20 / (100 / this.health);
+      this.healthbar.material.size = 35 / (100 / this.health);
 
       if (this.health <= 0) {
         game.enemyManager.despawn(this.id);
@@ -49359,7 +49359,7 @@ function () {
     value: function enable() {
       game.scene.add(this.enemyGroup);
       this.health = 100;
-      this.healthbar.material.size = 20 / (100 / this.health);
+      this.healthbar.material.size = 35 / (100 / this.health);
       this.enabled = true;
       this.update();
     }
@@ -49422,8 +49422,10 @@ function () {
     value: function start() {
       var _this = this;
 
+      var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
+      this.spawn(pos);
       this.timer = setInterval(function () {
-        var pos = new THREE.Vector3(Math.random() * 300 - 150, 15, -Math.random() * 1000);
+        var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
 
         _this.spawn(pos);
       }, 5000);
@@ -50457,8 +50459,8 @@ function () {
     key: "handleMouseMove",
     value: function handleMouseMove(event) {
       if (!this.player.enabled) return;
-      this.rotation.x -= event.movementY * Math.PI / 180 * 0.1;
-      this.rotation.y -= event.movementX * Math.PI / 180 * 0.1;
+      this.rotation.x -= event.movementY * Math.PI / 180 * 0.05;
+      this.rotation.y -= event.movementX * Math.PI / 180 * 0.05;
       var euler = new THREE.Euler(0, 0, 0, 'YXZ');
       euler.x = this.rotation.x;
       euler.y = this.rotation.y;

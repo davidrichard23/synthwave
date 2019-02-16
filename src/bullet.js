@@ -73,7 +73,7 @@ export default class Bullet {
     }
     else if (params.tags.includes('enemy')) {
       const bulletHitColor = new BulletHit(game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance/4);
-      game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
+      game.enemyManager.spawnedEnemies[params.id].takeDamage(20);
     }
     else {
       const bulletHitWhite = new BulletHit(game.scene, intersection.point, 0xffffff, 1 + intersection.distance/4 );
