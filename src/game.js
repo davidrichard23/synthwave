@@ -1,3 +1,4 @@
+import { Howl, Howler } from 'howler';
 import Player from './player';
 import Environment from './environment';
 import Enemy from './enemy';
@@ -57,6 +58,17 @@ export default class Game {
     // window.player = this.player;
     this.player.playerGroup.add(this.camera);
     this.player.playerGroup.position.set(0, 1000, 0);
+
+
+    const sound = new Howl({
+      src: ['src/audio/starburst-dreams.mp3'],
+      autoplay: true,
+      loop: true,
+      volume: 1,
+      onend: function () {
+        console.log('Finished!');
+      }
+    });
     
 
     this.startGameTransition = this.startGameTransition.bind(this);
