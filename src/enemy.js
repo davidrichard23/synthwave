@@ -10,8 +10,8 @@ export default class Enemy {
     this.health = 100;
     this.script = this;
     this.id = id;
-    this.moveDirection = new THREE.Vector3(-1,0,0);
-    this.speed = 1;
+    this.moveDirection = new THREE.Vector3(Math.random() > 0.5 ? 1 : -1, 0, Math.random() > 0.5 ? 1 : -1);
+    this.speed = 1.5;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
 
@@ -114,11 +114,16 @@ export default class Enemy {
                           game.clock.elapsedTime > this.lastDirSwitch.x + this.minDirSwitchTime) || 
                           this.enemyGroup.position.x < -179 || 
                           this.enemyGroup.position.x > 179;
-    const shouldSwitchY = Math.random() > 0.99;
+    const shouldSwitchZ = (Math.random() > 0.99 && 
+                          game.clock.elapsedTime > this.lastDirSwitch.y + this.minDirSwitchTime)
 
     if (shouldSwitchX) {
       this.lastDirSwitch.x = game.clock.elapsedTime;
       this.moveDirection.x *= -1;
+    }
+    if (shouldSwitchZ) {
+      this.lastDirSwitch.z = game.clock.elapsedTime;
+      this.moveDirection.z *= -1;
     }
 
     this.moveDirection = this.moveDirection.normalize();
