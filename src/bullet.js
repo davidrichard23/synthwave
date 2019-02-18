@@ -57,7 +57,7 @@ export default class Bullet {
     intersects = intersects.filter(intersection => {
       const params = intersection.object.params || { tags: [] };
       params.tags = params.tags || [];
-      return params.tags.includes('player') || params.tags.includes('enemy') || params.tags.includes('environment');
+      return params.tags.includes('player') || params.tags.includes('enemy') || params.tags.includes('environment') || params.tags.includes('bullet');
     });
     if (intersects.length > 0) {
       this.onHit(intersects[0]);

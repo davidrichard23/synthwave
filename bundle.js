@@ -52377,7 +52377,7 @@ function () {
           tags: []
         };
         params.tags = params.tags || [];
-        return params.tags.includes('player') || params.tags.includes('enemy') || params.tags.includes('environment');
+        return params.tags.includes('player') || params.tags.includes('enemy') || params.tags.includes('environment') || params.tags.includes('bullet');
       });
 
       if (intersects.length > 0) {
@@ -52635,6 +52635,7 @@ function () {
     this.enemyPool = [];
     this.spawnedEnemies = {};
     this.nextEnemyId = 0;
+    this.maxSpawnCount = 4;
     this.minSpawnTime = 5;
     this.update = this.update.bind(this);
   }
@@ -52695,6 +52696,8 @@ function () {
     value: function update() {
       requestAnimationFrame(this.update);
       if (!this.enabled) return;
+      var spawnCount = this.spawnedEnemies.length;
+      if (spawnCount >= this.maxSpawnCount) return;
 
       if (game.clock.elapsedTime > this.nextSpawnTime) {
         this.nextSpawnTime = game.clock.elapsedTime + this.minSpawnTime;
