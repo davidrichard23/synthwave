@@ -52396,7 +52396,7 @@ function () {
         game.player.takeDamage(10);
       } else if (params.tags.includes('enemy')) {
         var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
-        game.enemyManager.spawnedEnemies[params.id].takeDamage(20);
+        game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
       } else {
         var bulletHitWhite = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xffffff, 1 + intersection.distance / 4);
       }
@@ -52452,7 +52452,7 @@ function () {
     this.script = this;
     this.id = id;
     this.moveDirection = new THREE.Vector3(Math.random() > 0.5 ? 1 : -1, 0, Math.random() > 0.5 ? 1 : -1);
-    this.speed = 1.5;
+    this.speed = 1;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
     this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
@@ -52631,16 +52631,20 @@ function () {
   function EnemyManager() {
     _classCallCheck(this, EnemyManager);
 
+    this.enabled = false;
     this.enemyPool = [];
     this.spawnedEnemies = {};
     this.nextEnemyId = 0;
+    this.minSpawnTime = 5;
+    this.update = this.update.bind(this);
   }
 
   _createClass(EnemyManager, [{
     key: "start",
     value: function start() {
-      var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
-      this.spawn(pos); // this.timer = setInterval(() => {
+      this.enabled = true;
+      this.nextSpawnTime = game.clock.elapsedTime;
+      this.update(); // this.timer = setInterval(() => {
       //   const pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
       //   this.spawn(pos);
       // }, 5000);
@@ -52649,12 +52653,14 @@ function () {
     key: "stop",
     value: function stop() {
       // clearInterval(this.timer);
+      this.enabled = false;
       this.despawnAll();
     }
   }, {
     key: "spawn",
-    value: function spawn(pos) {
+    value: function spawn() {
       var enemy;
+      var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
 
       if (this.enemyPool.length === 0) {
         enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.nextEnemyId);
@@ -52683,6 +52689,17 @@ function () {
       Object.keys(this.spawnedEnemies).forEach(function (id) {
         _this.despawn(id);
       });
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      requestAnimationFrame(this.update);
+      if (!this.enabled) return;
+
+      if (game.clock.elapsedTime > this.nextSpawnTime) {
+        this.nextSpawnTime = game.clock.elapsedTime + this.minSpawnTime;
+        this.spawn();
+      }
     }
   }]);
 

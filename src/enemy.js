@@ -11,7 +11,7 @@ export default class Enemy {
     this.script = this;
     this.id = id;
     this.moveDirection = new THREE.Vector3(Math.random() > 0.5 ? 1 : -1, 0, Math.random() > 0.5 ? 1 : -1);
-    this.speed = 1.5;
+    this.speed = 1;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
     this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
