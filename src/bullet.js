@@ -18,7 +18,7 @@ export default class Bullet {
     this.width = 8;
 
     const geometry = new THREE.BoxGeometry(this.width, this.width, this.width);
-    this.bullet = new OutlinedGeometry({ geometry, texture: squareOutlineThick, lineColor: color, meshColor: 0xffffff, params: {tags: ['bullet', 'enemy-bullet']}});
+    this.bullet = new OutlinedGeometry({ geometry, texture: squareOutlineThick, lineColor: color, meshColor: 0xffffff, params: {tags: ['bullet']}});
     this.group.position.set(position.x, position.y, position.z);
     // this.group.tags = ['bullet, enemy-bullet'];
     
@@ -71,7 +71,7 @@ export default class Bullet {
     if (params.tags.includes('player')) {
       game.player.takeDamage(10);
     }
-    else if (params.tags.includes('enemy')) {
+    else if (params.tags.includes('enemy') && this.target === 'enemy') {
       const bulletHitColor = new BulletHit(game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance/4);
       game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
     }

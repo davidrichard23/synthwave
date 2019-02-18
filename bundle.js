@@ -52339,7 +52339,7 @@ function () {
       lineColor: color,
       meshColor: 0xffffff,
       params: {
-        tags: ['bullet', 'enemy-bullet']
+        tags: ['bullet']
       }
     });
     this.group.position.set(position.x, position.y, position.z); // this.group.tags = ['bullet, enemy-bullet'];
@@ -52394,7 +52394,7 @@ function () {
 
       if (params.tags.includes('player')) {
         game.player.takeDamage(10);
-      } else if (params.tags.includes('enemy')) {
+      } else if (params.tags.includes('enemy') && this.target === 'enemy') {
         var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
         game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
       } else {
@@ -52451,8 +52451,8 @@ function () {
     this.health = 100;
     this.script = this;
     this.id = id;
-    this.moveDirection = new THREE.Vector3(Math.random() > 0.5 ? 1 : -1, 0, Math.random() > 0.5 ? 1 : -1);
-    this.speed = 1;
+    this.moveDirection = new THREE.Vector3(Math.random() * 2 - 1, 0, Math.random() * 2 - 1).normalize();
+    this.speed = 1.3;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
     this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
@@ -52582,12 +52582,12 @@ function () {
 
       if (shouldSwitchX) {
         this.lastDirSwitch.x = game.clock.elapsedTime;
-        this.moveDirection.x *= -1;
+        this.moveDirection.x = Math.random() * 2 - 1;
       }
 
       if (shouldSwitchZ) {
         this.lastDirSwitch.z = game.clock.elapsedTime;
-        this.moveDirection.z *= -1;
+        this.moveDirection.z = Math.random() * 2 - 1;
       }
 
       this.moveDirection = this.moveDirection.normalize();
@@ -52696,7 +52696,7 @@ function () {
     value: function update() {
       requestAnimationFrame(this.update);
       if (!this.enabled) return;
-      var spawnCount = this.spawnedEnemies.length;
+      var spawnCount = Object.keys(this.spawnedEnemies).length;
       if (spawnCount >= this.maxSpawnCount) return;
 
       if (game.clock.elapsedTime > this.nextSpawnTime) {

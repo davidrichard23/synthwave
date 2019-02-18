@@ -68,9 +68,9 @@ export default class EnemyManager {
 
     if (!this.enabled) return;
 
-    const spawnCount = this.spawnedEnemies.length;
+    const spawnCount = Object.keys(this.spawnedEnemies).length;
     if (spawnCount >= this.maxSpawnCount) return;
-    
+
     if (game.clock.elapsedTime > this.nextSpawnTime) {
       this.nextSpawnTime = game.clock.elapsedTime + this.minSpawnTime;
       this.spawn();
