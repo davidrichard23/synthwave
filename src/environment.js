@@ -24,7 +24,7 @@ const COLORS = [
   0x460CFE,
   0xBF0CFE,
   0x0C4BFE,
-  0x0CC4FE,
+  0x0C8FFE,
 ];
 
 // const COLORS = [
@@ -96,7 +96,7 @@ export default class Environment {
     ///////////////////////////// front buildings //////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 1000) + 600;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -106,7 +106,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 1500) + 1000;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -116,7 +116,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 2000) + 1500;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -126,7 +126,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 2000) + 1500;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -136,7 +136,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 2000) + 1500;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -191,7 +191,7 @@ export default class Environment {
     ///////////////////////////// Back buildings ///////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 1000) + 600;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -201,7 +201,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 1500) + 1000;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -211,7 +211,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 2000) + 1500;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -221,7 +221,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 2000) + 1500;
       const building = new Building(texture, COLORS[colorIndex], height);
@@ -231,7 +231,7 @@ export default class Environment {
       game.scene.add(building);
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const colorIndex = Math.floor(Math.random() * COLORS.length);
       const height = Math.floor(Math.random() * 2000) + 1500;
       const building = new Building(texture, COLORS[colorIndex], height);

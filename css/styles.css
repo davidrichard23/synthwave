@@ -104,18 +104,25 @@ canvas {
 
 .health-bar-container {
   position: absolute;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
   background-color: rgba(0,0,0,0.8);
-  height: 30px; 
+  height: 22px; 
   width: 75vw;
   left: 12.5vw;
   bottom: 70px;
   border-radius: 15px;
   overflow: hidden;
-  border: solid white 2px;
+  border: solid #0EC65D 1px;
+  box-shadow: 0 0 10px 0px #0EC65D,
+              0 0 20px 0px #0EC65D;
+  padding: 4px;
 }
 #current-health {
   background-color: #0EC65D;
   height: 100%;
   width: 100%;
   transition: width 400ms ease-in-out;
+  border-radius: 15px;
 }

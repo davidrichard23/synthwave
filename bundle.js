@@ -52451,6 +52451,10 @@ function () {
     this.health = 100;
     this.script = this;
     this.id = id;
+    this.moveDirection = new THREE.Vector3(-1, 0, 0);
+    this.speed = 1;
+    this.gravity = 0.1;
+    this.jumpVelocity = 4;
     this.enemyGroup = new THREE.Group();
     var body = this.createMesh(id);
     this.enemyGroup.add(body);
@@ -52458,6 +52462,7 @@ function () {
     this.update = this.update.bind(this);
     this.healthbar();
     this.shootTimer();
+    this.update();
   }
 
   _createClass(Enemy, [{
@@ -52555,7 +52560,27 @@ function () {
     }
   }, {
     key: "update",
-    value: function update() {// requestAnimationFrame(this.update);
+    value: function update() {
+      requestAnimationFrame(this.update);
+      this.enemyGroup.translateOnAxis(this.moveDirection, this.speed); // if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
+      // if (this.keyPresses.left === 1) this.player.playerGroup.translateX(-this.speed);
+      // if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
+
+      if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
+      if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
+      this.chooseDirection();
+      this.jump();
+    }
+  }, {
+    key: "chooseDirection",
+    value: function chooseDirection() {
+      if (this.enemyGroup.position.x < -179) this.moveDirection.x = 1;
+      if (this.enemyGroup.position.x > 179) this.moveDirection.x = -1;
+    }
+  }, {
+    key: "jump",
+    value: function jump() {
+      if (false) {} else this.enemyGroup.position.y = 25;
     }
   }]);
 
@@ -52599,20 +52624,16 @@ function () {
   _createClass(EnemyManager, [{
     key: "start",
     value: function start() {
-      var _this = this;
-
       var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
-      this.spawn(pos);
-      this.timer = setInterval(function () {
-        var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
-
-        _this.spawn(pos);
-      }, 5000);
+      this.spawn(pos); // this.timer = setInterval(() => {
+      //   const pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
+      //   this.spawn(pos);
+      // }, 5000);
     }
   }, {
     key: "stop",
     value: function stop() {
-      clearInterval(this.timer);
+      // clearInterval(this.timer);
       this.despawnAll();
     }
   }, {
@@ -52642,10 +52663,10 @@ function () {
   }, {
     key: "despawnAll",
     value: function despawnAll() {
-      var _this2 = this;
+      var _this = this;
 
       Object.keys(this.spawnedEnemies).forEach(function (id) {
-        _this2.despawn(id);
+        _this.despawn(id);
       });
     }
   }]);
@@ -52695,7 +52716,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // ];
 // 0xBE00FF,
 
-var COLORS = [0x460CFE, 0xBF0CFE, 0x0C4BFE, 0x0CC4FE]; // const COLORS = [
+var COLORS = [0x460CFE, 0xBF0CFE, 0x0C4BFE, 0x0C8FFE]; // const COLORS = [
 //   0x00FFF7,
 //   0x00AEFF,
 //   0x8100FF,
@@ -52766,7 +52787,7 @@ function () {
       ////////////////////////////////////////////////////////////////////////////
 
 
-      for (var _i3 = 0; _i3 < 8; _i3++) {
+      for (var _i3 = 0; _i3 < 12; _i3++) {
         var _colorIndex3 = Math.floor(Math.random() * COLORS.length);
 
         var _height3 = Math.floor(Math.random() * 1000) + 600;
@@ -52779,7 +52800,7 @@ function () {
         game.scene.add(_building3);
       }
 
-      for (var _i4 = 0; _i4 < 8; _i4++) {
+      for (var _i4 = 0; _i4 < 12; _i4++) {
         var _colorIndex4 = Math.floor(Math.random() * COLORS.length);
 
         var _height4 = Math.floor(Math.random() * 1500) + 1000;
@@ -52792,7 +52813,7 @@ function () {
         game.scene.add(_building4);
       }
 
-      for (var _i5 = 0; _i5 < 8; _i5++) {
+      for (var _i5 = 0; _i5 < 12; _i5++) {
         var _colorIndex5 = Math.floor(Math.random() * COLORS.length);
 
         var _height5 = Math.floor(Math.random() * 2000) + 1500;
@@ -52805,7 +52826,7 @@ function () {
         game.scene.add(_building5);
       }
 
-      for (var _i6 = 0; _i6 < 8; _i6++) {
+      for (var _i6 = 0; _i6 < 12; _i6++) {
         var _colorIndex6 = Math.floor(Math.random() * COLORS.length);
 
         var _height6 = Math.floor(Math.random() * 2000) + 1500;
@@ -52818,7 +52839,7 @@ function () {
         game.scene.add(_building6);
       }
 
-      for (var _i7 = 0; _i7 < 8; _i7++) {
+      for (var _i7 = 0; _i7 < 12; _i7++) {
         var _colorIndex7 = Math.floor(Math.random() * COLORS.length);
 
         var _height7 = Math.floor(Math.random() * 2000) + 1500;
@@ -52876,7 +52897,7 @@ function () {
       ////////////////////////////////////////////////////////////////////////////
 
 
-      for (var _i11 = 0; _i11 < 8; _i11++) {
+      for (var _i11 = 0; _i11 < 12; _i11++) {
         var _colorIndex11 = Math.floor(Math.random() * COLORS.length);
 
         var _height11 = Math.floor(Math.random() * 1000) + 600;
@@ -52889,7 +52910,7 @@ function () {
         game.scene.add(_building11);
       }
 
-      for (var _i12 = 0; _i12 < 8; _i12++) {
+      for (var _i12 = 0; _i12 < 12; _i12++) {
         var _colorIndex12 = Math.floor(Math.random() * COLORS.length);
 
         var _height12 = Math.floor(Math.random() * 1500) + 1000;
@@ -52902,7 +52923,7 @@ function () {
         game.scene.add(_building12);
       }
 
-      for (var _i13 = 0; _i13 < 8; _i13++) {
+      for (var _i13 = 0; _i13 < 12; _i13++) {
         var _colorIndex13 = Math.floor(Math.random() * COLORS.length);
 
         var _height13 = Math.floor(Math.random() * 2000) + 1500;
@@ -52915,7 +52936,7 @@ function () {
         game.scene.add(_building13);
       }
 
-      for (var _i14 = 0; _i14 < 8; _i14++) {
+      for (var _i14 = 0; _i14 < 12; _i14++) {
         var _colorIndex14 = Math.floor(Math.random() * COLORS.length);
 
         var _height14 = Math.floor(Math.random() * 2000) + 1500;
@@ -52928,7 +52949,7 @@ function () {
         game.scene.add(_building14);
       }
 
-      for (var _i15 = 0; _i15 < 8; _i15++) {
+      for (var _i15 = 0; _i15 < 12; _i15++) {
         var _colorIndex15 = Math.floor(Math.random() * COLORS.length);
 
         var _height15 = Math.floor(Math.random() * 2000) + 1500;

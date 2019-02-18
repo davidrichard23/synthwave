@@ -10,6 +10,10 @@ export default class Enemy {
     this.health = 100;
     this.script = this;
     this.id = id;
+    this.moveDirection = new THREE.Vector3(-1,0,0);
+    this.speed = 1;
+    this.gravity = 0.1;
+    this.jumpVelocity = 4;
     
     this.enemyGroup = new THREE.Group();
     const body = this.createMesh(id);
@@ -21,6 +25,7 @@ export default class Enemy {
     
     this.healthbar();
     this.shootTimer();
+    this.update();
   }
 
   createMesh(id) {
@@ -86,7 +91,35 @@ export default class Enemy {
 
   update() {
     
-    // requestAnimationFrame(this.update);
+    requestAnimationFrame(this.update);
+    
+    this.enemyGroup.translateOnAxis(this.moveDirection, this.speed);
+    // if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
+    // if (this.keyPresses.left === 1) this.player.playerGroup.translateX(-this.speed);
+    // if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
 
+    if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
+    if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
+    this.chooseDirection();
+    this.jump();
+  }
+
+  chooseDirection() {
+
+    if (this.enemyGroup.position.x < -179) this.moveDirection.x = 1;
+    if (this.enemyGroup.position.x > 179) this.moveDirection.x = -1;
+  }
+
+  jump() {
+    if (false) {
+      this.enemyGroup.translateY(this.jumpVelocity);
+      this.jumpVelocity -= this.gravity;
+
+      if (this.enemyGroup.position.y < 15) {
+        this.keyPresses.space = -1;
+        this.jumpVelocity = 4;
+      }
+    }
+    else this.enemyGroup.position.y = 25;
   }
 }
