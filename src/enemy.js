@@ -14,6 +14,7 @@ export default class Enemy {
     this.speed = 1.5;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
+    this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
 
     this.minDirSwitchTime = 1;
     this.lastDirSwitch = new THREE.Vector2(0,0);
@@ -27,7 +28,6 @@ export default class Enemy {
     this.update = this.update.bind(this);
     
     this.healthbar();
-    this.shootTimer();
     this.update();
   }
 
@@ -52,10 +52,6 @@ export default class Enemy {
     this.healthbar = new THREE.Points(foregroundGeometry, foregroundMaterial);
     this.enemyGroup.add(background);
     this.enemyGroup.add(this.healthbar);
-  }
-
-  shootTimer() {
-    setInterval(this.shoot, 2000);
   }
 
   shoot() {
@@ -100,9 +96,14 @@ export default class Enemy {
     // if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
     // if (this.keyPresses.left === 1) this.player.playerGroup.translateX(-this.speed);
     // if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
-
+    
     if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
     if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
+    
+    if (game.clock.elapsedTime > this.nextShootTime) {
+      this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+      this.shoot();
+    }
 
     this.chooseDirection();
     this.jump();

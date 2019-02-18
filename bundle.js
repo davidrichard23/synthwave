@@ -52455,6 +52455,7 @@ function () {
     this.speed = 1.5;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
+    this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
     this.minDirSwitchTime = 1;
     this.lastDirSwitch = new THREE.Vector2(0, 0);
     this.enemyGroup = new THREE.Group();
@@ -52463,7 +52464,6 @@ function () {
     this.shoot = this.shoot.bind(this);
     this.update = this.update.bind(this);
     this.healthbar();
-    this.shootTimer();
     this.update();
   }
 
@@ -52511,11 +52511,6 @@ function () {
       this.healthbar = new THREE.Points(foregroundGeometry, foregroundMaterial);
       this.enemyGroup.add(background);
       this.enemyGroup.add(this.healthbar);
-    }
-  }, {
-    key: "shootTimer",
-    value: function shootTimer() {
-      setInterval(this.shoot, 2000);
     }
   }, {
     key: "shoot",
@@ -52570,6 +52565,12 @@ function () {
 
       if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
       if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
+
+      if (game.clock.elapsedTime > this.nextShootTime) {
+        this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+        this.shoot();
+      }
+
       this.chooseDirection();
       this.jump();
     }
