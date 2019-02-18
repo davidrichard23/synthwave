@@ -14,6 +14,9 @@ export default class Enemy {
     this.speed = 1;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
+
+    this.minDirSwitchTime = 1;
+    this.lastDirSwitch = new THREE.Vector2(0,0);
     
     this.enemyGroup = new THREE.Group();
     const body = this.createMesh(id);
@@ -100,14 +103,25 @@ export default class Enemy {
 
     if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
     if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
+
     this.chooseDirection();
     this.jump();
   }
 
   chooseDirection() {
 
-    if (this.enemyGroup.position.x < -179) this.moveDirection.x = 1;
-    if (this.enemyGroup.position.x > 179) this.moveDirection.x = -1;
+    const shouldSwitchX = (Math.random() > 0.99 && 
+                          game.clock.elapsedTime > this.lastDirSwitch.x + this.minDirSwitchTime) || 
+                          this.enemyGroup.position.x < -179 || 
+                          this.enemyGroup.position.x > 179;
+    const shouldSwitchY = Math.random() > 0.99;
+
+    if (shouldSwitchX) {
+      this.lastDirSwitch.x = game.clock.elapsedTime;
+      this.moveDirection.x *= -1;
+    }
+
+    this.moveDirection = this.moveDirection.normalize();
   }
 
   jump() {
