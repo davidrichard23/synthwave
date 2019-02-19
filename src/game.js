@@ -10,6 +10,8 @@ export default class Game {
 
   constructor() {
     window.game = this;
+    this.timeScore = 0;
+    this.objectiveScore = 0;
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
     this.enemyManager = new EnemyManager();
@@ -83,10 +85,18 @@ export default class Game {
     
     stats.begin();
     
+    this.updateTimeScore();
     this.updateTitleScreenTransition();
     this.composer.render(this.clock.getDelta());
     
     stats.end();
+  }
+
+  updateTimeScore() {
+    if (!this.player.enabled) return;
+
+    this.timeScore = 123 * this.clock.elapsedTime;
+    console.log(this.timeScore)
   }
 
   updateTitleScreenTransition() {
@@ -113,6 +123,8 @@ export default class Game {
   }
   
   startGame() {
+    this.timeScore = 0;
+    this.objectiveScore = 0;
     this.isTransitioningToTitleScreen = false;
     game.player.playerGroup.position.y = 15;
     game.player.enable();

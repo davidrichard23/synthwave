@@ -53127,6 +53127,8 @@ function () {
     _classCallCheck(this, Game);
 
     window.game = this;
+    this.timeScore = 0;
+    this.objectiveScore = 0;
     this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
     this.enemyManager = new _enemyManager__WEBPACK_IMPORTED_MODULE_5__["default"]();
@@ -53186,9 +53188,17 @@ function () {
     value: function update() {
       requestAnimationFrame(this.update);
       stats.begin();
+      this.updateTimeScore();
       this.updateTitleScreenTransition();
       this.composer.render(this.clock.getDelta());
       stats.end();
+    }
+  }, {
+    key: "updateTimeScore",
+    value: function updateTimeScore() {
+      if (!this.player.enabled) return;
+      this.timeScore = 123 * this.clock.elapsedTime;
+      console.log(this.timeScore);
     }
   }, {
     key: "updateTitleScreenTransition",
@@ -53216,6 +53226,8 @@ function () {
   }, {
     key: "startGame",
     value: function startGame() {
+      this.timeScore = 0;
+      this.objectiveScore = 0;
       this.isTransitioningToTitleScreen = false;
       game.player.playerGroup.position.y = 15;
       game.player.enable();
