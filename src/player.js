@@ -48,7 +48,7 @@ export default class Player {
   
 
   takeDamage(amount) {
-    const bulletHit = new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 2);
+    new BulletHit(this.playerGroup, new THREE.Vector3(0, 0, -40), 0x00ff00, 15, 1000);
     this.health -= amount;
     this.healthBar.style.width = this.health + '%';
 

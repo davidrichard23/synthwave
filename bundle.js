@@ -52575,10 +52575,10 @@ function () {
       if (params.tags.includes('player')) {
         game.player.takeDamage(10);
       } else if (params.tags.includes('enemy') && this.target === 'enemy') {
-        var bulletHitColor = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xFE0C0C, 1 + intersection.distance / 4);
+        new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xFE0C0C);
         game.enemyManager.spawnedEnemies[params.id].takeDamage(34);
       } else {
-        var bulletHitWhite = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xffffff, 1 + intersection.distance / 4);
+        new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xffffff);
       }
 
       this.destroy();
@@ -53692,13 +53692,14 @@ var BulletHit =
 /*#__PURE__*/
 function () {
   function BulletHit(parent, point, color) {
-    var size = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+    var size = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 10;
+    var lifetime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2000;
 
     _classCallCheck(this, BulletHit);
 
     this.particleCount = 280;
     this.speed = 2;
-    this.lifetime = 1000;
+    this.lifetime = lifetime;
     this.destroyed = false;
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BufferGeometry"]();
     var vertices = [];
@@ -53718,7 +53719,7 @@ function () {
     var material = new three__WEBPACK_IMPORTED_MODULE_0__["PointsMaterial"]({
       map: circleFade,
       size: size,
-      // sizeAttenuation: false, 
+      sizeAttenuation: false,
       color: color,
       opacity: 1,
       // blending: THREE.MultiplyBlending,
@@ -53849,7 +53850,7 @@ function () {
   }, {
     key: "takeDamage",
     value: function takeDamage(amount) {
-      var bulletHit = new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.playerGroup, new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, -40), 0x00ff00, 2);
+      new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](this.playerGroup, new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, -40), 0x00ff00, 15, 1000);
       this.health -= amount;
       this.healthBar.style.width = this.health + '%';
 

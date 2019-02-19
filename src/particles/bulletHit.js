@@ -7,10 +7,10 @@ circleFade.repeat.set(1, 1);
 
 export default class BulletHit {
 
-  constructor(parent, point, color, size=1) {
+  constructor(parent, point, color, size=10, lifetime=2000) {
     this.particleCount = 280;
     this.speed = 2;
-    this.lifetime = 1000;
+    this.lifetime = lifetime;
     this.destroyed = false;
 
     const geometry = new THREE.BufferGeometry();
@@ -32,7 +32,7 @@ export default class BulletHit {
     const material = new THREE.PointsMaterial({ 
       map: circleFade,
       size: size, 
-      // sizeAttenuation: false, 
+      sizeAttenuation: false, 
       color: color, 
       opacity: 1,
       // blending: THREE.MultiplyBlending,
