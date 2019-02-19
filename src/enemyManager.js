@@ -17,7 +17,8 @@ export default class EnemyManager {
   start() {
     
     this.enabled = true;
-    this.nextSpawnTime = game.clock.elapsedTime;
+    this.startTime = game.clock.elapsedTime;
+    this.nextSpawnTime = this.startTime;
     this.level = 0;
     this.maxSpawnCount = 1;
     this.minSpawnTime = 5;
@@ -60,7 +61,7 @@ export default class EnemyManager {
   }
 
   checkLevel() {
-    const time = game.clock.elapsedTime;
+    const time = game.clock.elapsedTime - this.startTime;
 
     if (this.level === 0 && time > 20) {
       this.level++;

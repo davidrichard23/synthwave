@@ -52859,7 +52859,8 @@ function () {
     key: "start",
     value: function start() {
       this.enabled = true;
-      this.nextSpawnTime = game.clock.elapsedTime;
+      this.startTime = game.clock.elapsedTime;
+      this.nextSpawnTime = this.startTime;
       this.level = 0;
       this.maxSpawnCount = 1;
       this.minSpawnTime = 5;
@@ -52908,7 +52909,7 @@ function () {
   }, {
     key: "checkLevel",
     value: function checkLevel() {
-      var time = game.clock.elapsedTime;
+      var time = game.clock.elapsedTime - this.startTime;
 
       if (this.level === 0 && time > 20) {
         this.level++;
