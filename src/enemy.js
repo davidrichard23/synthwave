@@ -6,15 +6,13 @@ export default class Enemy {
 
     this.enabled = false;
     // this.enemyGroup.position.set(0, 15, -300);
-    this.playerMesh = game.scene.getObjectByName("player");
     this.health = 100;
     this.script = this;
     this.id = id;
-    this.moveDirection = new THREE.Vector3(Math.random() * 2 - 1, 0, Math.random() * 2 - 1).normalize();
     this.speed = 1.3;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
-    this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+    this.nextShootTime = 0;
 
     this.minDirSwitchTime = 1;
     this.lastDirSwitch = new THREE.Vector2(0,0);
@@ -28,7 +26,6 @@ export default class Enemy {
     this.update = this.update.bind(this);
     
     this.healthbar();
-    this.update();
   }
 
   createMesh(id) {
@@ -58,7 +55,7 @@ export default class Enemy {
     if (!this.enabled) return;
 
     const dir = new THREE.Vector3();
-    dir.subVectors(this.playerMesh.position, this.enemyGroup.position).normalize();
+    dir.subVectors(game.player.playerGroup.position, this.enemyGroup.position).normalize();
     new Bullet({ position: this.enemyGroup.position, direction: dir, color: 0xFE0C0C, target: 'player' });
   }
 
@@ -76,6 +73,8 @@ export default class Enemy {
     this.health = 100;
     this.healthbar.material.size = 35 / (100 / this.health);
     this.enabled = true;
+    this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+    this.moveDirection = new THREE.Vector3(this.getRandomDirectionVal(), 0, this.getRandomDirectionVal()).normalize();
     this.update();
   }
   
@@ -89,13 +88,11 @@ export default class Enemy {
   }
 
   update() {
+    if (!this.enabled) return;
     
     requestAnimationFrame(this.update);
     
     this.enemyGroup.translateOnAxis(this.moveDirection, this.speed);
-    // if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
-    // if (this.keyPresses.left === 1) this.player.playerGroup.translateX(-this.speed);
-    // if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
     
     if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
     if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
@@ -106,28 +103,44 @@ export default class Enemy {
     }
 
     this.chooseDirection();
-    this.jump();
+    // this.jump();
   }
 
   chooseDirection() {
 
     const shouldSwitchX = (Math.random() > 0.99 && 
-                          game.clock.elapsedTime > this.lastDirSwitch.x + this.minDirSwitchTime) || 
-                          this.enemyGroup.position.x < -179 || 
-                          this.enemyGroup.position.x > 179;
+                          game.clock.elapsedTime > this.lastDirSwitch.x + this.minDirSwitchTime)
     const shouldSwitchZ = (Math.random() > 0.99 && 
-                          game.clock.elapsedTime > this.lastDirSwitch.y + this.minDirSwitchTime)
+                          game.clock.elapsedTime > this.lastDirSwitch.y + this.minDirSwitchTime);
 
     if (shouldSwitchX) {
       this.lastDirSwitch.x = game.clock.elapsedTime;
-      this.moveDirection.x = Math.random() * 2 - 1;
+      this.moveDirection.x = this.getRandomDirectionVal();
+      this.moveDirection = this.moveDirection;
     }
     if (shouldSwitchZ) {
       this.lastDirSwitch.z = game.clock.elapsedTime;
-      this.moveDirection.z = Math.random() * 2 - 1;
+      this.moveDirection.z = this.getRandomDirectionVal();
+      this.moveDirection = this.moveDirection;
     }
+    
+    const distToPlayer = this.enemyGroup.position.distanceTo(game.player.playerGroup.position);
+    if (distToPlayer > 1100) {
+      const dir = new THREE.Vector3();
+      this.moveDirection = dir.subVectors(game.player.playerGroup.position, this.enemyGroup.position);
+    }
+    if (this.enemyGroup.position.x < -179 || this.enemyGroup.position.x > 179)
+      this.moveDirection.x *= -1;
 
     this.moveDirection = this.moveDirection.normalize();
+    this.moveDirection.y = 0;
+  }
+
+  getRandomDirectionVal() {
+    let val = Math.random();
+    if (val < 0.5) val -= 1; // values lower than half convert to negative
+
+    return val;
   }
 
   jump() {

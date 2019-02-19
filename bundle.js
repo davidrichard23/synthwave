@@ -52447,15 +52447,13 @@ function () {
 
     this.enabled = false; // this.enemyGroup.position.set(0, 15, -300);
 
-    this.playerMesh = game.scene.getObjectByName("player");
     this.health = 100;
     this.script = this;
     this.id = id;
-    this.moveDirection = new THREE.Vector3(Math.random() * 2 - 1, 0, Math.random() * 2 - 1).normalize();
     this.speed = 1.3;
     this.gravity = 0.1;
     this.jumpVelocity = 4;
-    this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+    this.nextShootTime = 0;
     this.minDirSwitchTime = 1;
     this.lastDirSwitch = new THREE.Vector2(0, 0);
     this.enemyGroup = new THREE.Group();
@@ -52464,7 +52462,6 @@ function () {
     this.shoot = this.shoot.bind(this);
     this.update = this.update.bind(this);
     this.healthbar();
-    this.update();
   }
 
   _createClass(Enemy, [{
@@ -52517,7 +52514,7 @@ function () {
     value: function shoot() {
       if (!this.enabled) return;
       var dir = new THREE.Vector3();
-      dir.subVectors(this.playerMesh.position, this.enemyGroup.position).normalize();
+      dir.subVectors(game.player.playerGroup.position, this.enemyGroup.position).normalize();
       new _bullet__WEBPACK_IMPORTED_MODULE_1__["default"]({
         position: this.enemyGroup.position,
         direction: dir,
@@ -52542,6 +52539,8 @@ function () {
       this.health = 100;
       this.healthbar.material.size = 35 / (100 / this.health);
       this.enabled = true;
+      this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+      this.moveDirection = new THREE.Vector3(this.getRandomDirectionVal(), 0, this.getRandomDirectionVal()).normalize();
       this.update();
     }
   }, {
@@ -52558,11 +52557,9 @@ function () {
   }, {
     key: "update",
     value: function update() {
+      if (!this.enabled) return;
       requestAnimationFrame(this.update);
-      this.enemyGroup.translateOnAxis(this.moveDirection, this.speed); // if (this.keyPresses.up === 1) this.player.playerGroup.translateZ(-this.speed);
-      // if (this.keyPresses.left === 1) this.player.playerGroup.translateX(-this.speed);
-      // if (this.keyPresses.right === 1) this.player.playerGroup.translateX(this.speed);
-
+      this.enemyGroup.translateOnAxis(this.moveDirection, this.speed);
       if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
       if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
 
@@ -52571,26 +52568,44 @@ function () {
         this.shoot();
       }
 
-      this.chooseDirection();
-      this.jump();
+      this.chooseDirection(); // this.jump();
     }
   }, {
     key: "chooseDirection",
     value: function chooseDirection() {
-      var shouldSwitchX = Math.random() > 0.99 && game.clock.elapsedTime > this.lastDirSwitch.x + this.minDirSwitchTime || this.enemyGroup.position.x < -179 || this.enemyGroup.position.x > 179;
+      var shouldSwitchX = Math.random() > 0.99 && game.clock.elapsedTime > this.lastDirSwitch.x + this.minDirSwitchTime;
       var shouldSwitchZ = Math.random() > 0.99 && game.clock.elapsedTime > this.lastDirSwitch.y + this.minDirSwitchTime;
 
       if (shouldSwitchX) {
         this.lastDirSwitch.x = game.clock.elapsedTime;
-        this.moveDirection.x = Math.random() * 2 - 1;
+        this.moveDirection.x = this.getRandomDirectionVal();
+        this.moveDirection = this.moveDirection;
       }
 
       if (shouldSwitchZ) {
         this.lastDirSwitch.z = game.clock.elapsedTime;
-        this.moveDirection.z = Math.random() * 2 - 1;
+        this.moveDirection.z = this.getRandomDirectionVal();
+        this.moveDirection = this.moveDirection;
       }
 
+      var distToPlayer = this.enemyGroup.position.distanceTo(game.player.playerGroup.position);
+
+      if (distToPlayer > 1100) {
+        var dir = new THREE.Vector3();
+        this.moveDirection = dir.subVectors(game.player.playerGroup.position, this.enemyGroup.position);
+      }
+
+      if (this.enemyGroup.position.x < -179 || this.enemyGroup.position.x > 179) this.moveDirection.x *= -1;
       this.moveDirection = this.moveDirection.normalize();
+      this.moveDirection.y = 0;
+    }
+  }, {
+    key: "getRandomDirectionVal",
+    value: function getRandomDirectionVal() {
+      var val = Math.random();
+      if (val < 0.5) val -= 1; // values lower than half convert to negative
+
+      return val;
     }
   }, {
     key: "jump",
@@ -52624,6 +52639,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
+var LEVEL_TIMES = [];
+LEVEL_TIMES.push(20);
+LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
+LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
+LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
 
 var EnemyManager =
 /*#__PURE__*/
@@ -52635,7 +52655,8 @@ function () {
     this.enemyPool = [];
     this.spawnedEnemies = {};
     this.nextEnemyId = 0;
-    this.maxSpawnCount = 4;
+    this.level = 0;
+    this.maxSpawnCount = 1;
     this.minSpawnTime = 5;
     this.update = this.update.bind(this);
   }
@@ -52692,17 +52713,42 @@ function () {
       });
     }
   }, {
+    key: "checkLevel",
+    value: function checkLevel() {
+      var time = game.clock.elapsedTime;
+
+      if (this.level === 0 && time > 20) {
+        this.level++;
+        this.maxSpawnCount++;
+      } else if (this.level === 1 && time > 50) {
+        this.level++;
+        this.maxSpawnCount++;
+      } else if (this.level === 2 && time > 80) {
+        this.level++;
+        this.maxSpawnCount++;
+      } else if (this.level === 3 && time > 110) {
+        this.level++;
+        this.minSpawnTime = 4;
+      }
+    }
+  }, {
     key: "update",
     value: function update() {
       requestAnimationFrame(this.update);
       if (!this.enabled) return;
       var spawnCount = Object.keys(this.spawnedEnemies).length;
-      if (spawnCount >= this.maxSpawnCount) return;
+
+      if (spawnCount >= this.maxSpawnCount) {
+        this.nextSpawnTime = game.clock.elapsedTime + 1;
+        return;
+      }
 
       if (game.clock.elapsedTime > this.nextSpawnTime) {
         this.nextSpawnTime = game.clock.elapsedTime + this.minSpawnTime;
         this.spawn();
       }
+
+      this.checkLevel();
     }
   }]);
 

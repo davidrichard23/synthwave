@@ -1,5 +1,11 @@
 import Enemy from "./enemy";
 
+const LEVEL_TIMES = [];
+LEVEL_TIMES.push(20);
+LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
+LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
+LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
+
 export default class EnemyManager {
 
   constructor() {
@@ -7,8 +13,9 @@ export default class EnemyManager {
     this.enemyPool = [];
     this.spawnedEnemies = {};
     this.nextEnemyId = 0;
+    this.level = 0;
 
-    this.maxSpawnCount = 4;
+    this.maxSpawnCount = 1;
     this.minSpawnTime = 5;
     this.update = this.update.bind(this);
   }
@@ -61,6 +68,27 @@ export default class EnemyManager {
     });
   }
 
+  checkLevel() {
+    const time = game.clock.elapsedTime;
+
+    if (this.level === 0 && time > 20) {
+      this.level++;
+      this.maxSpawnCount++;
+    }
+    else if (this.level === 1 && time > 50) {
+      this.level++;
+      this.maxSpawnCount++;
+    }
+    else if (this.level === 2 && time > 80) {
+      this.level++;
+      this.maxSpawnCount++;
+    }
+    else if (this.level === 3 && time > 110) {
+      this.level++;
+      this.minSpawnTime = 4;
+    }
+  }
+
 
   update() {
 
@@ -69,11 +97,16 @@ export default class EnemyManager {
     if (!this.enabled) return;
 
     const spawnCount = Object.keys(this.spawnedEnemies).length;
-    if (spawnCount >= this.maxSpawnCount) return;
-
+    
+    if (spawnCount >= this.maxSpawnCount) {
+      this.nextSpawnTime = game.clock.elapsedTime + 1;
+      return;
+    }
     if (game.clock.elapsedTime > this.nextSpawnTime) {
       this.nextSpawnTime = game.clock.elapsedTime + this.minSpawnTime;
       this.spawn();
     }
+
+    this.checkLevel();
   }
 }
