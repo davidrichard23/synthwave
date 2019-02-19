@@ -67,9 +67,6 @@ export default class Game {
       autoplay: true,
       loop: true,
       volume: 1,
-      onend: function () {
-        console.log('Finished!');
-      }
     });
     
 
@@ -96,7 +93,11 @@ export default class Game {
     if (!this.player.enabled) return;
 
     this.timeScore = 123 * this.clock.elapsedTime;
-    console.log(this.timeScore)
+  }
+  
+  addObjectiveScore(amount) {
+    this.objectiveScore += amount;
+    console.log(this.timeScore + this.objectiveScore);
   }
 
   updateTitleScreenTransition() {

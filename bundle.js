@@ -52530,6 +52530,7 @@ function () {
 
       if (this.health <= 0) {
         game.enemyManager.despawn(this.id);
+        game.addObjectiveScore(1000);
       }
     }
   }, {
@@ -53172,10 +53173,7 @@ function () {
       src: ['src/audio/starburst-dreams.mp3'],
       autoplay: true,
       loop: true,
-      volume: 1,
-      onend: function onend() {
-        console.log('Finished!');
-      }
+      volume: 1
     });
     this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
@@ -53198,7 +53196,12 @@ function () {
     value: function updateTimeScore() {
       if (!this.player.enabled) return;
       this.timeScore = 123 * this.clock.elapsedTime;
-      console.log(this.timeScore);
+    }
+  }, {
+    key: "addObjectiveScore",
+    value: function addObjectiveScore(amount) {
+      this.objectiveScore += amount;
+      console.log(this.timeScore + this.objectiveScore);
     }
   }, {
     key: "updateTitleScreenTransition",

@@ -65,6 +65,7 @@ export default class Enemy {
 
     if (this.health <= 0) {
       game.enemyManager.despawn(this.id);
+      game.addObjectiveScore(1000);
     }
   }
 
