@@ -3234,6 +3234,186 @@
 
 /***/ }),
 
+/***/ "./node_modules/js-cookie/src/js.cookie.js":
+/*!*************************************************!*\
+  !*** ./node_modules/js-cookie/src/js.cookie.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * JavaScript Cookie v2.2.0
+ * https://github.com/js-cookie/js-cookie
+ *
+ * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+ * Released under the MIT license
+ */
+;(function (factory) {
+	var registeredInModuleLoader = false;
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		registeredInModuleLoader = true;
+	}
+	if (true) {
+		module.exports = factory();
+		registeredInModuleLoader = true;
+	}
+	if (!registeredInModuleLoader) {
+		var OldCookies = window.Cookies;
+		var api = window.Cookies = factory();
+		api.noConflict = function () {
+			window.Cookies = OldCookies;
+			return api;
+		};
+	}
+}(function () {
+	function extend () {
+		var i = 0;
+		var result = {};
+		for (; i < arguments.length; i++) {
+			var attributes = arguments[ i ];
+			for (var key in attributes) {
+				result[key] = attributes[key];
+			}
+		}
+		return result;
+	}
+
+	function init (converter) {
+		function api (key, value, attributes) {
+			var result;
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			// Write
+
+			if (arguments.length > 1) {
+				attributes = extend({
+					path: '/'
+				}, api.defaults, attributes);
+
+				if (typeof attributes.expires === 'number') {
+					var expires = new Date();
+					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
+					attributes.expires = expires;
+				}
+
+				// We're using "expires" because "max-age" is not supported by IE
+				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+				try {
+					result = JSON.stringify(value);
+					if (/^[\{\[]/.test(result)) {
+						value = result;
+					}
+				} catch (e) {}
+
+				if (!converter.write) {
+					value = encodeURIComponent(String(value))
+						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+				} else {
+					value = converter.write(value, key);
+				}
+
+				key = encodeURIComponent(String(key));
+				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+				key = key.replace(/[\(\)]/g, escape);
+
+				var stringifiedAttributes = '';
+
+				for (var attributeName in attributes) {
+					if (!attributes[attributeName]) {
+						continue;
+					}
+					stringifiedAttributes += '; ' + attributeName;
+					if (attributes[attributeName] === true) {
+						continue;
+					}
+					stringifiedAttributes += '=' + attributes[attributeName];
+				}
+				return (document.cookie = key + '=' + value + stringifiedAttributes);
+			}
+
+			// Read
+
+			if (!key) {
+				result = {};
+			}
+
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all. Also prevents odd result when
+			// calling "get()"
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var rdecode = /(%[0-9A-Z]{2})+/g;
+			var i = 0;
+
+			for (; i < cookies.length; i++) {
+				var parts = cookies[i].split('=');
+				var cookie = parts.slice(1).join('=');
+
+				if (!this.json && cookie.charAt(0) === '"') {
+					cookie = cookie.slice(1, -1);
+				}
+
+				try {
+					var name = parts[0].replace(rdecode, decodeURIComponent);
+					cookie = converter.read ?
+						converter.read(cookie, name) : converter(cookie, name) ||
+						cookie.replace(rdecode, decodeURIComponent);
+
+					if (this.json) {
+						try {
+							cookie = JSON.parse(cookie);
+						} catch (e) {}
+					}
+
+					if (key === name) {
+						result = cookie;
+						break;
+					}
+
+					if (!key) {
+						result[name] = cookie;
+					}
+				} catch (e) {}
+			}
+
+			return result;
+		}
+
+		api.set = api;
+		api.get = function (key) {
+			return api.call(api, key);
+		};
+		api.getJSON = function () {
+			return api.apply({
+				json: true
+			}, [].slice.call(arguments));
+		};
+		api.defaults = {};
+
+		api.remove = function (key, attributes) {
+			api(key, '', extend(attributes, {
+				expires: -1
+			}));
+		};
+
+		api.withConverter = init;
+
+		return api;
+	}
+
+	return init(function () {});
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/three/build/three.module.js":
 /*!**************************************************!*\
   !*** ./node_modules/three/build/three.module.js ***!
@@ -52640,11 +52820,6 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
-var LEVEL_TIMES = [];
-LEVEL_TIMES.push(20);
-LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
-LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
-LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
 
 var EnemyManager =
 /*#__PURE__*/
@@ -52667,15 +52842,14 @@ function () {
     value: function start() {
       this.enabled = true;
       this.nextSpawnTime = game.clock.elapsedTime;
-      this.update(); // this.timer = setInterval(() => {
-      //   const pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
-      //   this.spawn(pos);
-      // }, 5000);
+      this.level = 0;
+      this.maxSpawnCount = 1;
+      this.minSpawnTime = 5;
+      this.update();
     }
   }, {
     key: "stop",
     value: function stop() {
-      // clearInterval(this.timer);
       this.enabled = false;
       this.despawnAll();
     }
@@ -53164,6 +53338,7 @@ function () {
     this.composer.addPass(renderScene);
     this.composer.addPass(bloomPass);
     this.ui = new _ui__WEBPACK_IMPORTED_MODULE_4__["default"]();
+    this.ui.setTitleScore(0);
     var environment = new _environment__WEBPACK_IMPORTED_MODULE_2__["default"]();
     this.player = new _player__WEBPACK_IMPORTED_MODULE_1__["default"](); // window.player = this.player;
 
@@ -53195,13 +53370,13 @@ function () {
     key: "updateTimeScore",
     value: function updateTimeScore() {
       if (!this.player.enabled) return;
-      this.timeScore = 123 * this.clock.elapsedTime;
+      this.timeScore = 123 * this.clock.elapsedTime * (this.enemyManager.level + 1);
+      this.ui.updateGameScore(this.timeScore + this.objectiveScore);
     }
   }, {
     key: "addObjectiveScore",
     value: function addObjectiveScore(amount) {
-      this.objectiveScore += amount;
-      console.log(this.timeScore + this.objectiveScore);
+      this.objectiveScore += amount * (this.enemyManager.level + 1);
     }
   }, {
     key: "updateTitleScreenTransition",
@@ -53243,6 +53418,7 @@ function () {
     value: function gameOver() {
       this.endGameTransition();
       this.enemyManager.stop();
+      this.ui.setTitleScore(this.timeScore + this.objectiveScore);
     }
   }, {
     key: "endGameTransition",
@@ -53983,11 +54159,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;function _type
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return UI; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(js_cookie__WEBPACK_IMPORTED_MODULE_1__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -53997,9 +54176,13 @@ function () {
   function UI() {
     _classCallCheck(this, UI);
 
+    this.lastScoreUpdate = 0;
     this.startGame = this.startGame.bind(this);
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
+    this.gameScore = document.getElementById('game-score');
+    this.titleScore = document.getElementById('title-score');
+    this.highScore = document.getElementById('high-score');
     this.playButton = document.getElementById('play-button');
     this.playButton.addEventListener('click', this.startGame);
   }
@@ -54027,6 +54210,26 @@ function () {
     key: "hideHud",
     value: function hideHud() {
       this.hudUI.classList.add("transparent");
+    }
+  }, {
+    key: "updateGameScore",
+    value: function updateGameScore(score) {
+      if (game.clock.elapsedTime < this.lastScoreUpdate + 0.1) return;
+      this.gameScore.innerHTML = "SCORE: ".concat(Math.floor(score));
+      this.lastScoreUpdate = game.clock.elapsedTime;
+    }
+  }, {
+    key: "setTitleScore",
+    value: function setTitleScore(score) {
+      var highScore = js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.get('highScore') || 0;
+
+      if (highScore < score) {
+        highScore = score;
+        js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.set('highScore', score);
+      }
+
+      this.titleScore.innerHTML = "YOUR SCORE: ".concat(Math.floor(score));
+      this.highScore.innerHTML = "HIGH SCORE: ".concat(Math.floor(highScore));
     }
   }]);
 

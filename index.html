@@ -5,11 +5,14 @@
   <meta charset=utf-8>
   <title>My first three.js app</title>
   <link rel="stylesheet" href="css/styles.css">
+
+  <link href="https://fonts.googleapis.com/css?family=Audiowide" rel="stylesheet">
 </head>
 
 <body>
 
   <div id="hud-ui" class='transparent'>
+    <p id="game-score">SCORE: 0</p>
     <div class="health-bar-container">
       <div id="current-health"></div>
     </div>
@@ -18,6 +21,10 @@
   <div id="title-ui">
     <div>
       <h1>TITLE</h1>
+    </div>
+    <div class='score-recap-container'>
+      <p id='high-score'>HIGH SCORE: 0</p>
+      <p id='title-score'>YOUR SCORE: 0</p>
     </div>
     <div>
       <button id='play-button'>PLAY</button>

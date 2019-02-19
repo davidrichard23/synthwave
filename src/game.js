@@ -54,6 +54,7 @@ export default class Game {
     
     
     this.ui = new UI();
+    this.ui.setTitleScore(0);
     const environment = new Environment();
     
     this.player = new Player();
@@ -92,12 +93,12 @@ export default class Game {
   updateTimeScore() {
     if (!this.player.enabled) return;
 
-    this.timeScore = 123 * this.clock.elapsedTime;
+    this.timeScore = 123 * this.clock.elapsedTime * (this.enemyManager.level + 1);
+    this.ui.updateGameScore(this.timeScore + this.objectiveScore);
   }
   
   addObjectiveScore(amount) {
-    this.objectiveScore += amount;
-    console.log(this.timeScore + this.objectiveScore);
+    this.objectiveScore += amount * (this.enemyManager.level + 1);
   }
 
   updateTitleScreenTransition() {
@@ -139,6 +140,7 @@ export default class Game {
   gameOver() {
     this.endGameTransition();
     this.enemyManager.stop();
+    this.ui.setTitleScore(this.timeScore + this.objectiveScore);
   }
   
   endGameTransition() {

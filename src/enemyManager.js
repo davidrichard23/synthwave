@@ -1,11 +1,5 @@
 import Enemy from "./enemy";
 
-const LEVEL_TIMES = [];
-LEVEL_TIMES.push(20);
-LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
-LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
-LEVEL_TIMES.push(LEVEL_TIMES[LEVEL_TIMES.length - 1] + 20);
-
 export default class EnemyManager {
 
   constructor() {
@@ -24,16 +18,13 @@ export default class EnemyManager {
     
     this.enabled = true;
     this.nextSpawnTime = game.clock.elapsedTime;
+    this.level = 0;
+    this.maxSpawnCount = 1;
+    this.minSpawnTime = 5;
     this.update();
-    
-    // this.timer = setInterval(() => {
-      //   const pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
-      //   this.spawn(pos);
-      // }, 5000);
-    }
+  }
     
   stop() {
-      // clearInterval(this.timer);
     this.enabled = false;
     this.despawnAll();
   }
