@@ -107,7 +107,7 @@ export default class Enemy {
     if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
     
     if (game.clock.elapsedTime > this.nextShootTime) {
-      this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+      this.nextShootTime = game.clock.elapsedTime + Math.random() * 2 + 1;
       this.shoot();
     }
 
