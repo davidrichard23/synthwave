@@ -13,6 +13,7 @@ export default class Enemy {
     this.gravity = 0.1;
     this.jumpVelocity = 4;
     this.nextShootTime = 0;
+    this.isTransitioning = false;
 
     this.minDirSwitchTime = 1;
     this.lastDirSwitch = new THREE.Vector2(0,0);
@@ -71,6 +72,8 @@ export default class Enemy {
 
   enable() {
     game.scene.add(this.enemyGroup);
+    this.isTransitioning = true;
+    this.enemyGroup.position.y = 1000;
     this.health = 100;
     this.healthbar.material.size = 35 / (100 / this.health);
     this.enabled = true;
@@ -92,6 +95,11 @@ export default class Enemy {
     if (!this.enabled) return;
     
     requestAnimationFrame(this.update);
+
+    if (this.isTransitioning) {
+      this.updateTransition();
+      return;
+    }
     
     this.enemyGroup.translateOnAxis(this.moveDirection, this.speed);
     
@@ -105,6 +113,15 @@ export default class Enemy {
 
     this.chooseDirection();
     // this.jump();
+  }
+
+  updateTransition() {
+    if (this.enemyGroup.position.y > 25) {
+      this.enemyGroup.translateY(-13);
+    }
+    else {
+      this.isTransitioning = false;
+    }
   }
 
   chooseDirection() {

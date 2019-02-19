@@ -52634,6 +52634,7 @@ function () {
     this.gravity = 0.1;
     this.jumpVelocity = 4;
     this.nextShootTime = 0;
+    this.isTransitioning = false;
     this.minDirSwitchTime = 1;
     this.lastDirSwitch = new THREE.Vector2(0, 0);
     this.enemyGroup = new THREE.Group();
@@ -52717,6 +52718,8 @@ function () {
     key: "enable",
     value: function enable() {
       game.scene.add(this.enemyGroup);
+      this.isTransitioning = true;
+      this.enemyGroup.position.y = 1000;
       this.health = 100;
       this.healthbar.material.size = 35 / (100 / this.health);
       this.enabled = true;
@@ -52740,6 +52743,12 @@ function () {
     value: function update() {
       if (!this.enabled) return;
       requestAnimationFrame(this.update);
+
+      if (this.isTransitioning) {
+        this.updateTransition();
+        return;
+      }
+
       this.enemyGroup.translateOnAxis(this.moveDirection, this.speed);
       if (this.enemyGroup.position.x < -180) this.enemyGroup.position.x = -180;
       if (this.enemyGroup.position.x > 180) this.enemyGroup.position.x = 180;
@@ -52750,6 +52759,15 @@ function () {
       }
 
       this.chooseDirection(); // this.jump();
+    }
+  }, {
+    key: "updateTransition",
+    value: function updateTransition() {
+      if (this.enemyGroup.position.y > 25) {
+        this.enemyGroup.translateY(-13);
+      } else {
+        this.isTransitioning = false;
+      }
     }
   }, {
     key: "chooseDirection",
@@ -52857,7 +52875,7 @@ function () {
     key: "spawn",
     value: function spawn() {
       var enemy;
-      var pos = new THREE.Vector3(Math.random() * 300 - 150, 25, -Math.random() * 1000);
+      var pos = new THREE.Vector3(Math.random() * 300 - 150, 1000, -Math.random() * 1000);
 
       if (this.enemyPool.length === 0) {
         enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.nextEnemyId);
