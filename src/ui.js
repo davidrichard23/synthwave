@@ -17,6 +17,7 @@ export default class UI {
     this.titleScore = document.getElementById('title-score');
     this.highScore = document.getElementById('high-score');
     this.playButton = document.getElementById('play-button');
+    this.gunEnergyBar = document.getElementById('current-gun-energy');
 
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
@@ -89,5 +90,10 @@ export default class UI {
 
     this.titleScore.innerHTML = `YOUR SCORE: ${Math.floor(score)}`;
     this.highScore.innerHTML = `HIGH SCORE: ${Math.floor(highScore)}`;
+  }
+
+  setGunEnergy(percent) {
+    console.log(percent)
+    this.gunEnergyBar.style.width = percent + '%';
   }
 }

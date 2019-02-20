@@ -53486,6 +53486,7 @@ function () {
   function Gun() {
     _classCallCheck(this, Gun);
 
+    this.enabled = false;
     var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BoxGeometry"](0.5, 0.5, 3);
     this.gunMesh = new _outlinedGeometry__WEBPACK_IMPORTED_MODULE_1__["default"]({
       geometry: geometry,
@@ -53496,33 +53497,52 @@ function () {
     this.gunMesh.params = {
       tags: ['player']
     };
+    this.nextEnergyUpdateTime = 0.5;
+    this.energy = 100;
+    this.energyCost = 10;
+    this.energyRegen = 5;
     this.shoot = this.shoot.bind(this);
     window.addEventListener("mousedown", this.shoot);
+    this.update = this.update.bind(this);
+    this.update();
   }
 
   _createClass(Gun, [{
+    key: "update",
+    value: function update() {
+      requestAnimationFrame(this.update);
+      if (!this.enabled) return;
+
+      if (game.clock.elapsedTime > this.nextEnergyUpdateTime && this.energy < 100) {
+        this.energy += 5;
+        this.nextEnergyUpdateTime = game.clock.elapsedTime + 0.5;
+        game.ui.setGunEnergy(this.energy); // console.log(this.nextEnergyUpdateTime, this.energy / 100);
+      }
+    }
+  }, {
     key: "show",
     value: function show() {
+      this.enabled = true;
+      this.energy = 100;
       game.player.playerGroup.add(this.gunMesh);
     }
   }, {
     key: "hide",
     value: function hide() {
+      this.enabled = false;
       game.player.playerGroup.remove(this.gunMesh);
     }
   }, {
     key: "shoot",
     value: function shoot(e) {
-      if (!game.player.enabled) return;
+      if (!this.enabled || this.energy <= 0) return;
       var cameraPos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       var cameraDir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
       game.camera.getWorldPosition(cameraPos);
-      game.camera.getWorldDirection(cameraDir); // const raycaster = new THREE.Raycaster(cameraPos, cameraDir);
-      // let intersects = raycaster.intersectObjects(this.scene.children, true);
-      // intersects = intersects.filter(obj => obj.object.name !== 'reticle');
-      // console.log(intersects[0]);
-
+      game.camera.getWorldDirection(cameraDir);
       this.drawBullet();
+      this.energy -= this.energyCost;
+      game.ui.setGunEnergy(this.energy);
       e.preventDefault();
     }
   }, {
@@ -53543,15 +53563,7 @@ function () {
         direction: dir,
         color: 0x00ff00,
         target: 'enemy'
-      }); // const endPoint = new THREE.Vector3();
-      // endPoint.addVectors(gunMeshPos, dir.multiplyScalar(1000));
-      // const geometry = new THREE.Geometry();
-      // geometry.vertices.push(gunMeshPos);
-      // geometry.vertices.push(endPoint);
-      // const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-      // const line = new THREE.Line(geometry, material);
-      // this.scene.add(line);
-      // setTimeout(() => this.scene.remove(line), 100);
+      });
     }
   }]);
 
@@ -54311,6 +54323,7 @@ function () {
     this.titleScore = document.getElementById('title-score');
     this.highScore = document.getElementById('high-score');
     this.playButton = document.getElementById('play-button');
+    this.gunEnergyBar = document.getElementById('current-gun-energy');
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
     this.showDirections = this.showDirections.bind(this);
@@ -54393,6 +54406,12 @@ function () {
 
       this.titleScore.innerHTML = "YOUR SCORE: ".concat(Math.floor(score));
       this.highScore.innerHTML = "HIGH SCORE: ".concat(Math.floor(highScore));
+    }
+  }, {
+    key: "setGunEnergy",
+    value: function setGunEnergy(percent) {
+      console.log(percent);
+      this.gunEnergyBar.style.width = percent + '%';
     }
   }]);
 
