@@ -52610,11 +52610,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Enemy; });
 /* harmony import */ var _outlinedGeometry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./outlinedGeometry */ "./src/outlinedGeometry.js");
 /* harmony import */ var _bullet__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bullet */ "./src/bullet.js");
+/* harmony import */ var _particles_enemyDie__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./particles/enemyDie */ "./src/particles/enemyDie.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -52712,6 +52714,7 @@ function () {
       if (this.health <= 0) {
         game.enemyManager.despawn(this.id);
         game.addObjectiveScore(1000);
+        new _particles_enemyDie__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, this.enemyGroup.position, 0xFE0C0C);
       }
     }
   }, {
@@ -52723,7 +52726,7 @@ function () {
       this.health = 100;
       this.healthbar.material.size = 35 / (100 / this.health);
       this.enabled = true;
-      this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+      this.nextShootTime = game.clock.elapsedTime + Math.random() * 2 + 2;
       this.moveDirection = new THREE.Vector3(this.getRandomDirectionVal(), 0, this.getRandomDirectionVal()).normalize();
       this.update();
     }
@@ -53774,6 +53777,118 @@ function () {
   }]);
 
   return BulletHit;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/particles/enemyDie.js":
+/*!***********************************!*\
+  !*** ./src/particles/enemyDie.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EnemyDie; });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+var circleFade = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"]().load("src/textures/circle-fade.png");
+circleFade.wrapS = three__WEBPACK_IMPORTED_MODULE_0__["RepeatWrapping"];
+circleFade.wrapT = three__WEBPACK_IMPORTED_MODULE_0__["RepeatWrapping"];
+circleFade.repeat.set(1, 1);
+
+var EnemyDie =
+/*#__PURE__*/
+function () {
+  function EnemyDie(parent, point, color) {
+    var size = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 60;
+    var lifetime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 500;
+
+    _classCallCheck(this, EnemyDie);
+
+    this.particleCount = 280;
+    this.speed = 20;
+    this.lifetime = lifetime;
+    this.destroyed = false;
+    var geometry = new three__WEBPACK_IMPORTED_MODULE_0__["BufferGeometry"]();
+    var vertices = [];
+    var directions = [];
+    var speeds = [];
+
+    for (var i = 0; i < this.particleCount; i++) {
+      var dir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](Math.random() * 2 - 1, 0, Math.random() * 2 - 1).normalize();
+      directions.push(dir.x, dir.y, dir.z);
+      vertices.push(point.x, Math.random() * 50, point.z);
+      speeds.push(this.speed * Math.random());
+    }
+
+    geometry.addAttribute('position', new three__WEBPACK_IMPORTED_MODULE_0__["Float32BufferAttribute"](vertices, 3));
+    geometry.addAttribute('direction', new three__WEBPACK_IMPORTED_MODULE_0__["Float32BufferAttribute"](directions, 3));
+    geometry.addAttribute('speed', new three__WEBPACK_IMPORTED_MODULE_0__["Float32BufferAttribute"](speeds, 1));
+    var material = new three__WEBPACK_IMPORTED_MODULE_0__["PointsMaterial"]({
+      map: circleFade,
+      size: size,
+      // sizeAttenuation: false,
+      color: color,
+      opacity: 1,
+      transparent: true,
+      alphaTest: 0.05,
+      blending: three__WEBPACK_IMPORTED_MODULE_0__["AdditiveBlending"]
+    });
+    this.particles = new three__WEBPACK_IMPORTED_MODULE_0__["Points"](geometry, material);
+    parent.add(this.particles);
+    this.update = this.update.bind(this);
+    this.destroy = this.destroy.bind(this);
+    this.update();
+    setTimeout(this.destroy, this.lifetime);
+  }
+
+  _createClass(EnemyDie, [{
+    key: "update",
+    value: function update() {
+      if (this.destroyed) return;
+      requestAnimationFrame(this.update);
+      var positions = this.particles.geometry.attributes.position.array;
+      var directions = this.particles.geometry.attributes.direction.array;
+      var speeds = this.particles.geometry.attributes.speed.array;
+      var msPerFrame = 1 / (60 / 1000);
+      var steps = this.lifetime / msPerFrame;
+      this.particles.material.opacity -= 1 / steps; // this.particles.material.size -= steps * 0.001;
+
+      for (var i = 0; i < this.particleCount; i++) {
+        var pos = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+        var dir = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](directions[i * 3], directions[i * 3 + 1], directions[i * 3 + 2]);
+        var speed = speeds[i];
+        var newPos = pos.addScaledVector(dir, speed); // const newDir = dir.addScaledVector(new THREE.Vector3(0, -1, 0), 0.06).normalize();
+
+        positions[i * 3] = newPos.x;
+        positions[i * 3 + 1] = newPos.y;
+        positions[i * 3 + 2] = newPos.z; // directions[i * 3] = newDir.x;
+        // directions[i * 3 + 1] = newDir.y;
+        // directions[i * 3 + 2] = newDir.z;
+
+        this.particles.geometry.attributes.position.needsUpdate = true; // this.particles.geometry.attributes.direction.needsUpdate = true;
+      }
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.destroyed = true;
+      game.scene.remove(this.particles);
+      this.particles = null;
+    }
+  }]);
+
+  return EnemyDie;
 }();
 
 

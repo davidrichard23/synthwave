@@ -1,5 +1,6 @@
 import OutlinedGeometry from "./outlinedGeometry";
 import Bullet from "./bullet";
+import EnemyDie from "./particles/enemyDie";
 
 export default class Enemy {
   constructor(id) {
@@ -67,6 +68,7 @@ export default class Enemy {
     if (this.health <= 0) {
       game.enemyManager.despawn(this.id);
       game.addObjectiveScore(1000);
+      new EnemyDie(game.scene, this.enemyGroup.position, 0xFE0C0C);
     }
   }
 
@@ -77,7 +79,7 @@ export default class Enemy {
     this.health = 100;
     this.healthbar.material.size = 35 / (100 / this.health);
     this.enabled = true;
-    this.nextShootTime = game.clock.elapsedTime + Math.random() * 3;
+    this.nextShootTime = game.clock.elapsedTime + Math.random() * 2 + 2;
     this.moveDirection = new THREE.Vector3(this.getRandomDirectionVal(), 0, this.getRandomDirectionVal()).normalize();
     this.update();
   }
