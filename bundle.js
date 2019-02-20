@@ -54404,8 +54404,8 @@ function () {
         js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.set('highScore', score);
       }
 
-      this.titleScore.innerHTML = "YOUR SCORE: ".concat(Math.floor(score));
-      this.highScore.innerHTML = "HIGH SCORE: ".concat(Math.floor(highScore));
+      this.titleScore.innerHTML = "YOUR SCORE: <br/>".concat(Math.floor(score));
+      this.highScore.innerHTML = "HIGH SCORE: <br/>".concat(Math.floor(highScore));
     }
   }, {
     key: "setGunEnergy",

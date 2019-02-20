@@ -88,8 +88,8 @@ export default class UI {
       Cookies.set('highScore', score);
     }
 
-    this.titleScore.innerHTML = `YOUR SCORE: ${Math.floor(score)}`;
-    this.highScore.innerHTML = `HIGH SCORE: ${Math.floor(highScore)}`;
+    this.titleScore.innerHTML = `YOUR SCORE: <br/>${Math.floor(score)}`;
+    this.highScore.innerHTML = `HIGH SCORE: <br/>${Math.floor(highScore)}`;
   }
 
   setGunEnergy(percent) {
