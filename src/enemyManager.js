@@ -11,6 +11,7 @@ export default class EnemyManager {
 
     this.maxSpawnCount = 1;
     this.minSpawnTime = 5;
+    this.enemySpeed = 1.3;
     this.update = this.update.bind(this);
   }
   
@@ -22,6 +23,7 @@ export default class EnemyManager {
     this.level = 0;
     this.maxSpawnCount = 1;
     this.minSpawnTime = 5;
+    this.enemySpeed = 1.3;
     this.update();
   }
     
@@ -44,6 +46,7 @@ export default class EnemyManager {
 
     enemy.enable();
     enemy.setPosition(pos);
+    enemy.speed = this.enemySpeed;
     this.spawnedEnemies[enemy.id] = enemy;
   }
 
@@ -67,17 +70,20 @@ export default class EnemyManager {
       this.level++;
       this.maxSpawnCount++;
     }
-    else if (this.level === 1 && time > 50) {
+    else if (this.level === 1 && time > 40) {
       this.level++;
       this.maxSpawnCount++;
+      this.enemySpeed = 1.5;
     }
-    else if (this.level === 2 && time > 80) {
+    else if (this.level === 2 && time > 60) {
       this.level++;
       this.maxSpawnCount++;
+      this.enemySpeed = 1.7;
     }
-    else if (this.level === 3 && time > 110) {
+    else if (this.level === 3 && time > 90) {
       this.level++;
       this.minSpawnTime = 4;
+      this.enemySpeed = 2;
     }
   }
 

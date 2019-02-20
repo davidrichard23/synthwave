@@ -145,7 +145,7 @@ export default class Enemy {
     }
     
     const distToPlayer = this.enemyGroup.position.distanceTo(game.player.playerGroup.position);
-    if (distToPlayer > 1100) {
+    if (distToPlayer > 1300) {
       const dir = new THREE.Vector3();
       this.moveDirection = dir.subVectors(game.player.playerGroup.position, this.enemyGroup.position);
     }
