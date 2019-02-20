@@ -11,6 +11,30 @@
 
 <body>
 
+  <div id="overlay"></div>
+
+  <div id="directions-ui" class='transparent'>
+    <h1>DIRECTIONS</h1>
+    <div class='direction-item'>
+      <img src="src/icons/wasd.png" alt="">
+      <p>MOVE</p>
+    </div>
+    <div class='direction-item'>
+      <img src="src/icons/mouse.png" alt="">
+      <p>LOOK AROUND</p>
+    </div>
+    <div class='direction-item'>
+      <img src="src/icons/mouse-click.png" alt="">
+      <p>SHOOT</p>
+    </div>
+    <div class='direction-item'>
+      <img src="src/icons/spacebar.png" alt="">
+      <p>JUMP</p>
+    </div>
+
+    <button id='directions-dismiss-button' class='button'>GOT IT</button>
+  </div>
+
   <div id="hud-ui" class='transparent'>
     <p id="game-score">SCORE: 0</p>
     <div class="health-bar-container">
@@ -26,13 +50,14 @@
       <p id='high-score'>HIGH SCORE: 0</p>
       <p id='title-score'>YOUR SCORE: 0</p>
     </div>
-    <div>
+    <div style='display: flex; flex-direction: column;'>
       <button id='play-button'>PLAY</button>
+      <button id='directions-button' class='button'>Directions</button>
     </div>
     <div class='links-contianer'>
-      <a target='_blank' href="https://davidrichard23.github.io">Portfolio</a>
-      <a target='_blank' href="https://github.com/davidrichard23">Github</a>
-      <a target='_blank' href="https://linkedin.com/in/davidrichard23">LinkedIn</a>
+      <a class='button' target='_blank' href="https://davidrichard23.github.io">Portfolio</a>
+      <a class='button' target='_blank' href="https://github.com/davidrichard23">Github</a>
+      <a class='button' target='_blank' href="https://linkedin.com/in/davidrichard23">LinkedIn</a>
     </div>
   </div>
   

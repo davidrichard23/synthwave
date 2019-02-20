@@ -7,26 +7,42 @@ export default class UI {
 
     this.lastScoreUpdate = 0;
 
-    this.startGame = this.startGame.bind(this);
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
+    this.directionsUI = document.getElementById('directions-ui');
+    this.overlay = document.getElementById('overlay');
+    this.directionsButton = document.getElementById('directions-button');
+    this.directionsDismissButton = document.getElementById('directions-dismiss-button');
     this.gameScore = document.getElementById('game-score');
     this.titleScore = document.getElementById('title-score');
     this.highScore = document.getElementById('high-score');
     this.playButton = document.getElementById('play-button');
+
+    this.startGame = this.startGame.bind(this);
+    this.hideDirections = this.hideDirections.bind(this);
+    this.showDirections = this.showDirections.bind(this);
+
     this.playButton.addEventListener('click', this.startGame);
+    this.directionsButton.addEventListener('click', this.showDirections);
+    this.directionsDismissButton.addEventListener('click', this.hideDirections);
   }
 
   startGame(e) {
     e.preventDefault();
     this.playButton.disabled = true;
     game.startGameTransition();
-    this.titleUI.classList.add("transparent");
+    this.hideTitle();
+    this.hideOverlay();
   }
   
   showTitle() {
     this.playButton.disabled = false;
     this.titleUI.classList.remove("transparent");
+    this.showOverlay();
+  }
+
+  hideTitle() {
+    this.titleUI.classList.add("transparent");
   }
   
   showHud() {
@@ -35,6 +51,26 @@ export default class UI {
   
   hideHud() {
     this.hudUI.classList.add("transparent");
+  }
+  
+  showOverlay() {
+    this.overlay.classList.remove("transparent");
+  }
+  
+  hideOverlay() {
+    this.overlay.classList.add("transparent");
+  }
+
+  showDirections() {
+    this.directionsUI.classList.remove("transparent");
+    this.directionsUI.style.zIndex = 10;
+    this.hideTitle();
+  }
+  
+  hideDirections() {
+    this.directionsUI.classList.add("transparent");
+    this.directionsUI.style.zIndex = 0;
+    this.showTitle();
   }
 
   updateGameScore(score) {

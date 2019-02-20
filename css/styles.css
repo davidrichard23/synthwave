@@ -23,6 +23,7 @@ canvas {
 
 h1 {
   margin: 0;
+  color: white;
 }
 
 p {
@@ -31,26 +32,29 @@ p {
   font-family: 'Audiowide', cursive;
 }
 
-a {
+.button {
   display: inline-block;
   color: white;
   background-color: rgba(0, 0, 0, 0.2);
-  font-size: 36px;
+  font-size: 22px;
+  font-family: 'Neon Absolute Sans', Arial, sans-serif;
   text-decoration: none;
-  margin: 0 30px;
+  margin: 0 10px;
   transition: all 400ms ease-in-out;
   text-shadow:  0 0 20px rgba(255,255,255,1),
                 0 0 10px rgba(255,255,255,1);
   border: solid 1px white;
-  padding: 15px 25px 10px 25px;
+  padding: 15px 50px 7px 50px;
   border-radius: 50px;
   box-shadow: 0 0 20px rgba(255,255,255,0.5);
   text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
 }
 a:visited {
   color: white;
 }
-a:hover {
+.button:hover {
   color: #00F7FF;
   border-color: #00F7FF;
   transform: scale(1.05);
@@ -58,6 +62,16 @@ a:hover {
                 0 0 10px rgba(0,247,255,1);
   box-shadow: 0 0 20px rgba(0,247,255,0.5);
 }
+
+#overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0, 0.8);
+  transition: opacity 800ms ease-in-out;
+}
+
 
 #title-ui {
   position: absolute;
@@ -68,7 +82,6 @@ a:hover {
   top: 0; left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0, 0.8);
   transition: opacity 800ms ease-in-out;
 }
 .transparent {
@@ -109,26 +122,27 @@ a:hover {
     transform: scale(1);
   }
 }
-#title-ui button {
+#play-button {
   background-color: rgba(0, 0, 0, 0.2);
   border: none;
   outline: none;
   color: white;
-  font-size: 100px;
+  font-size: 60px;
   font-family: 'Neon Absolute Sans', Arial, sans-serif;
   animation: glow-blue 2000ms ease-in-out infinite;
   transition: color 300ms ease-in-out;
   cursor: pointer;
 
   border: solid 1px #00F7FF;
-  padding: 35px 55px 10px 55px;
+  padding: 35px 100px 20px 100px;
   border-radius: 100px;
   box-shadow: 0 0 20px rgba(0,247,255,0.5);
+  margin-bottom: 25px;
 }
-
-#title-ui button:hover {
+#play-button:hover {
   color: #00F7FF;
 }
+
 
 .score-recap-container {
   position: absolute;
@@ -188,4 +202,37 @@ a:hover {
   border-bottom-left-radius: 5px;
   text-shadow:  0 0 10px rgba(255,255,255,1);
   box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+
+#directions-ui {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 0; left: 0; right: 0; bottom: 0;
+  transition: opacity 800ms ease-in-out;
+  margin: 50px 0;
+}
+
+#directions-ui h1 {
+  font-size: 65px;
+  text-shadow:  0 0 15px rgba(255,255,255,1);
+  margin-bottom: 40px;
+}
+
+.direction-item {
+  display: flex;
+  align-items: center;
+}
+
+.direction-item p {
+  width: 200px;
+}
+
+.direction-item img {
+  width: 150px;
+  height: 150px;
+  color: white;
+  margin-right: 50px;
 }

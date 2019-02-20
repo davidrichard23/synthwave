@@ -54295,14 +54295,22 @@ function () {
     _classCallCheck(this, UI);
 
     this.lastScoreUpdate = 0;
-    this.startGame = this.startGame.bind(this);
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
+    this.directionsUI = document.getElementById('directions-ui');
+    this.overlay = document.getElementById('overlay');
+    this.directionsButton = document.getElementById('directions-button');
+    this.directionsDismissButton = document.getElementById('directions-dismiss-button');
     this.gameScore = document.getElementById('game-score');
     this.titleScore = document.getElementById('title-score');
     this.highScore = document.getElementById('high-score');
     this.playButton = document.getElementById('play-button');
+    this.startGame = this.startGame.bind(this);
+    this.hideDirections = this.hideDirections.bind(this);
+    this.showDirections = this.showDirections.bind(this);
     this.playButton.addEventListener('click', this.startGame);
+    this.directionsButton.addEventListener('click', this.showDirections);
+    this.directionsDismissButton.addEventListener('click', this.hideDirections);
   }
 
   _createClass(UI, [{
@@ -54311,13 +54319,20 @@ function () {
       e.preventDefault();
       this.playButton.disabled = true;
       game.startGameTransition();
-      this.titleUI.classList.add("transparent");
+      this.hideTitle();
+      this.hideOverlay();
     }
   }, {
     key: "showTitle",
     value: function showTitle() {
       this.playButton.disabled = false;
       this.titleUI.classList.remove("transparent");
+      this.showOverlay();
+    }
+  }, {
+    key: "hideTitle",
+    value: function hideTitle() {
+      this.titleUI.classList.add("transparent");
     }
   }, {
     key: "showHud",
@@ -54328,6 +54343,30 @@ function () {
     key: "hideHud",
     value: function hideHud() {
       this.hudUI.classList.add("transparent");
+    }
+  }, {
+    key: "showOverlay",
+    value: function showOverlay() {
+      this.overlay.classList.remove("transparent");
+    }
+  }, {
+    key: "hideOverlay",
+    value: function hideOverlay() {
+      this.overlay.classList.add("transparent");
+    }
+  }, {
+    key: "showDirections",
+    value: function showDirections() {
+      this.directionsUI.classList.remove("transparent");
+      this.directionsUI.style.zIndex = 10;
+      this.hideTitle();
+    }
+  }, {
+    key: "hideDirections",
+    value: function hideDirections() {
+      this.directionsUI.classList.add("transparent");
+      this.directionsUI.style.zIndex = 0;
+      this.showTitle();
     }
   }, {
     key: "updateGameScore",
