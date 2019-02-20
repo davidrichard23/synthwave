@@ -52879,7 +52879,7 @@ function () {
     key: "spawn",
     value: function spawn() {
       var enemy;
-      var pos = new THREE.Vector3(Math.random() * 300 - 150, 1000, -Math.random() * 1000);
+      var pos = new THREE.Vector3(Math.random() * 300 - 150, 1000, -Math.random() * 1000 - 100);
 
       if (this.enemyPool.length === 0) {
         enemy = new _enemy__WEBPACK_IMPORTED_MODULE_0__["default"](this.nextEnemyId);

@@ -32,7 +32,7 @@ export default class EnemyManager {
 
   spawn() {
     let enemy;
-    const pos = new THREE.Vector3(Math.random() * 300 - 150, 1000, -Math.random() * 1000);
+    const pos = new THREE.Vector3(Math.random() * 300 - 150, 1000, -Math.random() * 1000 - 100);
 
     if (this.enemyPool.length === 0) {
       enemy = new Enemy(this.nextEnemyId);
