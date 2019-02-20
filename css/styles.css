@@ -280,3 +280,7 @@ a:visited {
   background-color: #0E80C6;
   margin-right: 50px
 }
+
+#directions-dismiss-button {
+  margin-top: 50px;
+}
