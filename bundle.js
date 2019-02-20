@@ -53243,40 +53243,23 @@ function () {
   }, {
     key: "Ground",
     value: function Ground() {
-      var width = 100;
-      var length = 3500;
-      var spacing = 15;
-      var startX = -width / 2;
-      var startY = -length / 2;
-      var lineMaterial = new THREE.MeshLambertMaterial({
-        color: 0x2E0088
+      var texture = new THREE.TextureLoader().load("src/textures/grid-thin.png");
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(250, 250);
+      var planeGeometry = new THREE.PlaneGeometry(10000, 20000);
+      var planeMaterial = new THREE.MeshPhongMaterial({
+        color: 0x8326FF,
+        side: THREE.DoubleSide,
+        map: texture
       });
-
-      for (var i = 0; i < width / spacing; i++) {
-        var geometry = new THREE.Geometry();
-        geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, -length / 2));
-        geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, length / 2));
-        var line = new THREE.Line(geometry, lineMaterial);
-        line.params = {
-          tags: ['environment']
-        };
-        game.scene.add(line);
-      }
-
-      for (var _i16 = 0; _i16 < length / spacing; _i16++) {
-        var _geometry = new THREE.Geometry();
-
-        _geometry.vertices.push(new THREE.Vector3(-length / 2, 0, startY + spacing * _i16));
-
-        _geometry.vertices.push(new THREE.Vector3(length / 2, 0, startY + spacing * _i16));
-
-        var _line = new THREE.Line(_geometry, lineMaterial);
-
-        _line.params = {
-          tags: ['environment']
-        };
-        game.scene.add(_line);
-      }
+      var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      plane.rotation.x = THREE.Math.degToRad(90);
+      plane.position.y = 0;
+      plane.params = {
+        tags: ['environment']
+      };
+      game.scene.add(plane);
     }
   }]);
 

@@ -48,7 +48,7 @@ export default class Environment {
 
   Buildings() {
 
-    var texture = new THREE.TextureLoader().load("src/textures/grid.png");
+    const texture = new THREE.TextureLoader().load("src/textures/grid.png");
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(3, 12);
@@ -243,31 +243,18 @@ export default class Environment {
   }
 
   Ground() {
-    const width = 100;
-    const length = 3500;
-    const spacing = 15;
-    const startX = -width/2;
-    const startY = -length/2;
-    const lineMaterial = new THREE.MeshLambertMaterial({ color: 0x2E0088 });
 
-    for (let i = 0; i < width/spacing; i++) {
-      const geometry = new THREE.Geometry();
-      geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, -length/2));
-      geometry.vertices.push(new THREE.Vector3(startX + spacing * i, 0, length/2));
+    const texture = new THREE.TextureLoader().load("src/textures/grid-thin.png");
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(250, 250);
 
-      const line = new THREE.Line(geometry, lineMaterial);
-      line.params = {tags: ['environment']};
-      game.scene.add(line);
-    }
-
-    for (let i = 0; i < length/spacing; i++) {
-      const geometry = new THREE.Geometry();
-      geometry.vertices.push(new THREE.Vector3(-length/2, 0, startY + spacing * i));
-      geometry.vertices.push(new THREE.Vector3(length/2, 0, startY + spacing * i));
-
-      const line = new THREE.Line(geometry, lineMaterial);
-      line.params = {tags: ['environment']};
-      game.scene.add(line);
-    }
+    const planeGeometry = new THREE.PlaneGeometry(10000, 20000);
+    const planeMaterial = new THREE.MeshPhongMaterial({ color: 0x8326FF, side: THREE.DoubleSide, map:  texture});
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = THREE.Math.degToRad(90);
+    plane.position.y = 0;
+    plane.params = { tags: ['environment'] };
+    game.scene.add(plane);
   }
 }
