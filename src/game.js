@@ -68,8 +68,8 @@ export default class Game {
       autoplay: true,
       loop: true,
       volume: 1,
-    });
-    
+      mute: this.ui.muted
+    });    
 
     this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);

@@ -53359,7 +53359,8 @@ function () {
       src: ['src/audio/starburst-dreams.mp3'],
       autoplay: true,
       loop: true,
-      volume: 1
+      volume: 1,
+      mute: this.ui.muted
     });
     this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
@@ -54313,7 +54314,8 @@ function () {
     _classCallCheck(this, UI);
 
     this.lastScoreUpdate = 0;
-    this.muted = false;
+    this.muted = JSON.parse(js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.get('muted'));
+    this.setMuteIcon();
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
     this.directionsUI = document.getElementById('directions-ui');
@@ -54329,11 +54331,11 @@ function () {
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
     this.showDirections = this.showDirections.bind(this);
-    this.mute = this.mute.bind(this);
+    this.changeMute = this.changeMute.bind(this);
     this.playButton.addEventListener('click', this.startGame);
     this.directionsButton.addEventListener('click', this.showDirections);
     this.directionsDismissButton.addEventListener('click', this.hideDirections);
-    this.muteButton.addEventListener('click', this.mute);
+    this.muteButton.addEventListener('click', this.changeMute);
   }
 
   _createClass(UI, [{
@@ -54392,17 +54394,17 @@ function () {
       this.showTitle();
     }
   }, {
-    key: "mute",
-    value: function mute() {
+    key: "changeMute",
+    value: function changeMute() {
       this.muted = !this.muted;
+      js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.set('muted', this.muted);
       game.sound.mute(this.muted);
-      if (this.muted) document.getElementById('mute-img').src = 'src/icons/muted.png';else document.getElementById('mute-img').src = 'src/icons/unmuted.png';
+      this.setMuteIcon();
     }
   }, {
-    key: "unmute",
-    value: function unmute() {
-      game.sound.mute(false);
-      document.getElementById('mute-img').src = 'src/icons/unmuted.png';
+    key: "setMuteIcon",
+    value: function setMuteIcon() {
+      if (this.muted) document.getElementById('mute-img').src = 'src/icons/muted.png';else document.getElementById('mute-img').src = 'src/icons/unmuted.png';
     }
   }, {
     key: "updateGameScore",
