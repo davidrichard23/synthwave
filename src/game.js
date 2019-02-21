@@ -63,7 +63,7 @@ export default class Game {
     this.player.playerGroup.position.set(0, 1000, 0);
 
 
-    const sound = new Howl({
+    this.sound = new Howl({
       src: ['src/audio/starburst-dreams.mp3'],
       autoplay: true,
       loop: true,

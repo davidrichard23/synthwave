@@ -284,3 +284,16 @@ a:visited {
 #directions-dismiss-button {
   margin-top: 50px;
 }
+
+#mute-button {
+  position: absolute;
+  bottom: 5px; right: 15px;
+  width: 100px;
+  height: 100px;
+  z-index: 100;
+  cursor: pointer;
+}
+#mute-button img {
+  height: 100%;
+  width: 100%;
+}

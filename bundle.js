@@ -53355,7 +53355,7 @@ function () {
 
     this.player.playerGroup.add(this.camera);
     this.player.playerGroup.position.set(0, 1000, 0);
-    var sound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
+    this.sound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['src/audio/starburst-dreams.mp3'],
       autoplay: true,
       loop: true,
@@ -54313,6 +54313,7 @@ function () {
     _classCallCheck(this, UI);
 
     this.lastScoreUpdate = 0;
+    this.muted = false;
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
     this.directionsUI = document.getElementById('directions-ui');
@@ -54324,12 +54325,15 @@ function () {
     this.highScore = document.getElementById('high-score');
     this.playButton = document.getElementById('play-button');
     this.gunEnergyBar = document.getElementById('current-gun-energy');
+    this.muteButton = document.getElementById('mute-button');
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
     this.showDirections = this.showDirections.bind(this);
+    this.mute = this.mute.bind(this);
     this.playButton.addEventListener('click', this.startGame);
     this.directionsButton.addEventListener('click', this.showDirections);
     this.directionsDismissButton.addEventListener('click', this.hideDirections);
+    this.muteButton.addEventListener('click', this.mute);
   }
 
   _createClass(UI, [{
@@ -54388,6 +54392,19 @@ function () {
       this.showTitle();
     }
   }, {
+    key: "mute",
+    value: function mute() {
+      this.muted = !this.muted;
+      game.sound.mute(this.muted);
+      if (this.muted) document.getElementById('mute-img').src = 'src/icons/muted.png';else document.getElementById('mute-img').src = 'src/icons/unmuted.png';
+    }
+  }, {
+    key: "unmute",
+    value: function unmute() {
+      game.sound.mute(false);
+      document.getElementById('mute-img').src = 'src/icons/unmuted.png';
+    }
+  }, {
     key: "updateGameScore",
     value: function updateGameScore(score) {
       if (game.clock.elapsedTime < this.lastScoreUpdate + 0.1) return;
@@ -54410,7 +54427,6 @@ function () {
   }, {
     key: "setGunEnergy",
     value: function setGunEnergy(percent) {
-      console.log(percent);
       this.gunEnergyBar.style.width = percent + '%';
     }
   }]);
