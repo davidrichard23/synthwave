@@ -53316,6 +53316,7 @@ function () {
     this.timeScore = 0;
     this.objectiveScore = 0;
     this.clock = new THREE.Clock();
+    this.startTime = 0;
     this.scene = new THREE.Scene();
     this.enemyManager = new _enemyManager__WEBPACK_IMPORTED_MODULE_5__["default"]();
     this.titleScreenTransitionSpeed = 1;
@@ -53382,7 +53383,8 @@ function () {
     key: "updateTimeScore",
     value: function updateTimeScore() {
       if (!this.player.enabled) return;
-      this.timeScore = 123 * this.clock.elapsedTime * (this.enemyManager.level + 1);
+      var time = this.clock.elapsedTime - this.startTime;
+      this.timeScore = 123 * time * (this.enemyManager.level + 1);
       this.ui.updateGameScore(this.timeScore + this.objectiveScore);
     }
   }, {
@@ -53418,11 +53420,11 @@ function () {
     value: function startGame() {
       this.timeScore = 0;
       this.objectiveScore = 0;
+      this.startTime = game.clock.elapsedTime;
       this.isTransitioningToTitleScreen = false;
       game.player.playerGroup.position.y = 15;
       game.player.enable();
-      this.enemyManager.start(); // const enemy = new Enemy(this.scene);
-
+      this.enemyManager.start();
       this.ui.showHud();
     }
   }, {
