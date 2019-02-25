@@ -52567,7 +52567,6 @@ function () {
   }, {
     key: "onHit",
     value: function onHit(intersection) {
-      this.destroy();
       var params = intersection.object.params || {
         tags: []
       };
@@ -52581,6 +52580,7 @@ function () {
         new _particles_bulletHit__WEBPACK_IMPORTED_MODULE_2__["default"](game.scene, intersection.point, 0xffffff);
       }
 
+      game.impactSound.play();
       this.destroy();
     }
   }, {
@@ -53356,12 +53356,26 @@ function () {
 
     this.player.playerGroup.add(this.camera);
     this.player.playerGroup.position.set(0, 1000, 0);
-    this.sound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
+    this.music = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['src/audio/starburst-dreams.mp3'],
       autoplay: true,
       loop: true,
       volume: 1,
       mute: this.ui.muted
+    });
+    this.impactSound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
+      src: ['src/audio/impact.wav'],
+      volume: 1
+    });
+    this.startSound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
+      src: ['src/audio/start.wav'],
+      volume: 0.5,
+      rate: 0.8
+    });
+    this.endSound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
+      src: ['src/audio/end.wav'],
+      volume: 0.5,
+      rate: 0.8
     });
     this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
@@ -53414,6 +53428,7 @@ function () {
       this.isTransitioningToTitleScreen = true;
       this.titleScreenTransitionDirection = new THREE.Vector3(0, -1, 0);
       this.canvas.requestPointerLock();
+      this.startSound.play();
     }
   }, {
     key: "startGame",
@@ -53433,6 +53448,7 @@ function () {
       this.endGameTransition();
       this.enemyManager.stop();
       this.ui.setTitleScore(this.timeScore + this.objectiveScore);
+      this.endSound.play();
     }
   }, {
     key: "endGameTransition",
@@ -54316,7 +54332,7 @@ function () {
     _classCallCheck(this, UI);
 
     this.lastScoreUpdate = 0;
-    this.muted = JSON.parse(js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.get('muted'));
+    this.muted = js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.get('muted') ? JSON.parse(js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.get('muted')) : false;
     this.setMuteIcon();
     this.titleUI = document.getElementById('title-ui');
     this.hudUI = document.getElementById('hud-ui');
@@ -54400,7 +54416,7 @@ function () {
     value: function changeMute() {
       this.muted = !this.muted;
       js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.set('muted', this.muted);
-      game.sound.mute(this.muted);
+      game.music.mute(this.muted);
       this.setMuteIcon();
     }
   }, {

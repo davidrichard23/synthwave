@@ -6,7 +6,7 @@ export default class UI {
   constructor() {
 
     this.lastScoreUpdate = 0;
-    this.muted = JSON.parse(Cookies.get('muted'));
+    this.muted = Cookies.get('muted') ? JSON.parse(Cookies.get('muted')) : false;
     this.setMuteIcon();
 
     this.titleUI = document.getElementById('title-ui');
@@ -82,7 +82,7 @@ export default class UI {
   changeMute() {
     this.muted = !this.muted;
     Cookies.set('muted', this.muted);
-    game.sound.mute(this.muted);
+    game.music.mute(this.muted);
     this.setMuteIcon();
   }
   

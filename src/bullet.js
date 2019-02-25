@@ -66,7 +66,6 @@ export default class Bullet {
 
   onHit(intersection) {
 
-    this.destroy();
     const params = intersection.object.params || {tags: []};
     if (params.tags.includes('player')) {
       game.player.takeDamage(10);
@@ -79,6 +78,7 @@ export default class Bullet {
       new BulletHit(game.scene, intersection.point, 0xffffff);
     }
 
+    game.impactSound.play();
     this.destroy();
   }
 
