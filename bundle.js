@@ -54352,11 +54352,11 @@ function () {
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
     this.showDirections = this.showDirections.bind(this);
-    this.togglerMute = this.togglerMute.bind(this);
+    this.toggleMute = this.toggleMute.bind(this);
     this.playButton.addEventListener('click', this.startGame);
     this.directionsButton.addEventListener('click', this.showDirections);
     this.directionsDismissButton.addEventListener('click', this.hideDirections);
-    this.muteButton.addEventListener('click', this.togglerMute);
+    this.muteButton.addEventListener('click', this.toggleMute);
   }
 
   _createClass(UI, [{
@@ -54415,8 +54415,8 @@ function () {
       this.showTitle();
     }
   }, {
-    key: "togglerMute",
-    value: function togglerMute() {
+    key: "toggleMute",
+    value: function toggleMute() {
       this.muted = !this.muted;
       js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.set('muted', this.muted);
       game.music.mute(this.muted);

@@ -25,12 +25,12 @@ export default class UI {
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
     this.showDirections = this.showDirections.bind(this);
-    this.togglerMute = this.togglerMute.bind(this);
+    this.toggleMute = this.toggleMute.bind(this);
 
     this.playButton.addEventListener('click', this.startGame);
     this.directionsButton.addEventListener('click', this.showDirections);
     this.directionsDismissButton.addEventListener('click', this.hideDirections);
-    this.muteButton.addEventListener('click', this.togglerMute);
+    this.muteButton.addEventListener('click', this.toggleMute);
   }
 
   startGame(e) {
@@ -79,7 +79,7 @@ export default class UI {
     this.showTitle();
   }
 
-  togglerMute() {
+  toggleMute() {
     this.muted = !this.muted;
     Cookies.set('muted', this.muted);
     game.music.mute(this.muted);
