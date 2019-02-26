@@ -74,16 +74,19 @@ export default class Game {
     this.impactSound = new Howl({
       src: ['src/audio/impact.wav'],
       volume: 1,
+      mute: this.ui.muted
     });    
     this.startSound = new Howl({
       src: ['src/audio/start.wav'],
       volume: 0.5,
       rate: 0.8,
+      mute: this.ui.muted
     });    
     this.endSound = new Howl({
       src: ['src/audio/end.wav'],
       volume: 0.5,
       rate: 0.8,
+      mute: this.ui.muted
     });    
 
     this.startGameTransition = this.startGameTransition.bind(this);

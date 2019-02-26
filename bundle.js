@@ -53365,17 +53365,20 @@ function () {
     });
     this.impactSound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['src/audio/impact.wav'],
-      volume: 1
+      volume: 1,
+      mute: this.ui.muted
     });
     this.startSound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['src/audio/start.wav'],
       volume: 0.5,
-      rate: 0.8
+      rate: 0.8,
+      mute: this.ui.muted
     });
     this.endSound = new howler__WEBPACK_IMPORTED_MODULE_0__["Howl"]({
       src: ['src/audio/end.wav'],
       volume: 0.5,
-      rate: 0.8
+      rate: 0.8,
+      mute: this.ui.muted
     });
     this.startGameTransition = this.startGameTransition.bind(this);
     this.startGame = this.startGame.bind(this);
@@ -54349,11 +54352,11 @@ function () {
     this.startGame = this.startGame.bind(this);
     this.hideDirections = this.hideDirections.bind(this);
     this.showDirections = this.showDirections.bind(this);
-    this.changeMute = this.changeMute.bind(this);
+    this.togglerMute = this.togglerMute.bind(this);
     this.playButton.addEventListener('click', this.startGame);
     this.directionsButton.addEventListener('click', this.showDirections);
     this.directionsDismissButton.addEventListener('click', this.hideDirections);
-    this.muteButton.addEventListener('click', this.changeMute);
+    this.muteButton.addEventListener('click', this.togglerMute);
   }
 
   _createClass(UI, [{
@@ -54412,11 +54415,14 @@ function () {
       this.showTitle();
     }
   }, {
-    key: "changeMute",
-    value: function changeMute() {
+    key: "togglerMute",
+    value: function togglerMute() {
       this.muted = !this.muted;
       js_cookie__WEBPACK_IMPORTED_MODULE_1___default.a.set('muted', this.muted);
       game.music.mute(this.muted);
+      game.impactSound.mute(this.muted);
+      game.startSound.mute(this.muted);
+      game.endSound.mute(this.muted);
       this.setMuteIcon();
     }
   }, {
