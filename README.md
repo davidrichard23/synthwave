@@ -1,5 +1,7 @@
 # Synthwave
 
+[Live Game](https://davidrichard23.github.io/synthwave)
+
 ## Functionality
 
 - User can use the WASD keys to move forwards/backwards/left/right
